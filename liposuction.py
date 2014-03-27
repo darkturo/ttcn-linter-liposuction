@@ -8,13 +8,11 @@ import argparse
 def liposuction(tfile, includes, dryRun):
    #if (isValidTtcn3File(file)):
    pass;
-class PlasticSurgeon:
-   def __init__(self, dryRun):
-      self.dryRun = dryRun;
-      self.includes = [];
 
-   def searchForIncludes(self, includes):
-      pass;
+class PlasticSurgeon:
+   def __init__(self, includes, dryRun=False):
+      self.dryRun = dryRun;
+      self.includes = includes;
 
    def performLiposuctionOnPacient(self, ttcn3File):
       pass;
@@ -44,8 +42,8 @@ if (__name__ == '__main__'):
    options = parseArguments();
 
    # Call and prepae the plastic surgeon
-   doctor  = PlasticSurgeon(options.dryRun)
-   doctor.searchForIncludes(options.include)
+   doctor  = PlasticSurgeon(options.include,
+                            options.dryRun)
 
    # In the operation room
    for ttcn3File in options.ttcn3_files:
