@@ -1,0 +1,12 @@
+module prueba
+{
+   function f_simpleFunction()
+   {
+      var charstring variable1 := "nada";
+      var charstring variable2 := "algo";
+      var charstring variable3 := "bueno bueno";
+
+      log("Hello World");
+   }
+}
+
