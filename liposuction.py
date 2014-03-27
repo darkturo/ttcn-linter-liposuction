@@ -6,7 +6,18 @@ import argparse
 #print "LIPOSUCTION"
 
 def liposuction(tfile, includes, dryRun):
+   #if (isValidTtcn3File(file)):
    pass;
+class PlasticSurgeon:
+   def __init__(self, dryRun):
+      self.dryRun = dryRun;
+      self.includes = [];
+
+   def searchForIncludes(self, includes):
+      pass;
+
+   def performLiposuctionOnPacient(self, ttcn3File):
+      pass;
 
 def parseArguments(): 
    # Creating the parser.
@@ -29,7 +40,13 @@ def parseArguments():
    return options
 
 if (__name__ == '__main__'):
+   # Parse command line arguments
    options = parseArguments();
-         #if (isValidTtcn3File(file)):
+
+   # Call and prepae the plastic surgeon
+   doctor  = PlasticSurgeon(options.dryRun)
+   doctor.searchForIncludes(options.include)
+
+   # In the operation room
    for ttcn3File in options.ttcn3_files:
-      liposuction(ttcn3File, options.include, dryRun=options.dryRun);
+      doctor.performLiposuctionOnPacient(ttcn3File);
