@@ -3,19 +3,13 @@ import argparse
 
 #file = open('newfile.txt', 'r')
 #print file.readline():
-#print "LIPOSUCTION"
 
 def liposuction(tfile, includes, dryRun):
    #if (isValidTtcn3File(file)):
+   ##TODO: make backup of the file first.
+   #fstream = open(fileName, 'w');
+   #fstream.write(self.printToString);
    pass;
-
-class PlasticSurgeon:
-   def __init__(self, includes, dryRun=False):
-      self.dryRun = dryRun;
-      self.includes = includes;
-
-   def performLiposuctionOnPacient(self, ttcn3File):
-      pass;
 
 def parseArguments(): 
    # Creating the parser.
