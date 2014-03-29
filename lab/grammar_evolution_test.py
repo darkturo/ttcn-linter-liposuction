@@ -4,4 +4,4 @@ import grammar_evolution;
 #   def test_assignment(self):
 #           
 
-grammar_evolution.parse(":");
+grammar_evolution.parse("-");

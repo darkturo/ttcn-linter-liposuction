@@ -3,10 +3,10 @@ from lepl import *;
 AssignmentChar = Literal(":=");
 Underscore = Literal("_");
 Colon = Literal(":");
-TTCN3Module = Colon;
-# SemiColon = ";"
-# Minus = "-"
-# Dot = "."
+SemiColon = Literal(";");
+Minus = Literal("-")
+Dot = Literal(".")
+TTCN3Module = (Minus | Dot);
 # QualifiedIdentifierList = QualifiedIdentifier { "," QualifiedIdentifier }
 # IdentifierList = Identifier { "," Identifier }
 # ExtendedIdentifier = [ Identifier Dot ] Identifier
