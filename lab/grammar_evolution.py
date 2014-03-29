@@ -7,10 +7,11 @@ with DroppedSpace():
    SemiColon = Literal(";");
    Minus = Literal("-")
    Dot = Literal(".")
-   QualifiedIdentifier  = Literal("hit");
+   QualifiedIdentifier  = Literal("hit"); # TEMPORAL
+   Identifier = Literal("heat"); # TEMPORAL
    QualifiedIdentifierList = QualifiedIdentifier & (Literal(",") & QualifiedIdentifier)[:];
-   TTCN3Module = QualifiedIdentifierList;
-#   IdentifierList = Identifier { "," Identifier }
+   IdentifierList = Identifier & ( Literal(",") & Identifier )[:]
+   TTCN3Module = (IdentifierList | QualifiedIdentifierList);
 #   ExtendedIdentifier = [ Identifier Dot ] Identifier
 #   CaseKeyword = "case"
 #   SelectCase = CaseKeyword ( "(" InLineTemplate { "," InLineTemplate } ")" | ElseKeyword ) StatementBlock

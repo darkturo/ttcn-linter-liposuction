@@ -5,3 +5,5 @@ import grammar_evolution;
 #           
 
 grammar_evolution.parse("hit, hit,  hit  , hit");
+grammar_evolution.parse("heat");
+grammar_evolution.parse("heat , heat, heat,heat,heat");
