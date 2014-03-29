@@ -1,18 +1,35 @@
 from lepl import *;
 
 with DroppedSpace():
+   # AssignmentChar   ::=     ":="
    AssignmentChar = Literal(":=");
+
+   # Underscore    ::=     "_"
    Underscore = Literal("_");
+
+   # Colon   ::=     ":"
    Colon = Literal(":");
+
+   # SemiColon     ::=     ";"
    SemiColon = Literal(";");
+
+   # Minus   ::=     "-"
    Minus = Literal("-")
+
+   # Dot     ::=     "."
    Dot = Literal(".")
+
    QualifiedIdentifier  = Literal("hit"); # TEMPORAL
    Identifier = Literal("heat"); # TEMPORAL
+   # QualifiedIdentifierList   ::=    QualifiedIdentifier { "," QualifiedIdentifier }
    QualifiedIdentifierList = QualifiedIdentifier & (Literal(",") & QualifiedIdentifier)[:];
+
+   # IdentifierList   ::=    Identifier { "," Identifier }
    IdentifierList = Identifier & ( Literal(",") & Identifier )[:]
-   TTCN3Module = (IdentifierList | QualifiedIdentifierList);
-#   ExtendedIdentifier = [ Identifier Dot ] Identifier
+
+   # ExtendedIdentifier     ::=     [ Identifier Dot ] Identifier
+   ExtendedIdentifier = ( Identifier & Dot ) & Identifier
+   TTCN3Module = (ExtendedIdentifier);
 #   CaseKeyword = "case"
 #   SelectCase = CaseKeyword ( "(" InLineTemplate { "," InLineTemplate } ")" | ElseKeyword ) StatementBlock
 #   SelectCaseBody = "{" { SelectCase }+ "}"
@@ -574,4 +591,5 @@ with DroppedSpace():
 #   TTCN3Module = TTCN3ModuleKeyword ModuleId "{" [ ModuleDefinitionsList ] [ ModuleControlPart ] "}" [ WithStatement ] [ SemiColon ]
 
 def parse(text):
-   TTCN3Module.parse(text);
+   TTCN3Module.config.auto_memoize(full=True);
+   print "->", list(TTCN3Module.parse_all(text));
