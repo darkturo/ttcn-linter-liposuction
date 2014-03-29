@@ -1,6 +1,7 @@
 from lepl import *;
 
-# AssignmentChar   ::=     ":="
+AssignmentChar = Literal(":=");
+TTCN3Module = AssignmentChar;
 # Underscore    ::=     "_"
 # Colon   ::=     ":"
 # SemiColon     ::=     ";"
@@ -568,3 +569,6 @@ from lepl import *;
 # ModuleId   ::=    Identifier [ LanguageSpec ]
 # TTCN3ModuleKeyword     ::=     "module"
 # TTCN3Module   ::=    TTCN3ModuleKeyword ModuleId "{" [ ModuleDefinitionsList ] [ ModuleControlPart ] "}" [ WithStatement ] [ SemiColon ]
+
+def parse(text):
+   TTCN3Module.parse(text);
