@@ -1,8 +1,8 @@
 from lepl import *;
 
 AssignmentChar = Literal(":=");
-TTCN3Module = AssignmentChar;
-# Underscore    ::=     "_"
+Underscore = Literal("_");
+TTCN3Module = Underscore;
 # Colon   ::=     ":"
 # SemiColon     ::=     ";"
 # Minus   ::=     "-"
