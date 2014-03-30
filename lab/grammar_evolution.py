@@ -122,578 +122,1612 @@ WhileKeyword = Forward();
 DoWhileStatement = DoKeyword + StatementBlock + WhileKeyword + "(" + BooleanExpression + ")";
 
 # WhileKeyword ::= "while"
-WhileKeyword << Keyword("while")
+WhileKeyword << Keyword("while");
 
-# WhileStatement ::= WhileKeyword "(" BooleanExpression ")" StatementBlock
-# Initial ::= VarInstance | Assignment
-# ForKeyword ::= "for"
-# ForStatement ::= ForKeyword "(" Initial SemiColon BooleanExpression SemiColon Assignment ")" StatementBlock
-# LoopConstruct ::= ForStatement | WhileStatement | DoWhileStatement
-# LogItem ::= FreeText | InLineTemplate
+## WhileStatement ::= WhileKeyword "(" BooleanExpression ")" StatementBlock
+#WhileStatement = WhileKeyword + "(" + BooleanExpression + ")" + StatementBlock;
+#
+## Initial ::= VarInstance | Assignment
+#Initial = VarInstance | Assignment;
+#
+## ForKeyword ::= "for"
+#ForKeyword = Keyword("for");
+#
+## ForStatement ::= ForKeyword "(" Initial SemiColon BooleanExpression SemiColon Assignment ")" StatementBlock
+#ForStatement = ForKeyword + "(" + Initial + SemiColon + BooleanExpression + SemiColon + Assignment + ")" + StatementBlock;
+#
+## LoopConstruct ::= ForStatement | WhileStatement | DoWhileStatement
+#LoopConstruct = ForStatement | WhileStatement | DoWhileStatement;
+#
+## LogItem ::= FreeText | InLineTemplate
+#LogItem = FreeText | InLineTemplate;
+#
+## LogKeyword ::= "log"
+#LogKeyword = Keyword("log");
+#
+## LogStatement ::= LogKeyword "(" LogItem { "," LogItem } ")"
+#LogStatement = LogKeyword + "(" + LogItem + ZeroOrMore( "," + LogItem ) + ")";
+#
 #TMP
 InLineTemplate << ( Literal("42") | Identifier ); # TEMP
 ElseKeyword << Keyword("else");
 StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
 SingleExpression << Literal("expression"); 
 BooleanExpression << Literal("isExpression"); 
-# LogKeyword ::= "log"
-# LogStatement ::= LogKeyword "(" LogItem { "," LogItem } ")"
-# ShiftOp ::= "<<" | ">>" | "<@" | "@>"
-# StringOp ::= "&"
-# EqualOp ::= "==" | "!="
-# RelOp ::= "<" | ">" | ">=" | "<="
-# UnaryOp ::= "+" | "-"
-# MultiplyOp ::= "*" | "/" | "mod" | "rem"
-# AddOp ::= "+" | "-" | StringOp
-# OpCall ::= ConfigurationOps | GetLocalVerdict | TimerOps | TestcaseInstance | ( FunctionInstance [ ExtendedFieldReference ] ) | ( TemplateOps [ ExtendedFieldReference ] ) | ActivateOp
-# ExtendedFieldReference ::= { ( Dot ( Identifier | PredefinedType ) ) | ArrayOrBitRef | ( "[" Minus "]" ) }+
-# Primary ::= OpCall | Value | "(" SingleExpression ")"
-# UnaryExpression ::= [ UnaryOp ] Primary
-# MulExpression ::= UnaryExpression { MultiplyOp UnaryExpression } | CompoundExpression
-# AddExpression ::= MulExpression { AddOp MulExpression }
-# BitNotExpression ::= [ "not4b" ] AddExpression
-# BitAndExpression ::= BitNotExpression { "and4b" BitNotExpression }
-# BitXorExpression ::= BitAndExpression { "xor4b" BitAndExpression }
-# BitOrExpression ::= BitXorExpression { "or4b" BitXorExpression }
-# ShiftExpression ::= BitOrExpression { ShiftOp BitOrExpression }
-# RelExpression ::= ShiftExpression [ RelOp ShiftExpression ] | CompoundExpression
-# EqualExpression ::= RelExpression { EqualOp RelExpression }
-# NotExpression ::= [ "not" ] EqualExpression
-# AndExpression ::= NotExpression { "and" NotExpression }
-# XorExpression ::= AndExpression { "xor" AndExpression }
-# SingleExpression ::= XorExpression { "or" XorExpression }
-# Assignment ::= VariableRef AssignmentChar ( Expression | TemplateBody )
-# ArrayElementConstExpressionList ::= ConstantExpression { "," ConstantExpression }
-# ArrayConstExpression ::= "{" [ ArrayElementConstExpressionList ] "}"
-# FieldConstExpressionSpec ::= FieldReference AssignmentChar ConstantExpression
-# FieldConstExpressionList ::= "{" FieldConstExpressionSpec { "," FieldConstExpressionSpec } "}"
-# CompoundConstExpression ::= FieldConstExpressionList | ArrayConstExpression
-# BooleanExpression ::= SingleExpression
-# ConstantExpression ::= SingleExpression | CompoundConstExpression
-# NotUsedOrExpression ::= Expression | Minus
-# ArrayElementExpressionList ::= NotUsedOrExpression { "," NotUsedOrExpression }
-# ArrayExpression ::= "{" [ ArrayElementExpressionList ] "}"
-# FieldExpressionSpec ::= FieldReference AssignmentChar NotUsedOrExpression
-# FieldExpressionList ::= "{" FieldExpressionSpec { "," FieldExpressionSpec } "}"
-# CompoundExpression ::= FieldExpressionList | ArrayExpression
-# Expression ::= SingleExpression | CompoundExpression
-# BasicStatements ::= Assignment | LogStatement | LoopConstruct | ConditionalConstruct | SelectCaseConstruct | StatementBlock
-# ContinueStatement ::= "continue"
-# BreakStatement ::= "break"
-# DeactivateKeyword ::= "deactivate"
-# DeactivateStatement ::= DeactivateKeyword [ "(" ComponentOrDefaultReference ")" ]
-# ActivateKeyword ::= "activate"
-# ActivateOp ::= ActivateKeyword "(" AltstepInstance ")"
-# RepeatStatement ::= "repeat"
-# GotoKeyword ::= "goto"
-# GotoStatement ::= GotoKeyword Identifier
-# LabelKeyword ::= "label"
-# LabelStatement ::= LabelKeyword Identifier
-# InterleavedGuard ::= "[" "]" GuardOp
-# InterleavedGuardElement ::= InterleavedGuard StatementBlock
-# InterleavedGuardList ::= { InterleavedGuardElement [ SemiColon ] }+
-# InterleavedKeyword ::= "interleave"
-# InterleavedConstruct ::= InterleavedKeyword "{" InterleavedGuardList "}"
-# GuardOp ::= TimeoutStatement | ReceiveStatement | TriggerStatement | GetCallStatement | CatchStatement | CheckStatement | GetReplyStatement | DoneStatement | KilledStatement
-# AltGuardChar ::= "[" [ BooleanExpression ] "]"
-# ElseStatement ::= "[" ElseKeyword "]" StatementBlock
-# GuardStatement ::= AltGuardChar ( AltstepInstance [ StatementBlock ] | GuardOp StatementBlock )
-# AltGuardList ::= { GuardStatement | ElseStatement [ SemiColon ] }
-# AltKeyword ::= "alt"
-# AltConstruct ::= AltKeyword "{" AltGuardList "}"
-# ReturnStatement ::= ReturnKeyword [ Expression | InLineTemplate ]
-# ActionText ::= FreeText | Expression
-# ActionKeyword ::= "action"
-# SUTStatements ::= ActionKeyword "(" ActionText { StringOp ActionText } ")"
-# GetLocalVerdict ::= "getverdict"
-# SetVerdictKeyword ::= "setverdict"
-# SetLocalVerdict ::= SetVerdictKeyword "(" SingleExpression { "," LogItem } ")"
-# BehaviourStatements ::= TestcaseInstance | FunctionInstance | ReturnStatement | AltConstruct | InterleavedConstruct | LabelStatement | GotoStatement | RepeatStatement | DeactivateStatement | AltstepInstance | ActivateOp | BreakStatement | ContinueStatement
-# AllRef ::= ( GroupKeyword AllKeyword [ ExceptKeyword "{" QualifiedIdentifierList "}" ] ) | ( ( TypeDefKeyword | TemplateKeyword | ConstKeyword | AltstepKeyword | TestcaseKeyword | FunctionKeyword | SignatureKeyword | ModuleParKeyword ) AllKeyword [ ExceptKeyword "{" IdentifierList "}" ] )
-# DefOrFieldRef ::= QualifiedIdentifier | ( ( FieldReference | "[" Minus "]" ) [ ExtendedFieldReference ] ) | AllRef
-# DefOrFieldRefList ::= DefOrFieldRef { "," DefOrFieldRef }
-# AttribQualifier ::= "(" DefOrFieldRefList ")"
-# OverrideKeyword ::= "override"
-# ExtensionKeyword ::= "extension"
-# DisplayKeyword ::= "display"
-# VariantKeyword ::= "variant"
-# EncodeKeyword ::= "encode"
-# AttribKeyword ::= EncodeKeyword | VariantKeyword | DisplayKeyword | ExtensionKeyword | OptionalKeyword
-# SingleWithAttrib ::= AttribKeyword [ OverrideKeyword ] [ AttribQualifier ] FreeText
-# MultiWithAttrib ::= { SingleWithAttrib [ SemiColon ] }
-# WithAttribList ::= "{" MultiWithAttrib "}"
-# WithKeyword ::= "with"
-# WithStatement ::= WithKeyword WithAttribList
-# TemplateRestriction ::= "(" ( OmitKeyword | ValueKeyword | PresentKeyword ) ")"
-# RestrictedTemplate ::= OmitKeyword | ( TemplateKeyword TemplateRestriction )
-# FormalTemplatePar ::= [ ( InParKeyword | OutParKeyword | InOutParKeyword ) ] ( TemplateKeyword | RestrictedTemplate ) Type Identifier [ ":=" ( InLineTemplate | Minus ) ]
-# FormalTimerPar ::= [ InOutParKeyword ] TimerKeyword Identifier
-# FormalPortPar ::= [ InOutParKeyword ] Identifier Identifier
-# FormalValuePar ::= [ ( InParKeyword | InOutParKeyword | OutParKeyword ) ] Type Identifier [ ":=" ( Expression | Minus ) ]
-# InOutParKeyword ::= "inout"
-# OutParKeyword ::= "out"
-# InParKeyword ::= "in"
-# OmitKeyword ::= "omit"
-# AddressValue ::= "null"
-# FreeText ::= """ { ExtendedAlphaNum } """
-# ExtendedAlphaNum ::= 
-# Char ::= 
-# Cstring ::= """ { Char } """
-# ReferencedValue ::= ExtendedIdentifier [ ExtendedFieldReference ]
-# Exponential ::= "E"
-# FloatENotation ::= Number [ Dot DecimalNumber ] Exponential [ Minus ] Number
-# FloatDotNotation ::= Number Dot DecimalNumber
-# NaNKeyword ::= "not_a_number"
-# FloatValue ::= FloatDotNotation | FloatENotation | NaNKeyword
-# CharKeyword ::= "char"
-# Quadruple ::= CharKeyword "(" Number "," Number "," Number "," Number ")"
-# CharStringValue ::= Cstring | Quadruple
-# VerdictTypeValue ::= "pass" | "fail" | "inconc" | "none" | "error"
-# BooleanValue ::= "true" | "false"
-# PredefinedValue ::= Bstring | BooleanValue | CharStringValue | Number | Ostring | Hstring | VerdictTypeValue | Identifier | FloatValue | AddressValue | OmitKeyword
-# Value ::= PredefinedValue | ReferencedValue
-# ArrayDef ::= { "[" SingleExpression [ ".." SingleExpression ] "]" }+
-# TypeReference ::= Identifier
-# ReferencedType ::= ExtendedIdentifier [ ExtendedFieldReference ]
-# UniversalKeyword ::= "universal"
-# UniversalCharString ::= UniversalKeyword CharStringKeyword
-# CharStringKeyword ::= "charstring"
-# AnyTypeKeyword ::= "anytype"
-# DefaultKeyword ::= "default"
-# AddressKeyword ::= "address"
-# FloatKeyword ::= "float"
-# VerdictTypeKeyword ::= "verdicttype"
-# HexStringKeyword ::= "hexstring"
-# OctetStringKeyword ::= "octetstring"
-# IntegerKeyword ::= "integer"
-# BooleanKeyword ::= "boolean"
-# BitStringKeyword ::= "bitstring"
-# PredefinedType ::= BitStringKeyword | BooleanKeyword | CharStringKeyword | UniversalCharString | IntegerKeyword | OctetStringKeyword | HexStringKeyword | VerdictTypeKeyword | FloatKeyword | AddressKeyword | DefaultKeyword | AnyTypeKeyword
-# Type ::= PredefinedType | ReferencedType
-# TestcaseOperation ::= TestcaseKeyword "." StopKeyword [ "(" { ( FreeText | InLineTemplate ) [ "," ] } ")" ]
-# TimeoutKeyword ::= "timeout"
-# TimerRefOrAny ::= ArrayIdentifierRef | ( AnyKeyword TimerKeyword )
-# TimeoutStatement ::= TimerRefOrAny Dot TimeoutKeyword
-# RunningTimerOp ::= TimerRefOrAny Dot RunningKeyword
-# ReadKeyword ::= "read"
-# ReadTimerOp ::= ArrayIdentifierRef Dot ReadKeyword
-# TimerRefOrAll ::= ArrayIdentifierRef | AllKeyword TimerKeyword
-# StopTimerStatement ::= TimerRefOrAll Dot StopKeyword
-# StartTimerStatement ::= ArrayIdentifierRef Dot StartKeyword [ "(" Expression ")" ]
-# TimerOps ::= ReadTimerOp | RunningTimerOp
-# TimerStatements ::= StartTimerStatement | StopTimerStatement | TimeoutStatement
-# CheckStateKeyword ::= "checkstate"
-# PortOrAllAny ::= PortOrAll | AnyKeyword PortKeyword
-# CheckStateStatement ::= PortOrAllAny Dot CheckStateKeyword "(" SingleExpression ")"
-# AnyKeyword ::= "any"
-# HaltKeyword ::= "halt"
-# HaltStatement ::= PortOrAll Dot HaltKeyword
-# StopKeyword ::= "stop"
-# StopStatement ::= PortOrAll Dot StopKeyword
-# StartStatement ::= PortOrAll Dot StartKeyword
-# ClearOpKeyword ::= "clear"
-# PortOrAll ::= ArrayIdentifierRef | AllKeyword PortKeyword
-# ClearStatement ::= PortOrAll Dot ClearOpKeyword
-# CatchOpParameter ::= Signature "," InLineTemplate | TimeoutKeyword
-# CatchOpKeyword ::= "catch"
-# PortCatchOp ::= CatchOpKeyword [ "(" CatchOpParameter ")" ] [ FromClause ] [ PortRedirect ]
-# CatchStatement ::= PortOrAny Dot PortCatchOp
-# CheckPortOpsPresent ::= PortReceiveOp | PortGetCallOp | PortGetReplyOp | PortCatchOp
-# RedirectPresent ::= PortRedirectSymbol SenderSpec
-# FromClausePresent ::= FromClause [ PortRedirectSymbol SenderSpec ]
-# CheckParameter ::= CheckPortOpsPresent | FromClausePresent | RedirectPresent
-# CheckOpKeyword ::= "check"
-# PortCheckOp ::= CheckOpKeyword [ "(" CheckParameter ")" ]
-# CheckStatement ::= PortOrAny Dot PortCheckOp
-# ValueMatchSpec ::= ValueKeyword InLineTemplate
-# GetReplyOpKeyword ::= "getreply"
-# RedirectWithValueAndParamSpec ::= ValueSpec [ ParamSpec ] [ SenderSpec ] | RedirectWithParamSpec
-# PortRedirectWithValueAndParam ::= PortRedirectSymbol RedirectWithValueAndParamSpec
-# PortGetReplyOp ::= GetReplyOpKeyword [ "(" InLineTemplate [ ValueMatchSpec ] ")" ] [ FromClause ] [ PortRedirectWithValueAndParam ]
-# GetReplyStatement ::= PortOrAny Dot PortGetReplyOp
-# VariableEntry ::= VariableRef | Minus
-# VariableList ::= VariableEntry { "," VariableEntry }
-# VariableAssignment ::= VariableRef AssignmentChar Identifier
-# AssignmentList ::= VariableAssignment { "," VariableAssignment }
-# ParamAssignmentList ::= "(" ( AssignmentList | VariableList ) ")"
-# ParamKeyword ::= "param"
-# ParamSpec ::= ParamKeyword ParamAssignmentList
-# RedirectWithParamSpec ::= ParamSpec [ SenderSpec ] | SenderSpec
-# PortRedirectWithParam ::= PortRedirectSymbol RedirectWithParamSpec
-# GetCallOpKeyword ::= "getcall"
-# PortGetCallOp ::= GetCallOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirectWithParam ]
-# GetCallStatement ::= PortOrAny Dot PortGetCallOp
-# TriggerOpKeyword ::= "trigger"
-# PortTriggerOp ::= TriggerOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirect ]
-# TriggerStatement ::= PortOrAny Dot PortTriggerOp
-# SenderKeyword ::= "sender"
-# SenderSpec ::= SenderKeyword VariableRef
-# ValueKeyword ::= "value"
-# SingleValueSpec ::= VariableRef [ AssignmentChar FieldReference ExtendedFieldReference ]
-# ValueSpec ::= ValueKeyword ( VariableRef | ( "(" SingleValueSpec { "," SingleValueSpec } ")" ) )
-# PortRedirectSymbol ::= "->"
-# PortRedirect ::= PortRedirectSymbol ( ValueSpec [ SenderSpec ] | SenderSpec )
-# FromKeyword ::= "from"
-# FromClause ::= FromKeyword ( InLineTemplate | AddressRefList | AnyKeyword ComponentKeyword )
-# ReceiveOpKeyword ::= "receive"
-# PortReceiveOp ::= ReceiveOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirect ]
-# PortOrAny ::= ArrayIdentifierRef | AnyKeyword PortKeyword
-# ReceiveStatement ::= PortOrAny Dot PortReceiveOp
-# RaiseKeyword ::= "raise"
-# PortRaiseOp ::= RaiseKeyword "(" Signature "," InLineTemplate ")" [ ToClause ]
-# RaiseStatement ::= ArrayIdentifierRef Dot PortRaiseOp
-# ReplyValue ::= ValueKeyword Expression
-# ReplyKeyword ::= "reply"
-# PortReplyOp ::= ReplyKeyword "(" InLineTemplate [ ReplyValue ] ")" [ ToClause ]
-# ReplyStatement ::= ArrayIdentifierRef Dot PortReplyOp
-# CallBodyOps ::= GetReplyStatement | CatchStatement
-# CallBodyGuard ::= AltGuardChar CallBodyOps
-# CallBodyStatement ::= CallBodyGuard StatementBlock
-# CallBodyStatementList ::= { CallBodyStatement [ SemiColon ] }+
-# PortCallBody ::= "{" CallBodyStatementList "}"
-# NowaitKeyword ::= "nowait"
-# CallTimerValue ::= Expression | NowaitKeyword
-# CallParameters ::= InLineTemplate [ "," CallTimerValue ]
-# CallOpKeyword ::= "call"
-# PortCallOp ::= CallOpKeyword "(" CallParameters ")" [ ToClause ]
-# CallStatement ::= ArrayIdentifierRef Dot PortCallOp [ PortCallBody ]
-# ToKeyword ::= "to"
-# AddressRefList ::= "(" InLineTemplate { "," InLineTemplate } ")"
-# ToClause ::= ToKeyword ( InLineTemplate | AddressRefList | AllKeyword ComponentKeyword )
-# SendOpKeyword ::= "send"
-# PortSendOp ::= SendOpKeyword "(" InLineTemplate ")" [ ToClause ]
-# SendStatement ::= ArrayIdentifierRef Dot PortSendOp
-# CommunicationStatements ::= SendStatement | CallStatement | ReplyStatement | RaiseStatement | ReceiveStatement | TriggerStatement | GetCallStatement | GetReplyStatement | CatchStatement | CheckStatement | ClearStatement | StartStatement | StopStatement | HaltStatement | CheckStateStatement
-# KillKeyword ::= "kill"
-# ComponentOrDefaultReference ::= VariableRef | FunctionInstance
-# KillTCStatement ::= KillKeyword | ( ( ComponentReferenceOrLiteral | AllKeyword ComponentKeyword ) Dot KillKeyword )
-# ComponentReferenceOrLiteral ::= ComponentOrDefaultReference | MTCKeyword | SelfOp
-# StopTCStatement ::= StopKeyword | ( ComponentReferenceOrLiteral | AllKeyword ComponentKeyword ) Dot StopKeyword
-# StartKeyword ::= "start"
-# StartTCStatement ::= ComponentOrDefaultReference Dot StartKeyword "(" FunctionInstance ")"
-# UnmapKeyword ::= "unmap"
-# UnmapStatement ::= UnmapKeyword [ SingleConnectionSpec [ ParamClause ] | AllConnectionsSpec [ ParamClause ] | AllPortsSpec | AllCompsAllPortsSpec ]
-# MapKeyword ::= "map"
-# ParamClause ::= ParamKeyword FunctionActualParList
-# MapStatement ::= MapKeyword SingleConnectionSpec [ ParamClause ]
-# DisconnectKeyword ::= "disconnect"
-# AllCompsAllPortsSpec ::= "(" AllKeyword ComponentKeyword ":" AllKeyword PortKeyword ")"
-# AllPortsSpec ::= "(" ComponentRef ":" AllKeyword PortKeyword ")"
-# AllConnectionsSpec ::= "(" PortRef ")"
-# DisconnectStatement ::= DisconnectKeyword [ SingleConnectionSpec | AllConnectionsSpec | AllPortsSpec | AllCompsAllPortsSpec ]
-# ComponentRefAssignment ::= Identifier ":=" ComponentRef
-# ComponentRef ::= ComponentOrDefaultReference | SystemKeyword | SelfOp | MTCKeyword
-# PortRef ::= ComponentRef Colon ArrayIdentifierRef
-# SingleConnectionSpec ::= "(" PortRef "," PortRef ")"
-# ConnectKeyword ::= "connect"
-# ConnectStatement ::= ConnectKeyword SingleConnectionSpec
-# AliveKeyword ::= "alive"
-# CreateKeyword ::= "create"
-# AliveOp ::= ComponentId Dot AliveKeyword
-# RunningKeyword ::= "running"
-# RunningOp ::= ComponentId Dot RunningKeyword
-# KilledKeyword ::= "killed"
-# DoneKeyword ::= "done"
-# ComponentId ::= ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) ComponentKeyword
-# KilledStatement ::= ComponentId Dot KilledKeyword
-# DoneStatement ::= ComponentId Dot DoneKeyword
-# SelfOp ::= "self"
-# CreateOp ::= ComponentType Dot CreateKeyword [ "(" ( SingleExpression | Minus ) [ "," SingleExpression ] ")" ] [ AliveKeyword ]
-# ConfigurationOps ::= CreateOp | SelfOp | SystemKeyword | MTCKeyword | RunningOp | AliveOp
-# ConfigurationStatements ::= ConnectStatement | MapStatement | DisconnectStatement | UnmapStatement | DoneStatement | KilledStatement | StartTCStatement | StopTCStatement | KillTCStatement
-# ArrayIdentifierRef ::= Identifier { ArrayOrBitRef }
-# TimerKeyword ::= "timer"
-# TimerInstance ::= TimerKeyword VarList
-# VariableRef ::= Identifier [ ExtendedFieldReference ]
-# SingleTempVarInstance ::= Identifier [ ArrayDef ] [ AssignmentChar TemplateBody ]
-# TempVarList ::= SingleTempVarInstance { "," SingleTempVarInstance }
-# VarKeyword ::= "var"
-# SingleVarInstance ::= Identifier [ ArrayDef ] [ AssignmentChar Expression ]
-# VarList ::= SingleVarInstance { "," SingleVarInstance }
-# VarInstance ::= VarKeyword ( ( Type VarList ) | ( ( TemplateKeyword | RestrictedTemplate ) Type TempVarList ) )
-# ControlStatement ::= TimerStatements | BasicStatements | BehaviourStatements | SUTStatements | StopKeyword
-# ControlStatementOrDef ::= ( FunctionLocalDef | FunctionLocalInst ) [ WithStatement ] | ControlStatement
-# ControlStatementOrDefList ::= { ControlStatementOrDef [ SemiColon ] }+
-# ModuleControlBody ::= [ ControlStatementOrDefList ]
-# ControlKeyword ::= "control"
-# ModuleControlPart ::= ControlKeyword "{" ModuleControlBody "}" [ WithStatement ] [ SemiColon ]
-# FriendModuleDef ::= "friend" "module" IdentifierList [ SemiColon ]
-# ModuleParList ::= Identifier [ AssignmentChar ConstantExpression ] { "," Identifier [ AssignmentChar ConstantExpression ] }
-# ModulePar ::= Type ModuleParList
-# MultitypedModuleParList ::= { ModulePar [ SemiColon ] }
-# ModuleParKeyword ::= "modulepar"
-# ModuleParDef ::= ModuleParKeyword ( ModulePar | ( "{" MultitypedModuleParList "}" ) )
-# ExtConstDef ::= ExtKeyword ConstKeyword Type IdentifierList
-# ExtKeyword ::= "external"
-# ExtFunctionDef ::= ExtKeyword FunctionKeyword Identifier "(" [ FunctionFormalParList ] ")" [ ReturnType ]
-# GroupKeyword ::= "group"
-# GroupDef ::= GroupKeyword Identifier "{" [ ModuleDefinitionsList ] "}"
-# ImportImportSpec ::= ImportKeyword AllKeyword
-# ImportModuleParSpec ::= ModuleParKeyword IdentifierListOrAllWithExcept
-# ImportSignatureSpec ::= SignatureKeyword IdentifierListOrAllWithExcept
-# ImportFunctionSpec ::= FunctionKeyword IdentifierListOrAllWithExcept
-# ImportTestcaseSpec ::= TestcaseKeyword IdentifierListOrAllWithExcept
-# ImportAltstepSpec ::= AltstepKeyword IdentifierListOrAllWithExcept
-# ImportConstSpec ::= ConstKeyword IdentifierListOrAllWithExcept
-# ImportTemplateSpec ::= TemplateKeyword IdentifierListOrAllWithExcept
-# AllWithExcept ::= AllKeyword [ ExceptKeyword IdentifierList ]
-# ImportTypeDefSpec ::= TypeDefKeyword IdentifierListOrAllWithExcept
-# IdentifierListOrAllWithExcept ::= IdentifierList | AllWithExcept
-# QualifiedIdentifierWithExcept ::= QualifiedIdentifier [ ExceptsDef ]
-# AllGroupsWithExcept ::= AllKeyword [ ExceptKeyword QualifiedIdentifierList ]
-# GroupRefListWithExcept ::= QualifiedIdentifierWithExcept { "," QualifiedIdentifierWithExcept }
-# ImportGroupSpec ::= GroupKeyword ( GroupRefListWithExcept | AllGroupsWithExcept )
-# RecursiveKeyword ::= "recursive"
-# ImportFromSpec ::= FromKeyword ModuleId [ RecursiveKeyword ]
-# ImportElement ::= ImportGroupSpec | ImportTypeDefSpec | ImportTemplateSpec | ImportConstSpec | ImportTestcaseSpec | ImportAltstepSpec | ImportFunctionSpec | ImportSignatureSpec | ImportModuleParSpec | ImportImportSpec
-# ImportSpec ::= { ImportElement [ SemiColon ] }
-# ExceptModuleParSpec ::= ModuleParKeyword IdentifierListOrAll
-# ExceptSignatureSpec ::= SignatureKeyword IdentifierListOrAll
-# ExceptFunctionSpec ::= FunctionKeyword IdentifierListOrAll
-# ExceptAltstepSpec ::= AltstepKeyword IdentifierListOrAll
-# ExceptTestcaseSpec ::= TestcaseKeyword IdentifierListOrAll
-# ExceptConstSpec ::= ConstKeyword IdentifierListOrAll
-# ExceptTemplateSpec ::= TemplateKeyword IdentifierListOrAll
-# ExceptTypeDefSpec ::= TypeDefKeyword IdentifierListOrAll
-# IdentifierListOrAll ::= IdentifierList | AllKeyword
-# ExceptGroupSpec ::= GroupKeyword ( QualifiedIdentifierList | AllKeyword )
-# ExceptElement ::= ExceptGroupSpec | ExceptTypeDefSpec | ExceptTemplateSpec | ExceptConstSpec | ExceptTestcaseSpec | ExceptAltstepSpec | ExceptFunctionSpec | ExceptSignatureSpec | ExceptModuleParSpec
-# ExceptSpec ::= { ExceptElement [ SemiColon ] }
-# ExceptKeyword ::= "except"
-# ExceptsDef ::= ExceptKeyword "{" ExceptSpec "}"
-# AllWithExcepts ::= AllKeyword [ ExceptsDef ]
-# ImportKeyword ::= "import"
-# ImportDef ::= ImportKeyword ImportFromSpec ( AllWithExcepts | ( "{" ImportSpec "}" ) )
-# AltstepInstance ::= ExtendedIdentifier "(" [ FunctionActualParList ] ")"
-# AltstepLocalDef ::= VarInstance | TimerInstance | ConstDef | TemplateDef
-# AltstepLocalDefList ::= { AltstepLocalDef [ WithStatement ] [ SemiColon ] }
-# AltstepKeyword ::= "altstep"
-# AltstepDef ::= AltstepKeyword Identifier "(" [ FunctionFormalParList ] ")" [ RunsOnSpec ] "{" AltstepLocalDefList AltGuardList "}"
-# TestcaseActualParList ::= ( TemplateInstanceActualPar { "," TemplateInstanceActualPar } ) | ( TemplateInstanceAssignment { "," TemplateInstanceAssignment } )
-# ExecuteKeyword ::= "execute"
-# TestcaseInstance ::= ExecuteKeyword "(" ExtendedIdentifier "(" [ TestcaseActualParList ] ")" [ "," ( Expression | Minus ) [ "," SingleExpression ] ] ")"
-# SystemKeyword ::= "system"
-# SystemSpec ::= SystemKeyword ComponentType
-# ConfigSpec ::= RunsOnSpec [ SystemSpec ]
-# TestcaseKeyword ::= "testcase"
-# TestcaseDef ::= TestcaseKeyword Identifier "(" [ TemplateOrValueFormalParList ] ")" ConfigSpec StatementBlock
-# NoBlockKeyword ::= "noblock"
-# Signature ::= ExtendedIdentifier
-# ExceptionKeyword ::= "exception"
-# ExceptionSpec ::= ExceptionKeyword "(" TypeList ")"
-# SignatureFormalParList ::= FormalValuePar { "," FormalValuePar }
-# SignatureKeyword ::= "signature"
-# SignatureDef ::= SignatureKeyword Identifier "(" [ SignatureFormalParList ] ")" [ ReturnType | NoBlockKeyword ] [ ExceptionSpec ]
-# ArrayIdentifierRefAssignment ::= Identifier ":=" ArrayIdentifierRef
-# FunctionActualParAssignment ::= TemplateInstanceAssignment | ComponentRefAssignment | ArrayIdentifierRefAssignment
-# FunctionActualPar ::= ArrayIdentifierRef | InLineTemplate | ComponentRef | Minus
-# FunctionActualParList ::= ( FunctionActualPar { "," FunctionActualPar } ) | ( FunctionActualParAssignment { "," FunctionActualParAssignment } )
-# PreDefFunctionIdentifier ::= Identifier
-# FunctionRef ::= [ Identifier Dot ] ( Identifier | PreDefFunctionIdentifier )
-# FunctionInstance ::= FunctionRef "(" [ FunctionActualParList ] ")"
-# FunctionStatement ::= ConfigurationStatements | TimerStatements | CommunicationStatements | BasicStatements | BehaviourStatements | SetLocalVerdict | SUTStatements | TestcaseOperation
-# FunctionLocalDef ::= ConstDef | TemplateDef
-# FunctionLocalInst ::= VarInstance | TimerInstance
-# FunctionStatementList ::= { FunctionStatement [ SemiColon ] }+
-# FunctionDefList ::= { ( FunctionLocalDef | FunctionLocalInst ) [ WithStatement ] [ SemiColon ] }+
-# StatementBlock ::= "{" [ FunctionDefList ] [ FunctionStatementList ] "}"
-# MTCKeyword ::= "mtc"
-# OnKeyword ::= "on"
-# RunsKeyword ::= "runs"
-# RunsOnSpec ::= RunsKeyword OnKeyword ComponentType
-# ReturnKeyword ::= "return"
-# ReturnType ::= ReturnKeyword [ TemplateKeyword | RestrictedTemplate ] Type
-# FunctionFormalPar ::= FormalValuePar | FormalTimerPar | FormalTemplatePar | FormalPortPar
-# FunctionFormalParList ::= FunctionFormalPar { "," FunctionFormalPar }
-# FunctionKeyword ::= "function"
-# FunctionDef ::= FunctionKeyword Identifier "(" [ FunctionFormalParList ] ")" [ RunsOnSpec ] [ ReturnType ] StatementBlock
-# ValueofKeyword ::= "valueof"
-# ValueofOp ::= ValueofKeyword "(" InLineTemplate ")"
-# MatchKeyword ::= "match"
-# MatchOp ::= MatchKeyword "(" Expression "," InLineTemplate ")"
-# TemplateOps ::= MatchOp | ValueofOp
-# TemplateInstanceActualPar ::= InLineTemplate | Minus
-# TemplateActualParList ::= "(" [ ( TemplateInstanceActualPar { "," TemplateInstanceActualPar } ) | ( TemplateInstanceAssignment { "," TemplateInstanceAssignment } ) ] ")"
-# DerivedRefWithParList ::= ModifiesKeyword TemplateRefWithParList
-# InLineTemplate ::= [ ( Type | Signature ) Colon ] [ DerivedRefWithParList AssignmentChar ] TemplateBody
-# TemplateRefWithParList ::= ExtendedIdentifier [ TemplateActualParList ]
-# TemplateInstanceAssignment ::= Identifier ":=" InLineTemplate
-# InfinityKeyword ::= "infinity"
-# Bound ::= ( [ "!" ] SingleExpression ) | ( [ Minus ] InfinityKeyword )
-# Range ::= "(" Bound ".." Bound ")"
-# PresentKeyword ::= "present"
-# IfPresentKeyword ::= "ifpresent"
-# WildcardLengthMatch ::= LengthKeyword "(" SingleExpression ")"
-# TemplateList ::= "(" TemplateBody { "," TemplateBody }+ ")"
-# AnyOrOmit ::= "*"
-# AnyValue ::= "?"
-# PermutationKeyword ::= "permutation"
-# PermutationMatch ::= PermutationKeyword ListOfTemplates
-# SupersetKeyword ::= "superset"
-# SupersetMatch ::= SupersetKeyword ListOfTemplates
-# SubsetKeyword ::= "subset"
-# SubsetMatch ::= SubsetKeyword ListOfTemplates
-# AllElementsFrom ::= AllKeyword FromKeyword TemplateBody
-# TemplateListItem ::= TemplateBody | AllElementsFrom
-# ListOfTemplates ::= "(" TemplateListItem { "," TemplateListItem } ")"
-# ComplementKeyword ::= "complement"
-# Complement ::= ComplementKeyword ListOfTemplates
-# PatternQuadruple ::= "\" "q" "(" Number "," Number "," Number "," Number ")"
-# EscapedPatternClassChar ::= "[" | "-" | "^" | "]"
-# NonSpecialPatternClassChar ::= Char
-# PatternClassChar ::= NonSpecialPatternClassChar | PatternQuadruple | "\" EscapedPatternClassChar
-# NonSpecialPatternChar ::= Char
-# PatternChar ::= NonSpecialPatternChar | PatternQuadruple
+## ShiftOp ::= "<<" | ">>" | "<@" | "@>"
+#ShiftOp = "<<" | ">>" | "<@" | "@>";
+#
+## StringOp ::= "&"
+#StringOp = "&";
+#
+## EqualOp ::= "==" | "!="
+#EqualOp = "==" | "!=";
+#
+## RelOp ::= "<" | ">" | ">=" | "<="
+#RelOp = "<" | ">" | ">=" | "<=";
+#
+## UnaryOp ::= "+" | "-"
+#UnaryOp = "+" | "-";
+#
+## MultiplyOp ::= "*" | "/" | "mod" | "rem"
+#MultiplyOp = "*" | "/" | Keyword("mod") | Keyword("rem");
+#
+## AddOp ::= "+" | "-" | StringOp
+#AddOp = "+" | "-" | StringOp;
+#
+## OpCall ::= ConfigurationOps | GetLocalVerdict | TimerOps | TestcaseInstance | ( FunctionInstance [ ExtendedFieldReference ] ) | ( TemplateOps [ ExtendedFieldReference ] ) | ActivateOp
+#OpCall = ConfigurationOps | GetLocalVerdict | TimerOps | TestcaseInstance | ( FunctionInstance + Optional( ExtendedFieldReference ) ) | ( TemplateOps + Optional( ExtendedFieldReference ) ) | ActivateOp;
+#
+## ExtendedFieldReference ::= { ( Dot ( Identifier | PredefinedType ) ) | ArrayOrBitRef | ( "[" Minus "]" ) }+
+#ExtendedFieldReference = OneOrMore( ( Dot + ( Identifier | PredefinedType ) ) | ArrayOrBitRef | ( "Optional(" + Minus + ")" ) );
+#
+## Primary ::= OpCall | Value | "(" SingleExpression ")"
+#Primary = OpCall | Value | "(" + SingleExpression + ")";
+#
+## UnaryExpression ::= [ UnaryOp ] Primary
+#UnaryExpression = Optional( UnaryOp ) + Primary;
+#
+## MulExpression ::= UnaryExpression { MultiplyOp UnaryExpression } | CompoundExpression
+#MulExpression = UnaryExpression + ZeroOrMore( MultiplyOp + UnaryExpression ) | CompoundExpression;
+#
+## AddExpression ::= MulExpression { AddOp MulExpression }
+#AddExpression = MulExpression + ZeroOrMore( AddOp + MulExpression );
+#
+## BitNotExpression ::= [ "not4b" ] AddExpression
+#BitNotExpression = Optional( Keyword("not4b") ) + AddExpression;
+#
+## BitAndExpression ::= BitNotExpression { "and4b" BitNotExpression }
+#BitAndExpression = BitNotExpression + ZeroOrMore( Keyword("and4b") + BitNotExpression );
+#
+## BitXorExpression ::= BitAndExpression { "xor4b" BitAndExpression }
+#BitXorExpression = BitAndExpression + ZeroOrMore( Keyword("xor4b") + BitAndExpression );
+#
+## BitOrExpression ::= BitXorExpression { "or4b" BitXorExpression }
+#BitOrExpression = BitXorExpression + ZeroOrMore( Keyword("or4b") + BitXorExpression );
+#
+## ShiftExpression ::= BitOrExpression { ShiftOp BitOrExpression }
+#ShiftExpression = BitOrExpression + ZeroOrMore( ShiftOp + BitOrExpression );
+#
+## RelExpression ::= ShiftExpression [ RelOp ShiftExpression ] | CompoundExpression
+#RelExpression = ShiftExpression + Optional( RelOp + ShiftExpression ) | CompoundExpression;
+#
+## EqualExpression ::= RelExpression { EqualOp RelExpression }
+#EqualExpression = RelExpression + ZeroOrMore( EqualOp + RelExpression );
+#
+## NotExpression ::= [ "not" ] EqualExpression
+#NotExpression = Optional( Keyword("not") ) + EqualExpression;
+#
+## AndExpression ::= NotExpression { "and" NotExpression }
+#AndExpression = NotExpression + ZeroOrMore( Keyword("and") + NotExpression );
+#
+## XorExpression ::= AndExpression { "xor" AndExpression }
+#XorExpression = AndExpression + ZeroOrMore( Keyword("xor") + AndExpression );
+#
+## SingleExpression ::= XorExpression { "or" XorExpression }
+#SingleExpression = XorExpression + ZeroOrMore( Keyword("or") + XorExpression );
+#
+## Assignment ::= VariableRef AssignmentChar ( Expression | TemplateBody )
+#Assignment = VariableRef + AssignmentChar + ( Expression | TemplateBody );
+#
+## ArrayElementConstExpressionList ::= ConstantExpression { "," ConstantExpression }
+#ArrayElementConstExpressionList = ConstantExpression + ZeroOrMore( "," + ConstantExpression );
+#
+## ArrayConstExpression ::= "{" [ ArrayElementConstExpressionList ] "}"
+#ArrayConstExpression = "ZeroOrMore(" + Optional( ArrayElementConstExpressionList ) + ")";
+#
+## FieldConstExpressionSpec ::= FieldReference AssignmentChar ConstantExpression
+#FieldConstExpressionSpec = FieldReference + AssignmentChar + ConstantExpression;
+#
+## FieldConstExpressionList ::= "{" FieldConstExpressionSpec { "," FieldConstExpressionSpec } "}"
+#FieldConstExpressionList = "ZeroOrMore(" + FieldConstExpressionSpec + { + "," + FieldConstExpressionSpec ) + "}";
+#
+## CompoundConstExpression ::= FieldConstExpressionList | ArrayConstExpression
+#CompoundConstExpression = FieldConstExpressionList | ArrayConstExpression;
+#
+## BooleanExpression ::= SingleExpression
+#BooleanExpression = SingleExpression;
+#
+## ConstantExpression ::= SingleExpression | CompoundConstExpression
+#ConstantExpression = SingleExpression | CompoundConstExpression;
+#
+## NotUsedOrExpression ::= Expression | Minus
+#NotUsedOrExpression = Expression | Minus;
+#
+## ArrayElementExpressionList ::= NotUsedOrExpression { "," NotUsedOrExpression }
+#ArrayElementExpressionList = NotUsedOrExpression + ZeroOrMore( "," + NotUsedOrExpression );
+#
+## ArrayExpression ::= "{" [ ArrayElementExpressionList ] "}"
+#ArrayExpression = "ZeroOrMore(" + Optional( ArrayElementExpressionList ) + ")";
+#
+## FieldExpressionSpec ::= FieldReference AssignmentChar NotUsedOrExpression
+#FieldExpressionSpec = FieldReference + AssignmentChar + NotUsedOrExpression;
+#
+## FieldExpressionList ::= "{" FieldExpressionSpec { "," FieldExpressionSpec } "}"
+#FieldExpressionList = "ZeroOrMore(" + FieldExpressionSpec + { + "," + FieldExpressionSpec ) + "}";
+#
+## CompoundExpression ::= FieldExpressionList | ArrayExpression
+#CompoundExpression = FieldExpressionList | ArrayExpression;
+#
+## Expression ::= SingleExpression | CompoundExpression
+#Expression = SingleExpression | CompoundExpression;
+#
+## BasicStatements ::= Assignment | LogStatement | LoopConstruct | ConditionalConstruct | SelectCaseConstruct | StatementBlock
+#BasicStatements = Assignment | LogStatement | LoopConstruct | ConditionalConstruct | SelectCaseConstruct | StatementBlock;
+#
+## ContinueStatement ::= "continue"
+#ContinueStatement = Keyword("continue");
+#
+## BreakStatement ::= "break"
+#BreakStatement = Keyword("break");
+#
+## DeactivateKeyword ::= "deactivate"
+#DeactivateKeyword = Keyword("deactivate");
+#
+## DeactivateStatement ::= DeactivateKeyword [ "(" ComponentOrDefaultReference ")" ]
+#DeactivateStatement = DeactivateKeyword + Optional( "(" + ComponentOrDefaultReference + ")" );
+#
+## ActivateKeyword ::= "activate"
+#ActivateKeyword = Keyword("activate");
+#
+## ActivateOp ::= ActivateKeyword "(" AltstepInstance ")"
+#ActivateOp = ActivateKeyword + "(" + AltstepInstance + ")";
+#
+## RepeatStatement ::= "repeat"
+#RepeatStatement = Keyword("repeat");
+#
+## GotoKeyword ::= "goto"
+#GotoKeyword = Keyword("goto");
+#
+## GotoStatement ::= GotoKeyword Identifier
+#GotoStatement = GotoKeyword + Identifier;
+#
+## LabelKeyword ::= "label"
+#LabelKeyword = Keyword("label");
+#
+## LabelStatement ::= LabelKeyword Identifier
+#LabelStatement = LabelKeyword + Identifier;
+#
+## InterleavedGuard ::= "[" "]" GuardOp
+#InterleavedGuard = "[" + "]" + GuardOp
+#
+## InterleavedGuardElement ::= InterleavedGuard StatementBlock
+#InterleavedGuardElement = InterleavedGuard + StatementBlock;
+#
+## InterleavedGuardList ::= { InterleavedGuardElement [ SemiColon ] }+
+#InterleavedGuardList = OneOrMore( InterleavedGuardElement + Optional( SemiColon ) );
+#
+## InterleavedKeyword ::= "interleave"
+#InterleavedKeyword = Keyword("interleave");
+#
+## InterleavedConstruct ::= InterleavedKeyword "{" InterleavedGuardList "}"
+#InterleavedConstruct = InterleavedKeyword + "{" + InterleavedGuardList + "}"
+#
+## GuardOp ::= TimeoutStatement | ReceiveStatement | TriggerStatement | GetCallStatement | CatchStatement | CheckStatement | GetReplyStatement | DoneStatement | KilledStatement
+#GuardOp = TimeoutStatement | ReceiveStatement | TriggerStatement | GetCallStatement | CatchStatement | CheckStatement | GetReplyStatement | DoneStatement | KilledStatement;
+#
+## AltGuardChar ::= "[" [ BooleanExpression ] "]"
+#AltGuardChar = "[" + Optional( BooleanExpression ) + "]";
+#
+## ElseStatement ::= "[" ElseKeyword "]" StatementBlock
+#ElseStatement = "[" + ElseKeyword + "]" + StatementBlock;
+#
+## GuardStatement ::= AltGuardChar ( AltstepInstance [ StatementBlock ] | GuardOp StatementBlock )
+#GuardStatement = AltGuardChar + ( AltstepInstance + Optional( StatementBlock ) | GuardOp + StatementBlock );
+#
+## AltGuardList ::= { GuardStatement | ElseStatement [ SemiColon ] }
+#AltGuardList = ZeroOrMore( GuardStatement | ElseStatement + Optional( SemiColon ) );
+#
+## AltKeyword ::= "alt"
+#AltKeyword = Keyword("alt");
+#
+## AltConstruct ::= AltKeyword "{" AltGuardList "}"
+#AltConstruct = AltKeyword + "{" + AltGuardList + "}";
+#
+## ReturnStatement ::= ReturnKeyword [ Expression | InLineTemplate ]
+#ReturnStatement = ReturnKeyword + Optional( Expression | InLineTemplate );
+#
+## ActionText ::= FreeText | Expression
+#ActionText = FreeText | Expression;
+#
+## ActionKeyword ::= "action"
+#ActionKeyword = Keyword("action");
+#
+## SUTStatements ::= ActionKeyword "(" ActionText { StringOp ActionText } ")"
+#SUTStatements = ActionKeyword + "(" + ActionText + ZeroOrMore( StringOp + ActionText ) + ")";
+#
+## GetLocalVerdict ::= "getverdict"
+#GetLocalVerdict = Keyword("getverdict");
+#
+## SetVerdictKeyword ::= "setverdict"
+#SetVerdictKeyword = Keyword("setverdict");
+#
+## SetLocalVerdict ::= SetVerdictKeyword "(" SingleExpression { "," LogItem } ")"
+#SetLocalVerdict = SetVerdictKeyword + "(" + SingleExpression + ZeroOrMore( "," + LogItem ) + ")";
+#
+## BehaviourStatements ::= TestcaseInstance | FunctionInstance | ReturnStatement | AltConstruct | InterleavedConstruct | LabelStatement | GotoStatement | RepeatStatement | DeactivateStatement | AltstepInstance | ActivateOp | BreakStatement | ContinueStatement
+#BehaviourStatements = TestcaseInstance | FunctionInstance | ReturnStatement | AltConstruct | InterleavedConstruct | LabelStatement | GotoStatement | RepeatStatement | DeactivateStatement | AltstepInstance | ActivateOp | BreakStatement | ContinueStatement;
+#
+## AllRef ::= ( GroupKeyword AllKeyword [ ExceptKeyword "{" QualifiedIdentifierList "}" ] ) | ( ( TypeDefKeyword | TemplateKeyword | ConstKeyword | AltstepKeyword | TestcaseKeyword | FunctionKeyword | SignatureKeyword | ModuleParKeyword ) AllKeyword [ ExceptKeyword "{" IdentifierList "}" ] )
+#AllRef = ( GroupKeyword + AllKeyword + Optional( ExceptKeyword + "{" + QualifiedIdentifierList + "}" ) ) | ( ( TypeDefKeyword | TemplateKeyword | ConstKeyword | AltstepKeyword | TestcaseKeyword | FunctionKeyword | SignatureKeyword | ModuleParKeyword ) + AllKeyword + Optional( ExceptKeyword + "{" + IdentifierList + "}" ) );
+#
+## DefOrFieldRef ::= QualifiedIdentifier | ( ( FieldReference | "[" Minus "]" ) [ ExtendedFieldReference ] ) | AllRef
+#DefOrFieldRef = QualifiedIdentifier | ( ( FieldReference | "[" + Minus + "]" ) + Optional( ExtendedFieldReference ) ) | AllRef;
+#
+## DefOrFieldRefList ::= DefOrFieldRef { "," DefOrFieldRef }
+#DefOrFieldRefList = DefOrFieldRef + ZeroOrMore( "," + DefOrFieldRef );
+#
+## AttribQualifier ::= "(" DefOrFieldRefList ")"
+#AttribQualifier = "(" + DefOrFieldRefList + ")";
+#
+## OverrideKeyword ::= "override"
+#OverrideKeyword = Keyword("override");
+#
+## ExtensionKeyword ::= "extension"
+#ExtensionKeyword = Keyword("extension");
+#
+## DisplayKeyword ::= "display"
+#DisplayKeyword = Keyword("display");
+#
+## VariantKeyword ::= "variant"
+#VariantKeyword = Keyword("variant");
+#
+## EncodeKeyword ::= "encode"
+#EncodeKeyword = Keyword("encode");
+#
+## AttribKeyword ::= EncodeKeyword | VariantKeyword | DisplayKeyword | ExtensionKeyword | OptionalKeyword
+#AttribKeyword = EncodeKeyword | VariantKeyword | DisplayKeyword | ExtensionKeyword | OptionalKeyword;
+#
+## SingleWithAttrib ::= AttribKeyword [ OverrideKeyword ] [ AttribQualifier ] FreeText
+#SingleWithAttrib = AttribKeyword + Optional( OverrideKeyword ) + Optional( AttribQualifier ) + FreeText;
+#
+## MultiWithAttrib ::= { SingleWithAttrib [ SemiColon ] }
+#MultiWithAttrib = ZeroOrMore( SingleWithAttrib + Optional( SemiColon ) );
+#
+## WithAttribList ::= "{" MultiWithAttrib "}"
+#WithAttribList = "{" + MultiWithAttrib + "}"
+#
+## WithKeyword ::= "with"
+#WithKeyword = Keyword("with");
+#
+## WithStatement ::= WithKeyword WithAttribList
+#WithStatement = WithKeyword + WithAttribList;
+#
+## TemplateRestriction ::= "(" ( OmitKeyword | ValueKeyword | PresentKeyword ) ")"
+#TemplateRestriction = "(" + ( OmitKeyword | ValueKeyword | PresentKeyword ) + ")";
+#
+## RestrictedTemplate ::= OmitKeyword | ( TemplateKeyword TemplateRestriction )
+#RestrictedTemplate = OmitKeyword | ( TemplateKeyword + TemplateRestriction );
+#
+## FormalTemplatePar ::= [ ( InParKeyword | OutParKeyword | InOutParKeyword ) ] ( TemplateKeyword | RestrictedTemplate ) Type Identifier [ ":=" ( InLineTemplate | Minus ) ]
+#FormalTemplatePar = Optional( ( InParKeyword | OutParKeyword | InOutParKeyword ) ) + ( TemplateKeyword | RestrictedTemplate ) + Type + Identifier + Optional( ":=" + ( InLineTemplate | Minus ) );
+#
+## FormalTimerPar ::= [ InOutParKeyword ] TimerKeyword Identifier
+#FormalTimerPar = Optional( InOutParKeyword ) + TimerKeyword + Identifier;
+#
+## FormalPortPar ::= [ InOutParKeyword ] Identifier Identifier
+#FormalPortPar = Optional( InOutParKeyword ) + Identifier + Identifier;
+#
+## FormalValuePar ::= [ ( InParKeyword | InOutParKeyword | OutParKeyword ) ] Type Identifier [ ":=" ( Expression | Minus ) ]
+#FormalValuePar = Optional( ( InParKeyword | InOutParKeyword | OutParKeyword ) ) + Type + Identifier + Optional( ":=" + ( Expression | Minus ) );
+#
+## InOutParKeyword ::= "inout"
+#InOutParKeyword = Keyword("inout");
+#
+## OutParKeyword ::= "out"
+#OutParKeyword = Keyword("out");
+#
+## InParKeyword ::= "in"
+#InParKeyword = Keyword("in");
+#
+## OmitKeyword ::= "omit"
+#OmitKeyword = Keyword("omit");
+#
+## AddressValue ::= "null"
+#AddressValue = Keyword("null");
+#
+## FreeText ::= """ { ExtendedAlphaNum } """
+#FreeText = """ + ZeroOrMore( ExtendedAlphaNum ) + """;
+#
+## ExtendedAlphaNum ::= 
+## NOTE: A graphical character from the BASIC LATIN or from the LATIN-1
+## SUPPLEMENT character sets defined in ISO/IEC 10646 (characters from char
+## (0,0,0,33) to char (0,0,0,126), from char (0,0,0,161) to char (0,0,0,172) and
+## from char (0,0,0,174) to char (0,0,0,255)
+#ExtendedAlphaNum = Word(printables, max=1);
+#
+## Char ::= 
+## NOTE: A character defined by the relevant CharacterString type. For
+## charstring a character from the character set defined in ISO/IEC 646. For
+## universal charstring a character from any character set defined in ISO/IEC 10646
+#Char = Word(srange(r"[\0x00-\0x7F]", max=1) | Word(unicodeString, max=1) 
+#
+## Cstring ::= """ { Char } """
+#Cstring = """ + ZeroOrMore( Char ) + """;
+#
+## ReferencedValue ::= ExtendedIdentifier [ ExtendedFieldReference ]
+#ReferencedValue = ExtendedIdentifier + Optional( ExtendedFieldReference );
+#
+## Exponential ::= "E"
+#Exponential = "E";
+#
+## FloatENotation ::= Number [ Dot DecimalNumber ] Exponential [ Minus ] Number
+#FloatENotation = Number + Optional( Dot + DecimalNumber ) + Exponential + Optional( Minus ) + Number;
+#
+## FloatDotNotation ::= Number Dot DecimalNumber
+#FloatDotNotation = Number + Dot + DecimalNumber;
+#
+## NaNKeyword ::= "not_a_number"
+#NaNKeyword = Keyword("not_a_number");
+#
+## FloatValue ::= FloatDotNotation | FloatENotation | NaNKeyword
+#FloatValue = FloatDotNotation | FloatENotation | NaNKeyword;
+#
+## CharKeyword ::= "char"
+#CharKeyword = Keyword("char");
+#
+## Quadruple ::= CharKeyword "(" Number "," Number "," Number "," Number ")"
+#Quadruple = CharKeyword + "(" + Number + "," + Number + "," + Number + "," + Number + ")";
+#
+## CharStringValue ::= Cstring | Quadruple
+#CharStringValue = Cstring | Quadruple;
+#
+## VerdictTypeValue ::= "pass" | "fail" | "inconc" | "none" | "error"
+#VerdictTypeValue = Keyword("pass") | Keyword("fail") | Keyword("inconc") | Keyword("none") | Keyword("error");
+#
+## BooleanValue ::= "true" | "false"
+#BooleanValue = Keyword("true") | Keyword("false");
+#
+## PredefinedValue ::= Bstring | BooleanValue | CharStringValue | Number | Ostring | Hstring | VerdictTypeValue | Identifier | FloatValue | AddressValue | OmitKeyword
+#PredefinedValue = Bstring | BooleanValue | CharStringValue | Number | Ostring | Hstring | VerdictTypeValue | Identifier | FloatValue | AddressValue | OmitKeyword;
+#
+## Value ::= PredefinedValue | ReferencedValue
+#Value = PredefinedValue | ReferencedValue;
+#
+## ArrayDef ::= { "[" SingleExpression [ ".." SingleExpression ] "]" }+
+#ArrayDef = OneOrMore( "[" + SingleExpression + Optional( ".." + SingleExpression ) + "]" );
+#
+## TypeReference ::= Identifier
+#TypeReference = Identifier;
+#
+## ReferencedType ::= ExtendedIdentifier [ ExtendedFieldReference ]
+#ReferencedType = ExtendedIdentifier + Optional( ExtendedFieldReference );
+#
+## UniversalKeyword ::= "universal"
+#UniversalKeyword = Keyword("universal");
+#
+## UniversalCharString ::= UniversalKeyword CharStringKeyword
+#UniversalCharString = UniversalKeyword + CharStringKeyword;
+#
+## CharStringKeyword ::= "charstring"
+#CharStringKeyword = Keyword("charstring");
+#
+## AnyTypeKeyword ::= "anytype"
+#AnyTypeKeyword = Keyword("anytype");
+#
+## DefaultKeyword ::= "default"
+#DefaultKeyword = Keyword("default");
+#
+## AddressKeyword ::= "address"
+#AddressKeyword = Keyword("address");
+#
+## FloatKeyword ::= "float"
+#FloatKeyword = Keyword("float");
+#
+## VerdictTypeKeyword ::= "verdicttype"
+#VerdictTypeKeyword = Keyword("verdicttype");
+#
+## HexStringKeyword ::= "hexstring"
+#HexStringKeyword = Keyword("hexstring");
+#
+## OctetStringKeyword ::= "octetstring"
+#OctetStringKeyword = Keyword("octetstring");
+#
+## IntegerKeyword ::= "integer"
+#IntegerKeyword = Keyword("integer");
+#
+## BooleanKeyword ::= "boolean"
+#BooleanKeyword = Keyword("boolean");
+#
+## BitStringKeyword ::= "bitstring"
+#BitStringKeyword = Keyword("bitstring");
+#
+## PredefinedType ::= BitStringKeyword | BooleanKeyword | CharStringKeyword | UniversalCharString | IntegerKeyword | OctetStringKeyword | HexStringKeyword | VerdictTypeKeyword | FloatKeyword | AddressKeyword | DefaultKeyword | AnyTypeKeyword
+#PredefinedType = BitStringKeyword | BooleanKeyword | CharStringKeyword | UniversalCharString | IntegerKeyword | OctetStringKeyword | HexStringKeyword | VerdictTypeKeyword | FloatKeyword | AddressKeyword | DefaultKeyword | AnyTypeKeyword;
+#
+## Type ::= PredefinedType | ReferencedType
+#Type = PredefinedType | ReferencedType;
+#
+## TestcaseOperation ::= TestcaseKeyword "." StopKeyword [ "(" { ( FreeText | InLineTemplate ) [ "," ] } ")" ]
+#TestcaseOperation = TestcaseKeyword + "." + StopKeyword + Optional( "(" + ZeroOrMore( ( FreeText | InLineTemplate ) + [ + "," ) ) + ")" + ];
+#
+## TimeoutKeyword ::= "timeout"
+#TimeoutKeyword = Keyword("timeout");
+#
+## TimerRefOrAny ::= ArrayIdentifierRef | ( AnyKeyword TimerKeyword )
+#TimerRefOrAny = ArrayIdentifierRef | ( AnyKeyword + TimerKeyword );
+#
+## TimeoutStatement ::= TimerRefOrAny Dot TimeoutKeyword
+#TimeoutStatement = TimerRefOrAny + Dot + TimeoutKeyword;
+#
+## RunningTimerOp ::= TimerRefOrAny Dot RunningKeyword
+#RunningTimerOp = TimerRefOrAny + Dot + RunningKeyword;
+#
+## ReadKeyword ::= "read"
+#ReadKeyword = Keyword("read");
+#
+## ReadTimerOp ::= ArrayIdentifierRef Dot ReadKeyword
+#ReadTimerOp = ArrayIdentifierRef + Dot + ReadKeyword;
+#
+## TimerRefOrAll ::= ArrayIdentifierRef | AllKeyword TimerKeyword
+#TimerRefOrAll = ArrayIdentifierRef | AllKeyword + TimerKeyword;
+#
+## StopTimerStatement ::= TimerRefOrAll Dot StopKeyword
+#StopTimerStatement = TimerRefOrAll + Dot + StopKeyword;
+#
+## StartTimerStatement ::= ArrayIdentifierRef Dot StartKeyword [ "(" Expression ")" ]
+#StartTimerStatement = ArrayIdentifierRef + Dot + StartKeyword + Optional( "(" + Expression + ")" );
+#
+## TimerOps ::= ReadTimerOp | RunningTimerOp
+#TimerOps = ReadTimerOp | RunningTimerOp;
+#
+## TimerStatements ::= StartTimerStatement | StopTimerStatement | TimeoutStatement
+#TimerStatements = StartTimerStatement | StopTimerStatement | TimeoutStatement;
+#
+## CheckStateKeyword ::= "checkstate"
+#CheckStateKeyword = Keyword("checkstate");
+#
+## PortOrAllAny ::= PortOrAll | AnyKeyword PortKeyword
+#PortOrAllAny = PortOrAll | AnyKeyword + PortKeyword;
+#
+## CheckStateStatement ::= PortOrAllAny Dot CheckStateKeyword "(" SingleExpression ")"
+#CheckStateStatement = PortOrAllAny + Dot + CheckStateKeyword + "(" + SingleExpression + ")";
+#
+## AnyKeyword ::= "any"
+#AnyKeyword = Keyword("any");
+#
+## HaltKeyword ::= "halt"
+#HaltKeyword = Keyword("halt");
+#
+## HaltStatement ::= PortOrAll Dot HaltKeyword
+#HaltStatement = PortOrAll + Dot + HaltKeyword;
+#
+## StopKeyword ::= "stop"
+#StopKeyword = Keyword("stop");
+#
+## StopStatement ::= PortOrAll Dot StopKeyword
+#StopStatement = PortOrAll + Dot + StopKeyword;
+#
+## StartStatement ::= PortOrAll Dot StartKeyword
+#StartStatement = PortOrAll + Dot + StartKeyword;
+#
+## ClearOpKeyword ::= "clear"
+#ClearOpKeyword = Keyword("clear");
+#
+## PortOrAll ::= ArrayIdentifierRef | AllKeyword PortKeyword
+#PortOrAll = ArrayIdentifierRef | AllKeyword + PortKeyword;
+#
+## ClearStatement ::= PortOrAll Dot ClearOpKeyword
+#ClearStatement = PortOrAll + Dot + ClearOpKeyword;
+#
+## CatchOpParameter ::= Signature "," InLineTemplate | TimeoutKeyword
+#CatchOpParameter = Signature + "," + InLineTemplate | TimeoutKeyword;
+#
+## CatchOpKeyword ::= "catch"
+#CatchOpKeyword = Keyword("catch");
+#
+## PortCatchOp ::= CatchOpKeyword [ "(" CatchOpParameter ")" ] [ FromClause ] [ PortRedirect ]
+#PortCatchOp = CatchOpKeyword + Optional( "(" + CatchOpParameter + ")" ) + Optional( FromClause ) + Optional( PortRedirect );
+#
+## CatchStatement ::= PortOrAny Dot PortCatchOp
+#CatchStatement = PortOrAny + Dot + PortCatchOp;
+#
+## CheckPortOpsPresent ::= PortReceiveOp | PortGetCallOp | PortGetReplyOp | PortCatchOp
+#CheckPortOpsPresent = PortReceiveOp | PortGetCallOp | PortGetReplyOp | PortCatchOp;
+#
+## RedirectPresent ::= PortRedirectSymbol SenderSpec
+#RedirectPresent = PortRedirectSymbol + SenderSpec;
+#
+## FromClausePresent ::= FromClause [ PortRedirectSymbol SenderSpec ]
+#FromClausePresent = FromClause + Optional( PortRedirectSymbol + SenderSpec );
+#
+## CheckParameter ::= CheckPortOpsPresent | FromClausePresent | RedirectPresent
+#CheckParameter = CheckPortOpsPresent | FromClausePresent | RedirectPresent;
+#
+## CheckOpKeyword ::= "check"
+#CheckOpKeyword = Keyword("check");
+#
+## PortCheckOp ::= CheckOpKeyword [ "(" CheckParameter ")" ]
+#PortCheckOp = CheckOpKeyword + Optional( "(" + CheckParameter + ")" );
+#
+## CheckStatement ::= PortOrAny Dot PortCheckOp
+#CheckStatement = PortOrAny + Dot + PortCheckOp;
+#
+## ValueMatchSpec ::= ValueKeyword InLineTemplate
+#ValueMatchSpec = ValueKeyword + InLineTemplate;
+#
+## GetReplyOpKeyword ::= "getreply"
+#GetReplyOpKeyword = Keyword("getreply");
+#
+## RedirectWithValueAndParamSpec ::= ValueSpec [ ParamSpec ] [ SenderSpec ] | RedirectWithParamSpec
+#RedirectWithValueAndParamSpec = ValueSpec + Optional( ParamSpec ) + Optional( SenderSpec ) | RedirectWithParamSpec;
+#
+## PortRedirectWithValueAndParam ::= PortRedirectSymbol RedirectWithValueAndParamSpec
+#PortRedirectWithValueAndParam = PortRedirectSymbol + RedirectWithValueAndParamSpec;
+#
+## PortGetReplyOp ::= GetReplyOpKeyword [ "(" InLineTemplate [ ValueMatchSpec ] ")" ] [ FromClause ] [ PortRedirectWithValueAndParam ]
+#PortGetReplyOp = GetReplyOpKeyword + Optional( "(" + InLineTemplate + [ + ValueMatchSpec ) + ")" + ] + Optional( FromClause ) + Optional( PortRedirectWithValueAndParam );
+#
+## GetReplyStatement ::= PortOrAny Dot PortGetReplyOp
+#GetReplyStatement = PortOrAny + Dot + PortGetReplyOp;
+#
+## VariableEntry ::= VariableRef | Minus
+#VariableEntry = VariableRef | Minus;
+#
+## VariableList ::= VariableEntry { "," VariableEntry }
+#VariableList = VariableEntry + ZeroOrMore( "," + VariableEntry );
+#
+## VariableAssignment ::= VariableRef AssignmentChar Identifier
+#VariableAssignment = VariableRef + AssignmentChar + Identifier;
+#
+## AssignmentList ::= VariableAssignment { "," VariableAssignment }
+#AssignmentList = VariableAssignment + ZeroOrMore( "," + VariableAssignment );
+#
+## ParamAssignmentList ::= "(" ( AssignmentList | VariableList ) ")"
+#ParamAssignmentList = "(" + ( AssignmentList | VariableList ) + ")";
+#
+## ParamKeyword ::= "param"
+#ParamKeyword = Keyword("param");
+#
+## ParamSpec ::= ParamKeyword ParamAssignmentList
+#ParamSpec = ParamKeyword + ParamAssignmentList;
+#
+## RedirectWithParamSpec ::= ParamSpec [ SenderSpec ] | SenderSpec
+#RedirectWithParamSpec = ParamSpec + Optional( SenderSpec ) | SenderSpec;
+#
+## PortRedirectWithParam ::= PortRedirectSymbol RedirectWithParamSpec
+#PortRedirectWithParam = PortRedirectSymbol + RedirectWithParamSpec;
+#
+## GetCallOpKeyword ::= "getcall"
+#GetCallOpKeyword = Keyword("getcall");
+#
+## PortGetCallOp ::= GetCallOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirectWithParam ]
+#PortGetCallOp = GetCallOpKeyword + Optional( "(" + InLineTemplate + ")" ) + Optional( FromClause ) + Optional( PortRedirectWithParam );
+#
+## GetCallStatement ::= PortOrAny Dot PortGetCallOp
+#GetCallStatement = PortOrAny + Dot + PortGetCallOp;
+#
+## TriggerOpKeyword ::= "trigger"
+#TriggerOpKeyword = Keyword("trigger");
+#
+## PortTriggerOp ::= TriggerOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirect ]
+#PortTriggerOp = TriggerOpKeyword + Optional( "(" + InLineTemplate + ")" ) + Optional( FromClause ) + Optional( PortRedirect );
+#
+## TriggerStatement ::= PortOrAny Dot PortTriggerOp
+#TriggerStatement = PortOrAny + Dot + PortTriggerOp;
+#
+## SenderKeyword ::= "sender"
+#SenderKeyword = Keyword("sender");
+#
+## SenderSpec ::= SenderKeyword VariableRef
+#SenderSpec = SenderKeyword + VariableRef;
+#
+## ValueKeyword ::= "value"
+#ValueKeyword = Keyword("value");
+#
+## SingleValueSpec ::= VariableRef [ AssignmentChar FieldReference ExtendedFieldReference ]
+#SingleValueSpec = VariableRef + Optional( AssignmentChar + FieldReference + ExtendedFieldReference );
+#
+## ValueSpec ::= ValueKeyword ( VariableRef | ( "(" SingleValueSpec { "," SingleValueSpec } ")" ) )
+#ValueSpec = ValueKeyword + ( VariableRef | ( "(" + SingleValueSpec + ZeroOrMore( "," + SingleValueSpec ) + ")" ) );
+#
+## PortRedirectSymbol ::= "->"
+#PortRedirectSymbol = "->";
+#
+## PortRedirect ::= PortRedirectSymbol ( ValueSpec [ SenderSpec ] | SenderSpec )
+#PortRedirect = PortRedirectSymbol + ( ValueSpec + Optional( SenderSpec ) | SenderSpec );
+#
+## FromKeyword ::= "from"
+#FromKeyword = Keyword("from");
+#
+## FromClause ::= FromKeyword ( InLineTemplate | AddressRefList | AnyKeyword ComponentKeyword )
+#FromClause = FromKeyword + ( InLineTemplate | AddressRefList | AnyKeyword + ComponentKeyword );
+#
+## ReceiveOpKeyword ::= "receive"
+#ReceiveOpKeyword = Keyword("receive");
+#
+## PortReceiveOp ::= ReceiveOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirect ]
+#PortReceiveOp = ReceiveOpKeyword + Optional( "(" + InLineTemplate + ")" ) + Optional( FromClause ) + Optional( PortRedirect );
+#
+## PortOrAny ::= ArrayIdentifierRef | AnyKeyword PortKeyword
+#PortOrAny = ArrayIdentifierRef | AnyKeyword + PortKeyword;
+#
+## ReceiveStatement ::= PortOrAny Dot PortReceiveOp
+#ReceiveStatement = PortOrAny + Dot + PortReceiveOp;
+#
+## RaiseKeyword ::= "raise"
+#RaiseKeyword = Keyword("raise");
+#
+## PortRaiseOp ::= RaiseKeyword "(" Signature "," InLineTemplate ")" [ ToClause ]
+#PortRaiseOp = RaiseKeyword + "(" + Signature + "," + InLineTemplate + ")" + Optional( ToClause );
+#
+## RaiseStatement ::= ArrayIdentifierRef Dot PortRaiseOp
+#RaiseStatement = ArrayIdentifierRef + Dot + PortRaiseOp;
+#
+## ReplyValue ::= ValueKeyword Expression
+#ReplyValue = ValueKeyword + Expression;
+#
+## ReplyKeyword ::= "reply"
+#ReplyKeyword = Keyword("reply");
+#
+## PortReplyOp ::= ReplyKeyword "(" InLineTemplate [ ReplyValue ] ")" [ ToClause ]
+#PortReplyOp = ReplyKeyword + "(" + InLineTemplate + Optional( ReplyValue ) + ")" + Optional( ToClause );
+#
+## ReplyStatement ::= ArrayIdentifierRef Dot PortReplyOp
+#ReplyStatement = ArrayIdentifierRef + Dot + PortReplyOp;
+#
+## CallBodyOps ::= GetReplyStatement | CatchStatement
+#CallBodyOps = GetReplyStatement | CatchStatement;
+#
+## CallBodyGuard ::= AltGuardChar CallBodyOps
+#CallBodyGuard = AltGuardChar + CallBodyOps;
+#
+## CallBodyStatement ::= CallBodyGuard StatementBlock
+#CallBodyStatement = CallBodyGuard + StatementBlock;
+#
+## CallBodyStatementList ::= { CallBodyStatement [ SemiColon ] }+
+#CallBodyStatementList = OneOrMore( CallBodyStatement + Optional( SemiColon ) );
+#
+## PortCallBody ::= "{" CallBodyStatementList "}"
+#PortCallBody = "{" + CallBodyStatementList + "}";
+#
+## NowaitKeyword ::= "nowait"
+#NowaitKeyword = Keyword("nowait");
+#
+## CallTimerValue ::= Expression | NowaitKeyword
+#CallTimerValue = Expression | NowaitKeyword;
+#
+## CallParameters ::= InLineTemplate [ "," CallTimerValue ]
+#CallParameters = InLineTemplate + Optional( "," + CallTimerValue );
+#
+## CallOpKeyword ::= "call"
+#CallOpKeyword = Keyword("call");
+#
+## PortCallOp ::= CallOpKeyword "(" CallParameters ")" [ ToClause ]
+#PortCallOp = CallOpKeyword + "(" + CallParameters + ")" + Optional( ToClause );
+#
+## CallStatement ::= ArrayIdentifierRef Dot PortCallOp [ PortCallBody ]
+#CallStatement = ArrayIdentifierRef + Dot + PortCallOp + Optional( PortCallBody );
+#
+## ToKeyword ::= "to"
+#ToKeyword = Keyword("to");
+#
+## AddressRefList ::= "(" InLineTemplate { "," InLineTemplate } ")"
+#AddressRefList = "(" + InLineTemplate + ZeroOrMore( "," + InLineTemplate ) + ")";
+#
+## ToClause ::= ToKeyword ( InLineTemplate | AddressRefList | AllKeyword ComponentKeyword )
+#ToClause = ToKeyword + ( InLineTemplate | AddressRefList | AllKeyword + ComponentKeyword );
+#
+## SendOpKeyword ::= "send"
+#SendOpKeyword = Keyword("send");
+#
+## PortSendOp ::= SendOpKeyword "(" InLineTemplate ")" [ ToClause ]
+#PortSendOp = SendOpKeyword + "(" + InLineTemplate + ")" + Optional( ToClause );
+#
+## SendStatement ::= ArrayIdentifierRef Dot PortSendOp
+#SendStatement = ArrayIdentifierRef + Dot + PortSendOp;
+#
+## CommunicationStatements ::= SendStatement | CallStatement | ReplyStatement | RaiseStatement | ReceiveStatement | TriggerStatement | GetCallStatement | GetReplyStatement | CatchStatement | CheckStatement | ClearStatement | StartStatement | StopStatement | HaltStatement | CheckStateStatement
+#CommunicationStatements = SendStatement | CallStatement | ReplyStatement | RaiseStatement | ReceiveStatement | TriggerStatement | GetCallStatement | GetReplyStatement | CatchStatement | CheckStatement | ClearStatement | StartStatement | StopStatement | HaltStatement | CheckStateStatement;
+#
+## KillKeyword ::= "kill"
+#KillKeyword = Keyword("kill");
+#
+## ComponentOrDefaultReference ::= VariableRef | FunctionInstance
+#ComponentOrDefaultReference = VariableRef | FunctionInstance;
+#
+## KillTCStatement ::= KillKeyword | ( ( ComponentReferenceOrLiteral | AllKeyword ComponentKeyword ) Dot KillKeyword )
+#KillTCStatement = KillKeyword | ( ( ComponentReferenceOrLiteral | AllKeyword + ComponentKeyword ) + Dot + KillKeyword );
+#
+## ComponentReferenceOrLiteral ::= ComponentOrDefaultReference | MTCKeyword | SelfOp
+#ComponentReferenceOrLiteral = ComponentOrDefaultReference | MTCKeyword | SelfOp;
+#
+## StopTCStatement ::= StopKeyword | ( ComponentReferenceOrLiteral | AllKeyword ComponentKeyword ) Dot StopKeyword
+#StopTCStatement = StopKeyword | ( ComponentReferenceOrLiteral | AllKeyword + ComponentKeyword ) + Dot + StopKeyword;
+#
+## StartKeyword ::= "start"
+#StartKeyword = Keyword("start");
+#
+## StartTCStatement ::= ComponentOrDefaultReference Dot StartKeyword "(" FunctionInstance ")"
+#StartTCStatement = ComponentOrDefaultReference + Dot + StartKeyword + "(" + FunctionInstance + ")";
+#
+## UnmapKeyword ::= "unmap"
+#UnmapKeyword = Keyword("unmap");
+#
+## UnmapStatement ::= UnmapKeyword [ SingleConnectionSpec [ ParamClause ] | AllConnectionsSpec [ ParamClause ] | AllPortsSpec | AllCompsAllPortsSpec ]
+#UnmapStatement = UnmapKeyword + Optional( SingleConnectionSpec + [ + ParamClause ) | AllConnectionsSpec + Optional( ParamClause ) | AllPortsSpec | AllCompsAllPortsSpec + ];
+#
+## MapKeyword ::= "map"
+#MapKeyword = Keyword("map");
+#
+## ParamClause ::= ParamKeyword FunctionActualParList
+#ParamClause = ParamKeyword + FunctionActualParList;
+#
+## MapStatement ::= MapKeyword SingleConnectionSpec [ ParamClause ]
+#MapStatement = MapKeyword + SingleConnectionSpec + Optional( ParamClause );
+#
+## DisconnectKeyword ::= "disconnect"
+#DisconnectKeyword = Keyword("disconnect");
+#
+## AllCompsAllPortsSpec ::= "(" AllKeyword ComponentKeyword ":" AllKeyword PortKeyword ")"
+#AllCompsAllPortsSpec = "(" + AllKeyword + ComponentKeyword + ":" + AllKeyword + PortKeyword + ")";
+#
+## AllPortsSpec ::= "(" ComponentRef ":" AllKeyword PortKeyword ")"
+#AllPortsSpec = "(" + ComponentRef + ":" + AllKeyword + PortKeyword + ")";
+#
+## AllConnectionsSpec ::= "(" PortRef ")"
+#AllConnectionsSpec = "(" + PortRef + ")";
+#
+## DisconnectStatement ::= DisconnectKeyword [ SingleConnectionSpec | AllConnectionsSpec | AllPortsSpec | AllCompsAllPortsSpec ]
+#DisconnectStatement = DisconnectKeyword + Optional( SingleConnectionSpec | AllConnectionsSpec | AllPortsSpec | AllCompsAllPortsSpec );
+#
+## ComponentRefAssignment ::= Identifier ":=" ComponentRef
+#ComponentRefAssignment = Identifier + ":=" + ComponentRef;
+#
+## ComponentRef ::= ComponentOrDefaultReference | SystemKeyword | SelfOp | MTCKeyword
+#ComponentRef = ComponentOrDefaultReference | SystemKeyword | SelfOp | MTCKeyword;
+#
+## PortRef ::= ComponentRef Colon ArrayIdentifierRef
+#PortRef = ComponentRef + Colon + ArrayIdentifierRef;
+#
+## SingleConnectionSpec ::= "(" PortRef "," PortRef ")"
+#SingleConnectionSpec = "(" + PortRef + "," + PortRef + ")";
+#
+## ConnectKeyword ::= "connect"
+#ConnectKeyword = Keyword("connect");
+#
+## ConnectStatement ::= ConnectKeyword SingleConnectionSpec
+#ConnectStatement = ConnectKeyword + SingleConnectionSpec;
+#
+## AliveKeyword ::= "alive"
+#AliveKeyword = Keyword("alive");
+#
+## CreateKeyword ::= "create"
+#CreateKeyword = Keyword("create");
+#
+## AliveOp ::= ComponentId Dot AliveKeyword
+#AliveOp = ComponentId + Dot + AliveKeyword;
+#
+## RunningKeyword ::= "running"
+#RunningKeyword = Keyword("running");
+#
+## RunningOp ::= ComponentId Dot RunningKeyword
+#RunningOp = ComponentId + Dot + RunningKeyword;
+#
+## KilledKeyword ::= "killed"
+#KilledKeyword = Keyword("killed");
+#
+## DoneKeyword ::= "done"
+#DoneKeyword = Keyword("done");
+#
+## ComponentId ::= ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) ComponentKeyword
+#ComponentId = ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) + ComponentKeyword;
+#
+## KilledStatement ::= ComponentId Dot KilledKeyword
+#KilledStatement = ComponentId + Dot + KilledKeyword;
+#
+## DoneStatement ::= ComponentId Dot DoneKeyword
+#DoneStatement = ComponentId + Dot + DoneKeyword;
+#
+## SelfOp ::= "self"
+#SelfOp = Keyword("self");
+#
+## CreateOp ::= ComponentType Dot CreateKeyword [ "(" ( SingleExpression | Minus ) [ "," SingleExpression ] ")" ] [ AliveKeyword ]
+#CreateOp = ComponentType + Dot + CreateKeyword + Optional( "(" + ( SingleExpression | Minus ) + [ + "," + SingleExpression ) + ")" + ] + Optional( AliveKeyword );
+#
+## ConfigurationOps ::= CreateOp | SelfOp | SystemKeyword | MTCKeyword | RunningOp | AliveOp
+#ConfigurationOps = CreateOp | SelfOp | SystemKeyword | MTCKeyword | RunningOp | AliveOp;
+#
+## ConfigurationStatements ::= ConnectStatement | MapStatement | DisconnectStatement | UnmapStatement | DoneStatement | KilledStatement | StartTCStatement | StopTCStatement | KillTCStatement
+#ConfigurationStatements = ConnectStatement | MapStatement | DisconnectStatement | UnmapStatement | DoneStatement | KilledStatement | StartTCStatement | StopTCStatement | KillTCStatement;
+#
+## ArrayIdentifierRef ::= Identifier { ArrayOrBitRef }
+#ArrayIdentifierRef = Identifier + ZeroOrMore( ArrayOrBitRef );
+#
+## TimerKeyword ::= "timer"
+#TimerKeyword = Keyword("timer");
+#
+## TimerInstance ::= TimerKeyword VarList
+#TimerInstance = TimerKeyword + VarList;
+#
+## VariableRef ::= Identifier [ ExtendedFieldReference ]
+#VariableRef = Identifier + Optional( ExtendedFieldReference );
+#
+## SingleTempVarInstance ::= Identifier [ ArrayDef ] [ AssignmentChar TemplateBody ]
+#SingleTempVarInstance = Identifier + Optional( ArrayDef ) + Optional( AssignmentChar + TemplateBody );
+#
+## TempVarList ::= SingleTempVarInstance { "," SingleTempVarInstance }
+#TempVarList = SingleTempVarInstance + ZeroOrMore( "," + SingleTempVarInstance );
+#
+## VarKeyword ::= "var"
+#VarKeyword = Keyword("var");
+#
+## SingleVarInstance ::= Identifier [ ArrayDef ] [ AssignmentChar Expression ]
+#SingleVarInstance = Identifier + Optional( ArrayDef ) + Optional( AssignmentChar + Expression );
+#
+## VarList ::= SingleVarInstance { "," SingleVarInstance }
+#VarList = SingleVarInstance + ZeroOrMore( "," + SingleVarInstance );
+#
+## VarInstance ::= VarKeyword ( ( Type VarList ) | ( ( TemplateKeyword | RestrictedTemplate ) Type TempVarList ) )
+#VarInstance = VarKeyword + ( ( Type + VarList ) | ( ( TemplateKeyword | RestrictedTemplate ) + Type + TempVarList ) );
+#
+## ControlStatement ::= TimerStatements | BasicStatements | BehaviourStatements | SUTStatements | StopKeyword
+#ControlStatement = TimerStatements | BasicStatements | BehaviourStatements | SUTStatements | StopKeyword;
+#
+## ControlStatementOrDef ::= ( FunctionLocalDef | FunctionLocalInst ) [ WithStatement ] | ControlStatement
+#ControlStatementOrDef = ( FunctionLocalDef | FunctionLocalInst ) + Optional( WithStatement ) | ControlStatement;
+#
+## ControlStatementOrDefList ::= { ControlStatementOrDef [ SemiColon ] }+
+#ControlStatementOrDefList = OneOrMore( ControlStatementOrDef + Optional( SemiColon ) );
+#
+## ModuleControlBody ::= [ ControlStatementOrDefList ]
+#ModuleControlBody = Optional( ControlStatementOrDefList );
+#
+## ControlKeyword ::= "control"
+#ControlKeyword = Keyword("control");
+#
+## ModuleControlPart ::= ControlKeyword "{" ModuleControlBody "}" [ WithStatement ] [ SemiColon ]
+#ModuleControlPart = ControlKeyword + "ZeroOrMore(" + ModuleControlBody + ")" + Optional( WithStatement ) + Optional( SemiColon );
+#
+## FriendModuleDef ::= "friend" "module" IdentifierList [ SemiColon ]
+#FriendModuleDef = Keyword("friend") + Keyword("module") + IdentifierList + Optional( SemiColon );
+#
+## ModuleParList ::= Identifier [ AssignmentChar ConstantExpression ] { "," Identifier [ AssignmentChar ConstantExpression ] }
+#ModuleParList = Identifier + Optional( AssignmentChar + ConstantExpression ) + ZeroOrMore( "," + Identifier + Optional( AssignmentChar + ConstantExpression ) );
+#
+## ModulePar ::= Type ModuleParList
+#ModulePar = Type + ModuleParList;
+#
+## MultitypedModuleParList ::= { ModulePar [ SemiColon ] }
+#MultitypedModuleParList = ZeroOrMore( ModulePar + Optional( SemiColon ) );
+#
+## ModuleParKeyword ::= "modulepar"
+#ModuleParKeyword = Keyword("modulepar");
+#
+## ModuleParDef ::= ModuleParKeyword ( ModulePar | ( "{" MultitypedModuleParList "}" ) )
+#ModuleParDef = ModuleParKeyword + ( ModulePar | ( "{" + MultitypedModuleParList + "}" ) );
+#
+## ExtConstDef ::= ExtKeyword ConstKeyword Type IdentifierList
+#ExtConstDef = ExtKeyword + ConstKeyword + Type + IdentifierList;
+#
+## ExtKeyword ::= "external"
+#ExtKeyword = Keyword("external");
+#
+## ExtFunctionDef ::= ExtKeyword FunctionKeyword Identifier "(" [ FunctionFormalParList ] ")" [ ReturnType ]
+#ExtFunctionDef = ExtKeyword + FunctionKeyword + Identifier + "(" + Optional( FunctionFormalParList ) + ")" + Optional( ReturnType );
+#
+## GroupKeyword ::= "group"
+#GroupKeyword = Keyword("group");
+#
+## GroupDef ::= GroupKeyword Identifier "{" [ ModuleDefinitionsList ] "}"
+#GroupDef = GroupKeyword + Identifier + "{" + Optional( ModuleDefinitionsList ) + "}";
+#
+## ImportImportSpec ::= ImportKeyword AllKeyword
+#ImportImportSpec = ImportKeyword + AllKeyword;
+#
+## ImportModuleParSpec ::= ModuleParKeyword IdentifierListOrAllWithExcept
+#ImportModuleParSpec = ModuleParKeyword + IdentifierListOrAllWithExcept;
+#
+## ImportSignatureSpec ::= SignatureKeyword IdentifierListOrAllWithExcept
+#ImportSignatureSpec = SignatureKeyword + IdentifierListOrAllWithExcept;
+#
+## ImportFunctionSpec ::= FunctionKeyword IdentifierListOrAllWithExcept
+#ImportFunctionSpec = FunctionKeyword + IdentifierListOrAllWithExcept;
+#
+## ImportTestcaseSpec ::= TestcaseKeyword IdentifierListOrAllWithExcept
+#ImportTestcaseSpec = TestcaseKeyword + IdentifierListOrAllWithExcept;
+#
+## ImportAltstepSpec ::= AltstepKeyword IdentifierListOrAllWithExcept
+#ImportAltstepSpec = AltstepKeyword + IdentifierListOrAllWithExcept;
+#
+## ImportConstSpec ::= ConstKeyword IdentifierListOrAllWithExcept
+#ImportConstSpec = ConstKeyword + IdentifierListOrAllWithExcept;
+#
+## ImportTemplateSpec ::= TemplateKeyword IdentifierListOrAllWithExcept
+#ImportTemplateSpec = TemplateKeyword + IdentifierListOrAllWithExcept;
+#
+## AllWithExcept ::= AllKeyword [ ExceptKeyword IdentifierList ]
+#AllWithExcept = AllKeyword + Optional( ExceptKeyword + IdentifierList );
+#
+## ImportTypeDefSpec ::= TypeDefKeyword IdentifierListOrAllWithExcept
+#ImportTypeDefSpec = TypeDefKeyword + IdentifierListOrAllWithExcept;
+#
+## IdentifierListOrAllWithExcept ::= IdentifierList | AllWithExcept
+#IdentifierListOrAllWithExcept = IdentifierList | AllWithExcept;
+#
+## QualifiedIdentifierWithExcept ::= QualifiedIdentifier [ ExceptsDef ]
+#QualifiedIdentifierWithExcept = QualifiedIdentifier + Optional( ExceptsDef );
+#
+## AllGroupsWithExcept ::= AllKeyword [ ExceptKeyword QualifiedIdentifierList ]
+#AllGroupsWithExcept = AllKeyword + Optional( ExceptKeyword + QualifiedIdentifierList );
+#
+## GroupRefListWithExcept ::= QualifiedIdentifierWithExcept { "," QualifiedIdentifierWithExcept }
+#GroupRefListWithExcept = QualifiedIdentifierWithExcept + ZeroOrMore( "," + QualifiedIdentifierWithExcept );
+#
+## ImportGroupSpec ::= GroupKeyword ( GroupRefListWithExcept | AllGroupsWithExcept )
+#ImportGroupSpec = GroupKeyword + ( GroupRefListWithExcept | AllGroupsWithExcept );
+#
+## RecursiveKeyword ::= "recursive"
+#RecursiveKeyword = Keyword("recursive");
+#
+## ImportFromSpec ::= FromKeyword ModuleId [ RecursiveKeyword ]
+#ImportFromSpec = FromKeyword + ModuleId + Optional( RecursiveKeyword );
+#
+## ImportElement ::= ImportGroupSpec | ImportTypeDefSpec | ImportTemplateSpec | ImportConstSpec | ImportTestcaseSpec | ImportAltstepSpec | ImportFunctionSpec | ImportSignatureSpec | ImportModuleParSpec | ImportImportSpec
+#ImportElement = ImportGroupSpec | ImportTypeDefSpec | ImportTemplateSpec | ImportConstSpec | ImportTestcaseSpec | ImportAltstepSpec | ImportFunctionSpec | ImportSignatureSpec | ImportModuleParSpec | ImportImportSpec;
+#
+## ImportSpec ::= { ImportElement [ SemiColon ] }
+#ImportSpec = ZeroOrMore( ImportElement + Optional( SemiColon ) );
+#
+## ExceptModuleParSpec ::= ModuleParKeyword IdentifierListOrAll
+#ExceptModuleParSpec = ModuleParKeyword + IdentifierListOrAll;
+#
+## ExceptSignatureSpec ::= SignatureKeyword IdentifierListOrAll
+#ExceptSignatureSpec = SignatureKeyword + IdentifierListOrAll;
+#
+## ExceptFunctionSpec ::= FunctionKeyword IdentifierListOrAll
+#ExceptFunctionSpec = FunctionKeyword + IdentifierListOrAll;
+#
+## ExceptAltstepSpec ::= AltstepKeyword IdentifierListOrAll
+#ExceptAltstepSpec = AltstepKeyword + IdentifierListOrAll;
+#
+## ExceptTestcaseSpec ::= TestcaseKeyword IdentifierListOrAll
+#ExceptTestcaseSpec = TestcaseKeyword + IdentifierListOrAll;
+#
+## ExceptConstSpec ::= ConstKeyword IdentifierListOrAll
+#ExceptConstSpec = ConstKeyword + IdentifierListOrAll;
+#
+## ExceptTemplateSpec ::= TemplateKeyword IdentifierListOrAll
+#ExceptTemplateSpec = TemplateKeyword + IdentifierListOrAll;
+#
+## ExceptTypeDefSpec ::= TypeDefKeyword IdentifierListOrAll
+#ExceptTypeDefSpec = TypeDefKeyword + IdentifierListOrAll;
+#
+## IdentifierListOrAll ::= IdentifierList | AllKeyword
+#IdentifierListOrAll = IdentifierList | AllKeyword;
+#
+## ExceptGroupSpec ::= GroupKeyword ( QualifiedIdentifierList | AllKeyword )
+#ExceptGroupSpec = GroupKeyword + ( QualifiedIdentifierList | AllKeyword );
+#
+## ExceptElement ::= ExceptGroupSpec | ExceptTypeDefSpec | ExceptTemplateSpec | ExceptConstSpec | ExceptTestcaseSpec | ExceptAltstepSpec | ExceptFunctionSpec | ExceptSignatureSpec | ExceptModuleParSpec
+#ExceptElement = ExceptGroupSpec | ExceptTypeDefSpec | ExceptTemplateSpec | ExceptConstSpec | ExceptTestcaseSpec | ExceptAltstepSpec | ExceptFunctionSpec | ExceptSignatureSpec | ExceptModuleParSpec;
+#
+## ExceptSpec ::= { ExceptElement [ SemiColon ] }
+#ExceptSpec = ZeroOrMore( ExceptElement + Optional( SemiColon ) );
+#
+## ExceptKeyword ::= "except"
+#ExceptKeyword = Keyword("except");
+#
+## ExceptsDef ::= ExceptKeyword "{" ExceptSpec "}"
+#ExceptsDef = ExceptKeyword + "ZeroOrMore(" + ExceptSpec + ")";
+#
+## AllWithExcepts ::= AllKeyword [ ExceptsDef ]
+#AllWithExcepts = AllKeyword + Optional( ExceptsDef );
+#
+## ImportKeyword ::= "import"
+#ImportKeyword = Keyword("import");
+#
+## ImportDef ::= ImportKeyword ImportFromSpec ( AllWithExcepts | ( "{" ImportSpec "}" ) )
+#ImportDef = ImportKeyword + ImportFromSpec + ( AllWithExcepts | ( "ZeroOrMore(" + ImportSpec + ")" ) );
+#
+## AltstepInstance ::= ExtendedIdentifier "(" [ FunctionActualParList ] ")"
+#AltstepInstance = ExtendedIdentifier + "(" + Optional( FunctionActualParList ) + ")";
+#
+## AltstepLocalDef ::= VarInstance | TimerInstance | ConstDef | TemplateDef
+#AltstepLocalDef = VarInstance | TimerInstance | ConstDef | TemplateDef;
+#
+## AltstepLocalDefList ::= { AltstepLocalDef [ WithStatement ] [ SemiColon ] }
+#AltstepLocalDefList = ZeroOrMore( AltstepLocalDef + Optional( WithStatement ) + Optional( SemiColon ) );
+#
+## AltstepKeyword ::= "altstep"
+#AltstepKeyword = Keyword("altstep");
+#
+## AltstepDef ::= AltstepKeyword Identifier "(" [ FunctionFormalParList ] ")" [ RunsOnSpec ] "{" AltstepLocalDefList AltGuardList "}"
+#AltstepDef = AltstepKeyword + Identifier + "(" + Optional( FunctionFormalParList ) + ")" + Optional( RunsOnSpec ) + "ZeroOrMore(" + AltstepLocalDefList + AltGuardList + ")";
+#
+## TestcaseActualParList ::= ( TemplateInstanceActualPar { "," TemplateInstanceActualPar } ) | ( TemplateInstanceAssignment { "," TemplateInstanceAssignment } )
+#TestcaseActualParList = ( TemplateInstanceActualPar + ZeroOrMore( "," + TemplateInstanceActualPar ) ) | ( TemplateInstanceAssignment + ZeroOrMore( "," + TemplateInstanceAssignment ) );
+#
+## ExecuteKeyword ::= "execute"
+#ExecuteKeyword = Keyword("execute");
+#
+## TestcaseInstance ::= ExecuteKeyword "(" ExtendedIdentifier "(" [ TestcaseActualParList ] ")" [ "," ( Expression | Minus ) [ "," SingleExpression ] ] ")"
+#TestcaseInstance = ExecuteKeyword + "(" + ExtendedIdentifier + "(" + Optional( TestcaseActualParList ) + ")" + Optional( "," + ( Expression | Minus ) + [ + "," + SingleExpression ) + ] + ")";
+#
+## SystemKeyword ::= "system"
+#SystemKeyword = Keyword("system");
+#
+## SystemSpec ::= SystemKeyword ComponentType
+#SystemSpec = SystemKeyword + ComponentType;
+#
+## ConfigSpec ::= RunsOnSpec [ SystemSpec ]
+#ConfigSpec = RunsOnSpec + Optional( SystemSpec );
+#
+## TestcaseKeyword ::= "testcase"
+#TestcaseKeyword = Keyword("testcase");
+#
+## TestcaseDef ::= TestcaseKeyword Identifier "(" [ TemplateOrValueFormalParList ] ")" ConfigSpec StatementBlock
+#TestcaseDef = TestcaseKeyword + Identifier + "(" + Optional( TemplateOrValueFormalParList ) + ")" + ConfigSpec + StatementBlock;
+#
+## NoBlockKeyword ::= "noblock"
+#NoBlockKeyword = Keyword("noblock");
+#
+## Signature ::= ExtendedIdentifier
+#Signature = ExtendedIdentifier;
+#
+## ExceptionKeyword ::= "exception"
+#ExceptionKeyword = Keyword("exception");
+#
+## ExceptionSpec ::= ExceptionKeyword "(" TypeList ")"
+#ExceptionSpec = ExceptionKeyword + "(" + TypeList + ")";
+#
+## SignatureFormalParList ::= FormalValuePar { "," FormalValuePar }
+#SignatureFormalParList = FormalValuePar + ZeroOrMore( "," + FormalValuePar );
+#
+## SignatureKeyword ::= "signature"
+#SignatureKeyword = Keyword("signature");
+#
+## SignatureDef ::= SignatureKeyword Identifier "(" [ SignatureFormalParList ] ")" [ ReturnType | NoBlockKeyword ] [ ExceptionSpec ]
+#SignatureDef = SignatureKeyword + Identifier + "(" + Optional( SignatureFormalParList ) + ")" + Optional( ReturnType | NoBlockKeyword ) + Optional( ExceptionSpec );
+#
+## ArrayIdentifierRefAssignment ::= Identifier ":=" ArrayIdentifierRef
+#ArrayIdentifierRefAssignment = Identifier + ":=" + ArrayIdentifierRef;
+#
+## FunctionActualParAssignment ::= TemplateInstanceAssignment | ComponentRefAssignment | ArrayIdentifierRefAssignment
+#FunctionActualParAssignment = TemplateInstanceAssignment | ComponentRefAssignment | ArrayIdentifierRefAssignment;
+#
+## FunctionActualPar ::= ArrayIdentifierRef | InLineTemplate | ComponentRef | Minus
+#FunctionActualPar = ArrayIdentifierRef | InLineTemplate | ComponentRef | Minus;
+#
+## FunctionActualParList ::= ( FunctionActualPar { "," FunctionActualPar } ) | ( FunctionActualParAssignment { "," FunctionActualParAssignment } )
+#FunctionActualParList = ( FunctionActualPar + ZeroOrMore( "," + FunctionActualPar ) ) | ( FunctionActualParAssignment + ZeroOrMore( "," + FunctionActualParAssignment ) );
+#
+## PreDefFunctionIdentifier ::= Identifier
+#PreDefFunctionIdentifier = Identifier;
+#
+## FunctionRef ::= [ Identifier Dot ] ( Identifier | PreDefFunctionIdentifier )
+#FunctionRef = Optional( Identifier + Dot ) + ( Identifier | PreDefFunctionIdentifier );
+#
+## FunctionInstance ::= FunctionRef "(" [ FunctionActualParList ] ")"
+#FunctionInstance = FunctionRef + "(" + Optional( FunctionActualParList ) + ")";
+#
+## FunctionStatement ::= ConfigurationStatements | TimerStatements | CommunicationStatements | BasicStatements | BehaviourStatements | SetLocalVerdict | SUTStatements | TestcaseOperation
+#FunctionStatement = ConfigurationStatements | TimerStatements | CommunicationStatements | BasicStatements | BehaviourStatements | SetLocalVerdict | SUTStatements | TestcaseOperation;
+#
+## FunctionLocalDef ::= ConstDef | TemplateDef
+#FunctionLocalDef = ConstDef | TemplateDef;
+#
+## FunctionLocalInst ::= VarInstance | TimerInstance
+#FunctionLocalInst = VarInstance | TimerInstance;
+#
+## FunctionStatementList ::= { FunctionStatement [ SemiColon ] }+
+#FunctionStatementList = OneOrMore( FunctionStatement + Optional( SemiColon ) );
+#
+## FunctionDefList ::= { ( FunctionLocalDef | FunctionLocalInst ) [ WithStatement ] [ SemiColon ] }+
+#FunctionDefList = OneOrMore( ( FunctionLocalDef | FunctionLocalInst ) + Optional( WithStatement ) + Optional( SemiColon ) );
+#
+## StatementBlock ::= "{" [ FunctionDefList ] [ FunctionStatementList ] "}"
+#StatementBlock = "ZeroOrMore(" + Optional( FunctionDefList ) + Optional( FunctionStatementList ) + ")";
+#
+## MTCKeyword ::= "mtc"
+#MTCKeyword = Keyword("mtc");
+#
+## OnKeyword ::= "on"
+#OnKeyword = Keyword("on");
+#
+## RunsKeyword ::= "runs"
+#RunsKeyword = Keyword("runs");
+#
+## RunsOnSpec ::= RunsKeyword OnKeyword ComponentType
+#RunsOnSpec = RunsKeyword + OnKeyword + ComponentType;
+#
+## ReturnKeyword ::= "return"
+#ReturnKeyword = Keyword("return");
+#
+## ReturnType ::= ReturnKeyword [ TemplateKeyword | RestrictedTemplate ] Type
+#ReturnType = ReturnKeyword + Optional( TemplateKeyword | RestrictedTemplate ) + Type;
+#
+## FunctionFormalPar ::= FormalValuePar | FormalTimerPar | FormalTemplatePar | FormalPortPar
+#FunctionFormalPar = FormalValuePar | FormalTimerPar | FormalTemplatePar | FormalPortPar;
+#
+## FunctionFormalParList ::= FunctionFormalPar { "," FunctionFormalPar }
+#FunctionFormalParList = FunctionFormalPar + ZeroOrMore( "," + FunctionFormalPar );
+#
+## FunctionKeyword ::= "function"
+#FunctionKeyword = Keyword("function");
+#
+## FunctionDef ::= FunctionKeyword Identifier "(" [ FunctionFormalParList ] ")" [ RunsOnSpec ] [ ReturnType ] StatementBlock
+#FunctionDef = FunctionKeyword + Identifier + "(" + Optional( FunctionFormalParList ) + ")" + Optional( RunsOnSpec ) + Optional( ReturnType ) + StatementBlock;
+#
+## ValueofKeyword ::= "valueof"
+#ValueofKeyword = Keyword("valueof");
+#
+## ValueofOp ::= ValueofKeyword "(" InLineTemplate ")"
+#ValueofOp = ValueofKeyword + "(" + InLineTemplate + ")";
+#
+## MatchKeyword ::= "match"
+#MatchKeyword = Keyword("match");
+#
+## MatchOp ::= MatchKeyword "(" Expression "," InLineTemplate ")"
+#MatchOp = MatchKeyword + "(" + Expression + "," + InLineTemplate + ")";
+#
+## TemplateOps ::= MatchOp | ValueofOp
+#TemplateOps = MatchOp | ValueofOp;
+#
+## TemplateInstanceActualPar ::= InLineTemplate | Minus
+#TemplateInstanceActualPar = InLineTemplate | Minus;
+#
+## TemplateActualParList ::= "(" [ ( TemplateInstanceActualPar { "," TemplateInstanceActualPar } ) | ( TemplateInstanceAssignment { "," TemplateInstanceAssignment } ) ] ")"
+#TemplateActualParList = "(" + Optional( ( TemplateInstanceActualPar + ZeroOrMore( "," + TemplateInstanceActualPar ) ) | ( TemplateInstanceAssignment + ZeroOrMore( "," + TemplateInstanceAssignment ) ) ) + ")";
+#
+## DerivedRefWithParList ::= ModifiesKeyword TemplateRefWithParList
+#DerivedRefWithParList = ModifiesKeyword + TemplateRefWithParList;
+#
+## InLineTemplate ::= [ ( Type | Signature ) Colon ] [ DerivedRefWithParList AssignmentChar ] TemplateBody
+#InLineTemplate = Optional( ( Type | Signature ) + Colon ) + Optional( DerivedRefWithParList + AssignmentChar ) + TemplateBody;
+#
+## TemplateRefWithParList ::= ExtendedIdentifier [ TemplateActualParList ]
+#TemplateRefWithParList = ExtendedIdentifier + Optional( TemplateActualParList );
+#
+## TemplateInstanceAssignment ::= Identifier ":=" InLineTemplate
+#TemplateInstanceAssignment = Identifier + ":=" + InLineTemplate;
+#
+## InfinityKeyword ::= "infinity"
+#InfinityKeyword = Keyword("infinity");
+#
+## Bound ::= ( [ "!" ] SingleExpression ) | ( [ Minus ] InfinityKeyword )
+#Bound = ( Optional( "!" ) + SingleExpression ) | ( Optional( Minus ) + InfinityKeyword );
+#
+## Range ::= "(" Bound ".." Bound ")"
+#Range = "(" + Bound + ".." + Bound + ")";
+#
+## PresentKeyword ::= "present"
+#PresentKeyword = Keyword("present");
+#
+## IfPresentKeyword ::= "ifpresent"
+#IfPresentKeyword = Keyword("ifpresent");
+#
+## WildcardLengthMatch ::= LengthKeyword "(" SingleExpression ")"
+#WildcardLengthMatch = LengthKeyword + "(" + SingleExpression + ")";
+#
+## TemplateList ::= "(" TemplateBody { "," TemplateBody }+ ")"
+#TemplateList = "(" + TemplateBody + OneOrMore( "," + TemplateBody ) + ")";
+#
+## AnyOrOmit ::= "*"
+#AnyOrOmit = "*";
+#
+## AnyValue ::= "?"
+#AnyValue = "?";
+#
+## PermutationKeyword ::= "permutation"
+#PermutationKeyword = Keyword("permutation");
+#
+## PermutationMatch ::= PermutationKeyword ListOfTemplates
+#PermutationMatch = PermutationKeyword + ListOfTemplates;
+#
+## SupersetKeyword ::= "superset"
+#SupersetKeyword = Keyword("superset");
+#
+## SupersetMatch ::= SupersetKeyword ListOfTemplates
+#SupersetMatch = SupersetKeyword + ListOfTemplates;
+#
+## SubsetKeyword ::= "subset"
+#SubsetKeyword = Keyword("subset");
+#
+## SubsetMatch ::= SubsetKeyword ListOfTemplates
+#SubsetMatch = SubsetKeyword + ListOfTemplates;
+#
+## AllElementsFrom ::= AllKeyword FromKeyword TemplateBody
+#AllElementsFrom = AllKeyword + FromKeyword + TemplateBody;
+#
+## TemplateListItem ::= TemplateBody | AllElementsFrom
+#TemplateListItem = TemplateBody | AllElementsFrom;
+#
+## ListOfTemplates ::= "(" TemplateListItem { "," TemplateListItem } ")"
+#ListOfTemplates = "(" + TemplateListItem + ZeroOrMore( "," + TemplateListItem ) + ")";
+#
+## ComplementKeyword ::= "complement"
+#ComplementKeyword = "complement";
+#
+## Complement ::= ComplementKeyword ListOfTemplates
+#Complement = ComplementKeyword + ListOfTemplates;
+#
+## PatternQuadruple ::= "\" "q" "(" Number "," Number "," Number "," Number ")"
+#PatternQuadruple = "\" + "q" + "(" + Number + "," + Number + "," + Number + "," + Number + ")";
+#
+## EscapedPatternClassChar ::= "[" | "-" | "^" | "]"
+#EscapedPatternClassChar = Literal("[") | Literal("-") | Literal("^") | Literal("]")
+#
+## NonSpecialPatternClassChar ::= Char
+#NonSpecialPatternClassChar = Char;
+#
+## PatternClassChar ::= NonSpecialPatternClassChar | PatternQuadruple | "\" EscapedPatternClassChar
+#PatternClassChar = NonSpecialPatternClassChar | PatternQuadruple | "\" + EscapedPatternClassChar;
+#
+## NonSpecialPatternChar ::= Char
+#NonSpecialPatternChar = Char;
+#
+## PatternChar ::= NonSpecialPatternChar | PatternQuadruple
+#PatternChar = NonSpecialPatternChar | PatternQuadruple;
+#
 # PatternElement ::= ( ( "\" ( "?" | "*" | "\" | "[" | "]" | "{" | "}" | """ | "|" | "(" | ")" | "#" | "+" | "d" | "w" | "t" | "n" | "r" | "s" | "b" ) ) | ( "?" | "*" | "\" | "|" | "+" ) | ( "[" [ "^" ] [ { PatternClassChar [ "-" PatternClassChar ] } ] "]" ) | ( "{" [ "\" ] ReferencedValue "}" ) | ( "\" "N" "{" ( ReferencedValue | Type ) "}" ) | ( """ """ ) | ( "(" PatternElement ")" ) | ( "#" ( Num | ( "(" Num "," [ Num ] ")" ) | ( "(" "," Num ")" ) ) ) | PatternChar )
-# Pattern ::= """ { PatternElement } """
-# PatternKeyword ::= "pattern"
-# PatternParticle ::= Pattern | ReferencedValue
-# CharStringMatch ::= PatternKeyword PatternParticle { "&" PatternParticle }
-# OctOrMatch ::= Oct | AnyValue | AnyOrOmit
-# OctetStringMatch ::= "'" { OctOrMatch } "'" "O"
-# HexOrMatch ::= Hex | AnyValue | AnyOrOmit
-# HexStringMatch ::= "'" { HexOrMatch } "'" "H"
-# BinOrMatch ::= Bin | AnyValue | AnyOrOmit
-# BitStringMatch ::= "'" { BinOrMatch } "'" "B"
-# ExtraMatchingAttributes ::= StringLength | IfPresentKeyword | ( StringLength IfPresentKeyword )
-# MatchingSymbol ::= Complement | ( AnyValue [ WildcardLengthMatch ] ) | ( AnyOrOmit [ WildcardLengthMatch ] ) | ListOfTemplates | Range | BitStringMatch | HexStringMatch | OctetStringMatch | CharStringMatch | SubsetMatch | SupersetMatch
-# ArrayElementSpec ::= Minus | PermutationMatch | TemplateBody
-# ArrayElementSpecList ::= ArrayElementSpec { "," ArrayElementSpec }
-# ArrayValueOrAttrib ::= "{" [ ArrayElementSpecList ] "}"
-# FieldOrBitNumber ::= SingleExpression
-# ArrayOrBitRef ::= "[" FieldOrBitNumber "]"
-# ParRef ::= Identifier
-# StructFieldRef ::= Identifier | PredefinedType | TypeReference
-# FieldReference ::= StructFieldRef | ArrayOrBitRef | ParRef
-# FieldSpec ::= FieldReference AssignmentChar ( TemplateBody | Minus )
-# FieldSpecList ::= "{" FieldSpec { "," FieldSpec } "}"
-# SingleTemplateExpression ::= MatchingSymbol | ( TemplateRefWithParList [ ExtendedFieldReference ] )
-# SimpleTemplateSpec ::= SingleTemplateExpression [ "&" SimpleSpec ]
-# SimpleSpec ::= ( SingleExpression [ "&" SimpleTemplateSpec ] ) | SimpleTemplateSpec
-# TemplateBody ::= ( SimpleSpec | FieldSpecList | ArrayValueOrAttrib ) [ ExtraMatchingAttributes ]
-# TemplateOrValueFormalPar ::= FormalValuePar | FormalTemplatePar
-# TemplateOrValueFormalParList ::= TemplateOrValueFormalPar { "," TemplateOrValueFormalPar }
-# ModifiesKeyword ::= "modifies"
-# DerivedDef ::= ModifiesKeyword ExtendedIdentifier
-# TemplateKeyword ::= "template"
-# BaseTemplate ::= ( Type | Signature ) Identifier [ "(" TemplateOrValueFormalParList ")" ]
-# TemplateDef ::= TemplateKeyword [ TemplateRestriction ] BaseTemplate [ DerivedDef ] AssignmentChar TemplateBody
-# ConstKeyword ::= "const"
-# SingleConstDef ::= Identifier [ ArrayDef ] AssignmentChar ConstantExpression
-# ConstList ::= SingleConstDef { "," SingleConstDef }
-# ConstDef ::= ConstKeyword Type ConstList
-# PortElement ::= Identifier [ ArrayDef ]
-# PortInstance ::= PortKeyword ExtendedIdentifier PortElement { "," PortElement }
-# ComponentElementDef ::= PortInstance | VarInstance | TimerInstance | ConstDef
-# ComponentDefList ::= { ComponentElementDef [ WithStatement ] [ SemiColon ] }
-# ComponentType ::= ExtendedIdentifier
-# ExtendsKeyword ::= "extends"
-# ComponentKeyword ::= "component"
-# ComponentDef ::= ComponentKeyword Identifier [ ExtendsKeyword ComponentType { "," ComponentType } ] "{" [ ComponentDefList ] "}"
-# ProcOrType ::= Signature | Type
-# ProcOrTypeList ::= AllKeyword | ( ProcOrType { "," ProcOrType } )
-# MixedList ::= Direction ProcOrTypeList
-# MixedKeyword ::= "mixed"
-# MixedAttribs ::= MixedKeyword "{" { ( AddressDecl | MixedList | ConfigParamDef ) [ SemiColon ] }+ "}"
-# SignatureList ::= Signature { "," Signature }
-# AllOrSignatureList ::= AllKeyword | SignatureList
-# ProcedureList ::= Direction AllOrSignatureList
-# ProcedureKeyword ::= "procedure"
-# ProcedureAttribs ::= ProcedureKeyword "{" { ( AddressDecl | ProcedureList | ConfigParamDef ) [ SemiColon ] }+ "}"
-# TypeList ::= Type { "," Type }
-# AllKeyword ::= "all"
-# AllOrTypeList ::= AllKeyword | TypeList
-# MessageKeyword ::= "message"
-# Direction ::= InParKeyword | OutParKeyword | InOutParKeyword
-# MessageList ::= Direction AllOrTypeList
-# AddressDecl ::= AddressKeyword Type
-# UnmapParamDef ::= UnmapKeyword ParamKeyword "(" FormalValuePar { "," FormalValuePar } ")"
-# MapParamDef ::= MapKeyword ParamKeyword "(" FormalValuePar { "," FormalValuePar } ")"
-# ConfigParamDef ::= MapParamDef | UnmapParamDef
-# MessageAttribs ::= MessageKeyword "{" { ( AddressDecl | MessageList | ConfigParamDef ) [ SemiColon ] }+ "}"
-# PortDefAttribs ::= MessageAttribs | ProcedureAttribs | MixedAttribs
-# PortKeyword ::= "port"
-# PortDefBody ::= Identifier PortDefAttribs
-# PortDef ::= PortKeyword PortDefBody
-# LengthKeyword ::= "length"
-# StringLength ::= LengthKeyword "(" SingleExpression [ ".." Bound ] ")"
-# RangeDef ::= Bound ".." Bound
-# TemplateOrRange ::= RangeDef | TemplateBody | Type
-# AllowedValuesSpec ::= "(" ( ( TemplateOrRange { "," TemplateOrRange } ) | CharStringMatch ) ")"
-# SubTypeSpec ::= AllowedValuesSpec [ StringLength ] | StringLength
-# SubTypeDef ::= Type ( Identifier | AddressKeyword ) [ ArrayDef ] [ SubTypeSpec ]
-# Enumeration ::= Identifier [ "(" [ Minus ] Number ")" ]
-# EnumerationList ::= Enumeration { "," Enumeration }
-# EnumKeyword ::= "enumerated"
-# EnumDef ::= EnumKeyword ( Identifier | AddressKeyword ) "{" EnumerationList "}"
-# SetOfDef ::= SetKeyword [ StringLength ] OfKeyword StructOfDefBody
-# StructOfDefBody ::= ( Type | NestedTypeDef ) ( Identifier | AddressKeyword ) [ SubTypeSpec ]
-# OfKeyword ::= "of"
-# RecordOfDef ::= RecordKeyword [ StringLength ] OfKeyword StructOfDefBody
-# SetKeyword ::= "set"
-# SetDef ::= SetKeyword StructDefBody
-# UnionFieldDef ::= ( Type | NestedTypeDef ) Identifier [ ArrayDef ] [ SubTypeSpec ]
-# UnionDefBody ::= ( Identifier | AddressKeyword ) "{" UnionFieldDef { "," UnionFieldDef } "}"
-# UnionKeyword ::= "union"
-# UnionDef ::= UnionKeyword UnionDefBody
-# OptionalKeyword ::= "optional"
-# NestedEnumDef ::= EnumKeyword "{" EnumerationList "}"
-# NestedSetOfDef ::= SetKeyword [ StringLength ] OfKeyword ( Type | NestedTypeDef )
-# NestedRecordOfDef ::= RecordKeyword [ StringLength ] OfKeyword ( Type | NestedTypeDef )
-# NestedSetDef ::= SetKeyword "{" [ StructFieldDef { "," StructFieldDef } ] "}"
-# NestedUnionDef ::= UnionKeyword "{" UnionFieldDef { "," UnionFieldDef } "}"
-# NestedRecordDef ::= RecordKeyword "{" [ StructFieldDef { "," StructFieldDef } ] "}"
+#PatternElement = Forward();
+#PatternElement << ( ( r'\' ( "?" | "*" | r'\' | "[" | "]" | "{" | "}" | '"' | r'|' | "(" | ")" | "#" | "+" | "d" | "w" | "t" | "n" | "r" | "s" | "b" ) ) | ( "?" | "*" | r"\" | r'|' | "+" ) | ( "[" + Optional( "^" ) + Optional( ZeroOrMore( PatternClassChar + [ + "-" + PatternClassChar ) ) + ] + "]" ) | ( "{" + Optional( "\" ) + ReferencedValue + "}" ) | ( "\" + "N" + "{" + ( ReferencedValue | Type ) + "}" ) | ( '"' + '"' ) | ( "(" + PatternElement + ")" ) | ( "#" + ( Num | ( "(" + Num + "," + Optional( Num ) + ")" ) | ( "(" + "," + Num + ")" ) ) ) | PatternChar );
 #
-#   # NestedTypeDef ::= NestedRecordDef | NestedUnionDef | NestedSetDef | NestedRecordOfDef | NestedSetOfDef | NestedEnumDef
-#   NestedTypeDef = NestedRecordDef | NestedUnionDef | NestedSetDef | NestedRecordOfDef | NestedSetOfDef | NestedEnumDef;
+### Pattern ::= """ { PatternElement } """
+#Pattern = """ + ZeroOrMore( PatternElement ) + """;
 #
-#   # StructFieldDef ::= ( Type | NestedTypeDef ) Identifier [ ArrayDef ] [ SubTypeSpec ] [ OptionalKeyword ]
-#   StructFieldDef = ( Type | NestedTypeDef ) & Identifier & ( ArrayDef )[:1] & ( SubTypeSpec )[:1] & ( OptionalKeyword )[:1];
+## PatternKeyword ::= "pattern"
+#PatternKeyword = Keyword("pattern");
 #
-#   # StructDefBody ::= ( Identifier | AddressKeyword ) "{" [ StructFieldDef { "," StructFieldDef } ] "}"
-#   StructDefBody = ( Identifier | AddressKeyword ) & Literal("{") & ( StructFieldDef & ( Literal(",") & StructFieldDef )[:] )[:1] & Literal("}");
+## PatternParticle ::= Pattern | ReferencedValue
+#PatternParticle = Pattern | ReferencedValue;
 #
-#   # RecordKeyword ::= "record"
-#   RecordKeyword = Literal("record");
+## CharStringMatch ::= PatternKeyword PatternParticle { "&" PatternParticle }
+#CharStringMatch = PatternKeyword + PatternParticle + ZeroOrMore( "&" + PatternParticle );
 #
-#   # RecordDef ::= RecordKeyword StructDefBody
-#   RecordDef = RecordKeyword StructDefBody;
-#   
-#   # StructuredTypeDef ::= RecordDef | UnionDef | SetDef | RecordOfDef | SetOfDef | EnumDef | PortDef | ComponentDef
-#   StructuredTypeDef = RecordDef | UnionDef | SetDef | RecordOfDef | SetOfDef | EnumDef | PortDef | ComponentDef;
-#   
-#   # TypeDefKeyword ::= "type"
-#   TypeDefKeyword = Literal("type");
-#   
-#   # TypeDefBody ::= StructuredTypeDef | SubTypeDef
-#   TypeDefBody = StructuredTypeDef | SubTypeDef;
-#   
-#   # TypeDef ::= TypeDefKeyword TypeDefBody
-#   TypeDef = TypeDefKeyword & TypeDefBody;
-#   
-#   # Visibility ::= "public" | "friend" | "private"
-#   Visibility = Literal("public") | Literal("friend") | Literal("private");
-#   
-#   # ModuleDefinition ::= ( ( [ Visibility ] ( TypeDef | ConstDef | TemplateDef | ModuleParDef | FunctionDef | SignatureDef | TestcaseDef | AltstepDef | ImportDef | ExtFunctionDef | ExtConstDef ) ) | ( [ "public" ] GroupDef ) | ( [ "private" ] FriendModuleDef ) ) [ WithStatement ]
-#   ModuleDefinition = ( ( ( Visibility )[:1] & ( TypeDef | ConstDef | TemplateDef | ModuleParDef | FunctionDef | SignatureDef | TestcaseDef | AltstepDef | ImportDef | ExtFunctionDef | ExtConstDef ) ) | ( ( Literal("public") )[:1] & GroupDef ) | ( ( Literal("private") )[:1] & FriendModuleDef ) ) & ( WithStatement )[:1];
-#   
-#   # ModuleDefinitionsList ::= { ModuleDefinition [ SemiColon ] }+
-#   ModuleDefinitionsList = ( ModuleDefinition & ( SemiColon )[:1] )[1:];
+## OctOrMatch ::= Oct | AnyValue | AnyOrOmit
+#OctOrMatch = Oct | AnyValue | AnyOrOmit;
 #
-#   # LanguageKeyword ::= "language"
-#   LanguageKeyword = Literal("language");
+## OctetStringMatch ::= "'" { OctOrMatch } "'" "O"
+#OctetStringMatch = "'" + ZeroOrMore( OctOrMatch ) + "'" + "O";
 #
-#   # LanguageSpec ::= LanguageKeyword FreeText { "," FreeText }
-#   LanguageSpec = LanguageKeyword & FreeText & ( Literal(",") & FreeText )[:];
+## HexOrMatch ::= Hex | AnyValue | AnyOrOmit
+#HexOrMatch = Hex | AnyValue | AnyOrOmit;
 #
-#   # ModuleId ::= Identifier [ LanguageSpec ]
-#   ModuleId = Identifier & ( LanguageSpec )[:1];
+## HexStringMatch ::= "'" { HexOrMatch } "'" "H"
+#HexStringMatch = "'" + ZeroOrMore( HexOrMatch ) + "'" + "H";
 #
-#   # TTCN3ModuleKeyword ::= "module"
-#   TTCN3ModuleKeyword = Literal("module");
+## BinOrMatch ::= Bin | AnyValue | AnyOrOmit
+#BinOrMatch = Bin | AnyValue | AnyOrOmit;
 #
-#   # TTCN3Module ::= TTCN3ModuleKeyword ModuleId "{" [ ModuleDefinitionsList ] [ ModuleControlPart ] "}" [ WithStatement ] [ SemiColon ]
-#   TTCN3Module = TTCN3ModuleKeyword & ModuleId & Literal("{") & ( ModuleDefinitionsList )[:1] & ( ModuleControlPart )[:1] & Literal("}") & ( WithStatement )[:1] & ( SemiColon )[:1]
+## BitStringMatch ::= "'" { BinOrMatch } "'" "B"
+#BitStringMatch = "'" + ZeroOrMore( BinOrMatch ) + "'" + "B";
+#
+## ExtraMatchingAttributes ::= StringLength | IfPresentKeyword | ( StringLength IfPresentKeyword )
+#ExtraMatchingAttributes = StringLength | IfPresentKeyword | ( StringLength + IfPresentKeyword );
+#
+## MatchingSymbol ::= Complement | ( AnyValue [ WildcardLengthMatch ] ) | ( AnyOrOmit [ WildcardLengthMatch ] ) | ListOfTemplates | Range | BitStringMatch | HexStringMatch | OctetStringMatch | CharStringMatch | SubsetMatch | SupersetMatch
+#MatchingSymbol = Complement | ( AnyValue + Optional( WildcardLengthMatch ) ) | ( AnyOrOmit + Optional( WildcardLengthMatch ) ) | ListOfTemplates | Range | BitStringMatch | HexStringMatch | OctetStringMatch | CharStringMatch | SubsetMatch | SupersetMatch;
+#
+## ArrayElementSpec ::= Minus | PermutationMatch | TemplateBody
+#ArrayElementSpec = Minus | PermutationMatch | TemplateBody;
+#
+## ArrayElementSpecList ::= ArrayElementSpec { "," ArrayElementSpec }
+#ArrayElementSpecList = ArrayElementSpec + ZeroOrMore( "," + ArrayElementSpec );
+#
+## ArrayValueOrAttrib ::= "{" [ ArrayElementSpecList ] "}"
+#ArrayValueOrAttrib = "{" + Optional( ArrayElementSpecList ) +"}"
+#
+## FieldOrBitNumber ::= SingleExpression
+#FieldOrBitNumber = SingleExpression;
+#
+## ArrayOrBitRef ::= "[" FieldOrBitNumber "]"
+#ArrayOrBitRef = "[" + FieldOrBitNumber + "]";
+#
+## ParRef ::= Identifier
+#ParRef = Identifier;
+#
+## StructFieldRef ::= Identifier | PredefinedType | TypeReference
+#StructFieldRef = Identifier | PredefinedType | TypeReference;
+#
+## FieldReference ::= StructFieldRef | ArrayOrBitRef | ParRef
+#FieldReference = StructFieldRef | ArrayOrBitRef | ParRef;
+#
+## FieldSpec ::= FieldReference AssignmentChar ( TemplateBody | Minus )
+#FieldSpec = FieldReference + AssignmentChar + ( TemplateBody | Minus );
+#
+## FieldSpecList ::= "{" FieldSpec { "," FieldSpec } "}"
+#FieldSpecList = "{" + FieldSpec + ZeroOrMore( "," + FieldSpec ) + "}"
+#
+## SingleTemplateExpression ::= MatchingSymbol | ( TemplateRefWithParList [ ExtendedFieldReference ] )
+#SingleTemplateExpression = MatchingSymbol | ( TemplateRefWithParList + Optional( ExtendedFieldReference ) );
+#
+## SimpleTemplateSpec ::= SingleTemplateExpression [ "&" SimpleSpec ]
+#SimpleTemplateSpec = SingleTemplateExpression + Optional( "&" + SimpleSpec );
+#
+## SimpleSpec ::= ( SingleExpression [ "&" SimpleTemplateSpec ] ) | SimpleTemplateSpec
+#SimpleSpec = ( SingleExpression + Optional( "&" + SimpleTemplateSpec ) ) | SimpleTemplateSpec;
+#
+## TemplateBody ::= ( SimpleSpec | FieldSpecList | ArrayValueOrAttrib ) [ ExtraMatchingAttributes ]
+#TemplateBody = ( SimpleSpec | FieldSpecList | ArrayValueOrAttrib ) + Optional( ExtraMatchingAttributes );
+#
+## TemplateOrValueFormalPar ::= FormalValuePar | FormalTemplatePar
+#TemplateOrValueFormalPar = FormalValuePar | FormalTemplatePar;
+#
+## TemplateOrValueFormalParList ::= TemplateOrValueFormalPar { "," TemplateOrValueFormalPar }
+#TemplateOrValueFormalParList = TemplateOrValueFormalPar + ZeroOrMore( "," + TemplateOrValueFormalPar );
+#
+## ModifiesKeyword ::= "modifies"
+#ModifiesKeyword = Keyword("modifies");
+#
+## DerivedDef ::= ModifiesKeyword ExtendedIdentifier
+#DerivedDef = ModifiesKeyword + ExtendedIdentifier;
+#
+## TemplateKeyword ::= "template"
+#TemplateKeyword = Keyword("template");
+#
+## BaseTemplate ::= ( Type | Signature ) Identifier [ "(" TemplateOrValueFormalParList ")" ]
+#BaseTemplate = ( Type | Signature ) + Identifier + Optional( "(" + TemplateOrValueFormalParList + ")" );
+#
+## TemplateDef ::= TemplateKeyword [ TemplateRestriction ] BaseTemplate [ DerivedDef ] AssignmentChar TemplateBody
+#TemplateDef = TemplateKeyword + Optional( TemplateRestriction ) + BaseTemplate + Optional( DerivedDef ) + AssignmentChar + TemplateBody;
+#
+## ConstKeyword ::= "const"
+#ConstKeyword = Keyword("const");
+#
+## SingleConstDef ::= Identifier [ ArrayDef ] AssignmentChar ConstantExpression
+#SingleConstDef = Identifier + Optional( ArrayDef ) + AssignmentChar + ConstantExpression;
+#
+## ConstList ::= SingleConstDef { "," SingleConstDef }
+#ConstList = SingleConstDef + ZeroOrMore( "," + SingleConstDef );
+#
+## ConstDef ::= ConstKeyword Type ConstList
+#ConstDef = ConstKeyword + Type + ConstList;
+#
+## PortElement ::= Identifier [ ArrayDef ]
+#PortElement = Identifier + Optional( ArrayDef );
+#
+## PortInstance ::= PortKeyword ExtendedIdentifier PortElement { "," PortElement }
+#PortInstance = PortKeyword + ExtendedIdentifier + PortElement + ZeroOrMore( "," + PortElement );
+#
+## ComponentElementDef ::= PortInstance | VarInstance | TimerInstance | ConstDef
+#ComponentElementDef = PortInstance | VarInstance | TimerInstance | ConstDef;
+#
+## ComponentDefList ::= { ComponentElementDef [ WithStatement ] [ SemiColon ] }
+#ComponentDefList = ZeroOrMore( ComponentElementDef + Optional( WithStatement ) + Optional( SemiColon ) );
+#
+## ComponentType ::= ExtendedIdentifier
+#ComponentType = ExtendedIdentifier;
+#
+## ExtendsKeyword ::= "extends"
+#ExtendsKeyword = Keyword("extends");
+#
+## ComponentKeyword ::= "component"
+#ComponentKeyword = Keyword("component");
+#
+## ComponentDef ::= ComponentKeyword Identifier [ ExtendsKeyword ComponentType { "," ComponentType } ] "{" [ ComponentDefList ] "}"
+#ComponentDef = ComponentKeyword + Identifier + Optional( ExtendsKeyword + ComponentType + ZeroOrMore( "," + ComponentType ) ) + "ZeroOrMore(" + Optional( ComponentDefList ) + ")";
+#
+## ProcOrType ::= Signature | Type
+#ProcOrType = Signature | Type;
+#
+## ProcOrTypeList ::= AllKeyword | ( ProcOrType { "," ProcOrType } )
+#ProcOrTypeList = AllKeyword | ( ProcOrType + ZeroOrMore( "," + ProcOrType ) );
+#
+## MixedList ::= Direction ProcOrTypeList
+#MixedList = Direction + ProcOrTypeList;
+#
+## MixedKeyword ::= "mixed"
+#MixedKeyword = Keyword("mixed");
+#
+## MixedAttribs ::= MixedKeyword "{" { ( AddressDecl | MixedList | ConfigParamDef ) [ SemiColon ] }+ "}"
+#MixedAttribs = MixedKeyword + "OneOrMore(" + ZeroOrMore( ( AddressDecl | MixedList | ConfigParamDef ) + Optional( SemiColon ) ) + ")";
+#
+## SignatureList ::= Signature { "," Signature }
+#SignatureList = Signature + ZeroOrMore( "," + Signature );
+#
+## AllOrSignatureList ::= AllKeyword | SignatureList
+#AllOrSignatureList = AllKeyword | SignatureList;
+#
+## ProcedureList ::= Direction AllOrSignatureList
+#ProcedureList = Direction + AllOrSignatureList;
+#
+## ProcedureKeyword ::= "procedure"
+#ProcedureKeyword = Keyword("procedure");
+#
+## ProcedureAttribs ::= ProcedureKeyword "{" { ( AddressDecl | ProcedureList | ConfigParamDef ) [ SemiColon ] }+ "}"
+#ProcedureAttribs = ProcedureKeyword + "{" + OneOrMore( ( AddressDecl | ProcedureList | ConfigParamDef ) + Optional( SemiColon ) ) + "}"
+#
+## TypeList ::= Type { "," Type }
+#TypeList = Type + ZeroOrMore( "," + Type );
+#
+## AllKeyword ::= "all"
+#AllKeyword = Keyword("all");
+#
+## AllOrTypeList ::= AllKeyword | TypeList
+#AllOrTypeList = AllKeyword | TypeList;
+#
+## MessageKeyword ::= "message"
+#MessageKeyword = Keyword("message");
+#
+## Direction ::= InParKeyword | OutParKeyword | InOutParKeyword
+#Direction = InParKeyword | OutParKeyword | InOutParKeyword;
+#
+## MessageList ::= Direction AllOrTypeList
+#MessageList = Direction + AllOrTypeList;
+#
+## AddressDecl ::= AddressKeyword Type
+#AddressDecl = AddressKeyword + Type;
+#
+## UnmapParamDef ::= UnmapKeyword ParamKeyword "(" FormalValuePar { "," FormalValuePar } ")"
+#UnmapParamDef = UnmapKeyword + ParamKeyword + "(" + FormalValuePar + ZeroOrMore( "," + FormalValuePar ) + ")";
+#
+## MapParamDef ::= MapKeyword ParamKeyword "(" FormalValuePar { "," FormalValuePar } ")"
+#MapParamDef = MapKeyword + ParamKeyword + "(" + FormalValuePar + ZeroOrMore( "," + FormalValuePar ) + ")";
+#
+## ConfigParamDef ::= MapParamDef | UnmapParamDef
+#ConfigParamDef = MapParamDef | UnmapParamDef;
+#
+## MessageAttribs ::= MessageKeyword "{" { ( AddressDecl | MessageList | ConfigParamDef ) [ SemiColon ] }+ "}"
+#MessageAttribs = MessageKeyword + "OneOrMore(" + ZeroOrMore( ( AddressDecl | MessageList | ConfigParamDef ) + Optional( SemiColon ) ) + ")";
+#
+## PortDefAttribs ::= MessageAttribs | ProcedureAttribs | MixedAttribs
+#PortDefAttribs = MessageAttribs | ProcedureAttribs | MixedAttribs;
+#
+## PortKeyword ::= "port"
+#PortKeyword = Keyword("port");
+#
+## PortDefBody ::= Identifier PortDefAttribs
+#PortDefBody = Identifier + PortDefAttribs;
+#
+## PortDef ::= PortKeyword PortDefBody
+#PortDef = PortKeyword + PortDefBody;
+#
+## LengthKeyword ::= "length"
+#LengthKeyword = Keyword("length");
+#
+## StringLength ::= LengthKeyword "(" SingleExpression [ ".." Bound ] ")"
+#StringLength = LengthKeyword + "(" + SingleExpression + Optional( ".." + Bound ) + ")";
+#
+## RangeDef ::= Bound ".." Bound
+#RangeDef = Bound + ".." + Bound;
+#
+## TemplateOrRange ::= RangeDef | TemplateBody | Type
+#TemplateOrRange = RangeDef | TemplateBody | Type;
+#
+## AllowedValuesSpec ::= "(" ( ( TemplateOrRange { "," TemplateOrRange } ) | CharStringMatch ) ")"
+#AllowedValuesSpec = "(" + ( ( TemplateOrRange + ZeroOrMore( "," + TemplateOrRange ) ) | CharStringMatch ) + ")";
+#
+## SubTypeSpec ::= AllowedValuesSpec [ StringLength ] | StringLength
+#SubTypeSpec = AllowedValuesSpec + Optional( StringLength ) | StringLength;
+#
+## SubTypeDef ::= Type ( Identifier | AddressKeyword ) [ ArrayDef ] [ SubTypeSpec ]
+#SubTypeDef = Type + ( Identifier | AddressKeyword ) + Optional( ArrayDef ) + Optional( SubTypeSpec );
+#
+## Enumeration ::= Identifier [ "(" [ Minus ] Number ")" ]
+#Enumeration = Identifier + Optional( "(" + [ + Minus ) + Number + ")" + ];
+#
+## EnumerationList ::= Enumeration { "," Enumeration }
+#EnumerationList = Enumeration + ZeroOrMore( "," + Enumeration );
+#
+## EnumKeyword ::= "enumerated"
+#EnumKeyword = Keyword("enumerated");
+#
+## EnumDef ::= EnumKeyword ( Identifier | AddressKeyword ) "{" EnumerationList "}"
+#EnumDef = EnumKeyword + ( Identifier + | + AddressKeyword ) + "{" + EnumerationList + "}"
+#
+## SetOfDef ::= SetKeyword [ StringLength ] OfKeyword StructOfDefBody
+#SetOfDef = SetKeyword + Optional( StringLength ) + OfKeyword + StructOfDefBody;
+#
+## StructOfDefBody ::= ( Type | NestedTypeDef ) ( Identifier | AddressKeyword ) [ SubTypeSpec ]
+#StructOfDefBody = ( Type | NestedTypeDef ) + ( Identifier | AddressKeyword ) + Optional( SubTypeSpec );
+#
+## OfKeyword ::= "of"
+#OfKeyword = Keyword("of");
+#
+## RecordOfDef ::= RecordKeyword [ StringLength ] OfKeyword StructOfDefBody
+#RecordOfDef = RecordKeyword + Optional( StringLength ) + OfKeyword + StructOfDefBody;
+#
+## SetKeyword ::= "set"
+#SetKeyword = Keyword("set");
+#
+## SetDef ::= SetKeyword StructDefBody
+#SetDef = SetKeyword + StructDefBody;
+#
+## UnionFieldDef ::= ( Type | NestedTypeDef ) Identifier [ ArrayDef ] [ SubTypeSpec ]
+#UnionFieldDef = ( Type | NestedTypeDef ) + Identifier + Optional( ArrayDef ) + Optional( SubTypeSpec );
+#
+## UnionDefBody ::= ( Identifier | AddressKeyword ) "{" UnionFieldDef { "," UnionFieldDef } "}"
+#UnionDefBody = ( Identifier + | + AddressKeyword ) + "{" + UnionFieldDef + ZeroOrMore( "," + UnionFieldDef ) + "}";
+#
+## UnionKeyword ::= "union"
+#UnionKeyword = Keyword("union");
+#
+## UnionDef ::= UnionKeyword UnionDefBody
+#UnionDef = UnionKeyword + UnionDefBody;
+#
+## OptionalKeyword ::= "optional"
+#OptionalKeyword = Keyword("optional");
+#
+## NestedEnumDef ::= EnumKeyword "{" EnumerationList "}"
+#NestedEnumDef = EnumKeyword + "{" + EnumerationList + "}"
+#
+## NestedSetOfDef ::= SetKeyword [ StringLength ] OfKeyword ( Type | NestedTypeDef )
+#NestedSetOfDef = SetKeyword + Optional( StringLength ) + OfKeyword + ( Type | NestedTypeDef );
+#
+## NestedRecordOfDef ::= RecordKeyword [ StringLength ] OfKeyword ( Type | NestedTypeDef )
+#NestedRecordOfDef = RecordKeyword + Optional( StringLength ) + OfKeyword + ( Type | NestedTypeDef );
+#
+## NestedSetDef ::= SetKeyword "{" [ StructFieldDef { "," StructFieldDef } ] "}"
+#NestedSetDef = SetKeyword + "{" + Optional( delimitedList( StructFieldDef ) ) + "}";
+#
+## NestedUnionDef ::= UnionKeyword "{" UnionFieldDef { "," UnionFieldDef } "}"
+#NestedUnionDef = UnionKeyword + "{" + delimitedList( UnionFieldDef ) + "}";
+#
+## NestedRecordDef ::= RecordKeyword "{" [ StructFieldDef { "," StructFieldDef } ] "}"
+#NestedRecordDef = RecordKeyword + "{" + Optional( delimitedList( StructFieldDef ) ) + "}"
+#
+## NestedTypeDef ::= NestedRecordDef | NestedUnionDef | NestedSetDef | NestedRecordOfDef | NestedSetOfDef | NestedEnumDef
+#NestedTypeDef = NestedRecordDef | NestedUnionDef | NestedSetDef | NestedRecordOfDef | NestedSetOfDef | NestedEnumDef;
+#
+## StructFieldDef ::= ( Type | NestedTypeDef ) Identifier [ ArrayDef ] [ SubTypeSpec ] [ OptionalKeyword ]
+#StructFieldDef = ( Type | NestedTypeDef ) + Identifier + Optional( ArrayDef ) + Optional( SubTypeSpec ) + Optional( OptionalKeyword );
+#
+## StructDefBody ::= ( Identifier | AddressKeyword ) "{" [ StructFieldDef { "," StructFieldDef } ] "}"
+#StructDefBody = ( Identifier + | + AddressKeyword ) + "{" + Optional( delimitedList( StructFieldDef ) ) + "}";
+#
+## RecordKeyword ::= "record"
+#RecordKeyword = Keyword("record");
+#
+## RecordDef ::= RecordKeyword StructDefBody
+#RecordDef = RecordKeyword + StructDefBody;
+#
+## StructuredTypeDef ::= RecordDef | UnionDef | SetDef | RecordOfDef | SetOfDef | EnumDef | PortDef | ComponentDef
+#StructuredTypeDef = RecordDef | UnionDef | SetDef | RecordOfDef | SetOfDef | EnumDef | PortDef | ComponentDef;
+#
+## TypeDefKeyword ::= "type"
+#TypeDefKeyword = Keyword("type");
+#
+## TypeDefBody ::= StructuredTypeDef | SubTypeDef
+#TypeDefBody = StructuredTypeDef | SubTypeDef;
+#
+## TypeDef ::= TypeDefKeyword TypeDefBody
+#TypeDef = TypeDefKeyword + TypeDefBody;
+#
+## Visibility ::= "public" | "friend" | "private"
+#Visibility = Keyword("public") | Keyword("friend") | Keyword("private");
+#
+## ModuleDefinition ::= ( ( [ Visibility ] ( TypeDef | ConstDef | TemplateDef | ModuleParDef | FunctionDef | SignatureDef | TestcaseDef | AltstepDef | ImportDef | ExtFunctionDef | ExtConstDef ) ) | ( [ "public" ] GroupDef ) | ( [ "private" ] FriendModuleDef ) ) [ WithStatement ]
+#ModuleDefinition = ( ( Optional( Visibility ) + ( TypeDef | ConstDef | TemplateDef | ModuleParDef | FunctionDef | SignatureDef | TestcaseDef | AltstepDef | ImportDef | ExtFunctionDef | ExtConstDef ) ) | ( Optional( "public" ) + GroupDef ) | ( Optional( "private" ) + FriendModuleDef ) ) + Optional( WithStatement );
+#
+## ModuleDefinitionsList ::= { ModuleDefinition [ SemiColon ] }+
+#ModuleDefinitionsList = OneOrMore( ModuleDefinition + Optional( SemiColon ) );
+#
+## LanguageKeyword ::= "language"
+#LanguageKeyword = Keyword("language");
+#
+## LanguageSpec ::= LanguageKeyword FreeText { "," FreeText }
+#LanguageSpec = LanguageKeyword + FreeText + ZeroOrMore( "," + FreeText );
+#
+## ModuleId ::= Identifier [ LanguageSpec ]
+#ModuleId = Identifier + Optional( LanguageSpec );
+#
+## TTCN3ModuleKeyword ::= "module"
+#TTCN3ModuleKeyword = Keyword("module");
+#
+## TTCN3Module ::= TTCN3ModuleKeyword ModuleId "{" [ ModuleDefinitionsList ] [ ModuleControlPart ] "}" [ WithStatement ] [ SemiColon ]
+#TTCN3Module = TTCN3ModuleKeyword + ModuleId + "{" + Optional( ModuleDefinitionsList ) + Optional( ModuleControlPart ) + "}" + Optional( WithStatement ) + Optional( SemiColon );
+#
 
 def parse(text):
    print "**>>", (TTCN3Module & Eof()).parse(text);
