@@ -269,6 +269,30 @@ CompoundConstExpression = FieldConstExpressionList | ArrayConstExpression;
 # BooleanExpression ::= SingleExpression
 BooleanExpression << SingleExpression;
 
+# ConstantExpression ::= SingleExpression | CompoundConstExpression
+ConstantExpression << ( SingleExpression | CompoundConstExpression );
+
+# NotUsedOrExpression ::= Expression | Minus
+NotUsedOrExpression = Expression | Minus;
+
+# ArrayElementExpressionList ::= NotUsedOrExpression { "," NotUsedOrExpression }
+ArrayElementExpressionList = delimitedList( NotUsedOrExpression );
+
+# ArrayExpression ::= "{" [ ArrayElementExpressionList ] "}"
+ArrayExpression = "{" + Optional( ArrayElementExpressionList ) + "}";
+
+# FieldExpressionSpec ::= FieldReference AssignmentChar NotUsedOrExpression
+FieldExpressionSpec = FieldReference + AssignmentChar + NotUsedOrExpression;
+
+# FieldExpressionList ::= "{" FieldExpressionSpec { "," FieldExpressionSpec } "}"
+FieldExpressionList = "{" + delimitedList( FieldExpressionSpec ) + "}";
+
+# CompoundExpression ::= FieldExpressionList | ArrayExpression
+CompoundExpression << ( FieldExpressionList | ArrayExpression );
+
+# Expression ::= SingleExpression | CompoundExpression
+Expression << ( SingleExpression | CompoundExpression );
+
 #TMP
 InLineTemplate << ( Literal("42") | Identifier ); # TEMP
 StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
@@ -286,34 +310,9 @@ PredefinedType << Identifier;
 ArrayOrBitRef << Identifier;
 Value << ( Identifier | Word(nums) | Word(alphanums)) ; 
 VariableRef << Identifier;
-Expression << SingleExpression;
 TemplateBody << Identifier;
 ConstantExpression << SingleExpression;
 FieldReference << Identifier;
-## ConstantExpression ::= SingleExpression | CompoundConstExpression
-#ConstantExpression = SingleExpression | CompoundConstExpression;
-#
-## NotUsedOrExpression ::= Expression | Minus
-#NotUsedOrExpression = Expression | Minus;
-#
-## ArrayElementExpressionList ::= NotUsedOrExpression { "," NotUsedOrExpression }
-#ArrayElementExpressionList = delimitedList( NotUsedOrExpression );
-#
-## ArrayExpression ::= "{" [ ArrayElementExpressionList ] "}"
-#ArrayExpression = "ZeroOrMore(" + Optional( ArrayElementExpressionList ) + ")";
-#
-## FieldExpressionSpec ::= FieldReference AssignmentChar NotUsedOrExpression
-#FieldExpressionSpec = FieldReference + AssignmentChar + NotUsedOrExpression;
-#
-## FieldExpressionList ::= "{" FieldExpressionSpec { "," FieldExpressionSpec } "}"
-#FieldExpressionList = "ZeroOrMore(" + FieldExpressionSpec + { + "," + FieldExpressionSpec ) + "}";
-#
-## CompoundExpression ::= FieldExpressionList | ArrayExpression
-#CompoundExpression = FieldExpressionList | ArrayExpression;
-#
-## Expression ::= SingleExpression | CompoundExpression
-#Expression = SingleExpression | CompoundExpression;
-#
 ## BasicStatements ::= Assignment | LogStatement | LoopConstruct | ConditionalConstruct | SelectCaseConstruct | StatementBlock
 #BasicStatements = Assignment | LogStatement | LoopConstruct | ConditionalConstruct | SelectCaseConstruct | StatementBlock;
 #
