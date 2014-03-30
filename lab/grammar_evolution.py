@@ -127,18 +127,26 @@ WhileKeyword << Keyword("while");
 # WhileStatement ::= WhileKeyword "(" BooleanExpression ")" StatementBlock
 WhileStatement = WhileKeyword + "(" + BooleanExpression + ")" + StatementBlock;
 
-## Initial ::= VarInstance | Assignment
-#Initial = VarInstance | Assignment;
-#
-## ForKeyword ::= "for"
-#ForKeyword = Keyword("for");
-#
-## ForStatement ::= ForKeyword "(" Initial SemiColon BooleanExpression SemiColon Assignment ")" StatementBlock
-#ForStatement = ForKeyword + "(" + Initial + SemiColon + BooleanExpression + SemiColon + Assignment + ")" + StatementBlock;
-#
+# Initial ::= VarInstance | Assignment
+VarInstance = Forward();
+Assignment = Forward();
+Initial = VarInstance | Assignment;
+
+# ForKeyword ::= "for"
+ForKeyword = Keyword("for");
+
+# ForStatement ::= ForKeyword "(" Initial SemiColon BooleanExpression SemiColon Assignment ")" StatementBlock
+ForStatement = ForKeyword + "(" + \
+                  Group( Group( Initial ).setName("Initial") + \
+                  Suppress(SemiColon) + \
+                  Group( BooleanExpression ).setName("Condition") + \
+                  Suppress(SemiColon) + \
+                  Group( Assignment ).setName("Assignment") ) + \
+               ")" + StatementBlock;
+
 ## LoopConstruct ::= ForStatement | WhileStatement | DoWhileStatement
-#LoopConstruct = ForStatement | WhileStatement | DoWhileStatement;
-#
+LoopConstruct = ForStatement | WhileStatement | DoWhileStatement;
+
 ## LogItem ::= FreeText | InLineTemplate
 #LogItem = FreeText | InLineTemplate;
 #
@@ -154,6 +162,8 @@ ElseKeyword << Keyword("else");
 StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
 SingleExpression << Literal("expression"); 
 BooleanExpression << Literal("isExpression"); 
+VarInstance << "var integer v_i := 0";
+Assignment << (Identifier + ":=" + Identifier);
 ## ShiftOp ::= "<<" | ">>" | "<@" | "@>"
 #ShiftOp = "<<" | ">>" | "<@" | "@>";
 #

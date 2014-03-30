@@ -196,6 +196,13 @@ select (expression)
       }               ''');
       self.assertEqual(result.asList(), ['while', '(', 'isExpression', ')', '{', '}']);
 
+   def test_example_for_loop(self):
+      result = ForStatement.parseString('''
+      for (var integer v_i := 0; isExpression; v_i := some_value) 
+      {
+      }''');
+      self.assertEqual(result.asList(), ['for', '(', [['var integer v_i := 0'], ['isExpression'], ['v_i', ':=', 'some_value']], ')', '{', '}']);
+
 
    # TODO: use this later on
    def sketch_for_the_parse_function_based_on_pyparsing(self):
