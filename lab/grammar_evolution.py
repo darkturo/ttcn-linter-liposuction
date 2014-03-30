@@ -115,8 +115,15 @@ IfKeyword << Keyword("if");
 ConditionalConstruct = Group( IfKeyword + "(" + BooleanExpression + ")" + StatementBlock ) + ZeroOrMore( Group( ElseIfClause ) ) + Optional( Group( ElseClause ) );
 
 # DoKeyword ::= "do"
+DoKeyword = Keyword("do");
+
 # DoWhileStatement ::= DoKeyword StatementBlock WhileKeyword "(" BooleanExpression ")"
+WhileKeyword = Forward();
+DoWhileStatement = DoKeyword + StatementBlock + WhileKeyword + "(" + BooleanExpression + ")";
+
 # WhileKeyword ::= "while"
+WhileKeyword << Keyword("while")
+
 # WhileStatement ::= WhileKeyword "(" BooleanExpression ")" StatementBlock
 # Initial ::= VarInstance | Assignment
 # ForKeyword ::= "for"
