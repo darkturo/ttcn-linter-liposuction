@@ -241,27 +241,14 @@ XorExpression = AndExpression + ZeroOrMore( Keyword("xor") + AndExpression );
 # SingleExpression ::= XorExpression { "or" XorExpression }
 SingleExpression << ( XorExpression + ZeroOrMore( Keyword("or") + XorExpression ) );
 
-#TMP
-InLineTemplate << ( Literal("42") | Identifier ); # TEMP
-StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
-BooleanExpression << Literal("isExpression"); 
-VarInstance << "var integer v_i := 0";
-Assignment << (Identifier + ":=" + Identifier);
-FreeText << ( Combine( Suppress('"') + ZeroOrMore( Word(alphanums + " !") ) + Suppress('"') ) );
-ConfigurationOps << Identifier; 
-GetLocalVerdict << Identifier;
-TimerOps << Identifier;
-TestcaseInstance << Identifier;
-FunctionInstance << Identifier; 
-ExtendedFieldReference << Identifier;
-TemplateOps << Identifier;
-ActivateOp << Identifier;
-PredefinedType << Identifier;
-ArrayOrBitRef << Identifier;
-Value << ( Identifier | Word(nums) | Word(alphanums)) ; 
-## Assignment ::= VariableRef AssignmentChar ( Expression | TemplateBody )
-#Assignment = VariableRef + AssignmentChar + ( Expression | TemplateBody );
-#
+# Assignment ::= VariableRef AssignmentChar ( Expression | TemplateBody )
+VariableRef = Forward();
+Expression = Forward();
+TemplateBody = Forward();
+Assignment << ( VariableRef.setName("lhs") + \
+                AssignmentChar + \
+                ( Expression | TemplateBody ).setName("rhs") );
+
 ## ArrayElementConstExpressionList ::= ConstantExpression { "," ConstantExpression }
 #ArrayElementConstExpressionList = ConstantExpression + ZeroOrMore( "," + ConstantExpression );
 #
@@ -280,6 +267,26 @@ Value << ( Identifier | Word(nums) | Word(alphanums)) ;
 ## BooleanExpression ::= SingleExpression
 #BooleanExpression = SingleExpression;
 #
+#TMP
+InLineTemplate << ( Literal("42") | Identifier ); # TEMP
+StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
+BooleanExpression << Literal("isExpression"); 
+VarInstance << "var integer v_i := 0";
+FreeText << ( Combine( Suppress('"') + ZeroOrMore( Word(alphanums + " !") ) + Suppress('"') ) );
+ConfigurationOps << Identifier; 
+GetLocalVerdict << Identifier;
+TimerOps << Identifier;
+TestcaseInstance << Identifier;
+FunctionInstance << Identifier; 
+ExtendedFieldReference << Identifier;
+TemplateOps << Identifier;
+ActivateOp << Identifier;
+PredefinedType << Identifier;
+ArrayOrBitRef << Identifier;
+Value << ( Identifier | Word(nums) | Word(alphanums)) ; 
+VariableRef << Identifier;
+Expression << SingleExpression;
+TemplateBody << Identifier;
 ## ConstantExpression ::= SingleExpression | CompoundConstExpression
 #ConstantExpression = SingleExpression | CompoundConstExpression;
 #
