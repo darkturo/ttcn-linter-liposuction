@@ -77,11 +77,11 @@ QualifiedIdentifierList = delimitedList( QualifiedIdentifier );
 
 # IdentifierList   ::=    Identifier { "," Identifier }
 IdentifierList = delimitedList( Identifier );
-#
-#   # ExtendedIdentifier     ::=     [ Identifier Dot ] Identifier
-#   ExtendedIdentifier = ( Identifier & Dot )[:1] & Identifier
-#
-#   # CaseKeyword ::= "case"
+
+# ExtendedIdentifier     ::=     [ Identifier Dot ] Identifier
+ExtendedIdentifier = Combine( Optional( Identifier + Dot ) + Identifier );
+
+# CaseKeyword ::= "case"
 #   CaseKeyword = Literal("case");
 #   
 #   # ElseKeyword ::= "else"

@@ -74,6 +74,10 @@ class GrammarTest(unittest.TestCase):
       result = QualifiedIdentifier.parseString('CommonFunctions.f_abracadabra');
       self.assertEqual(result[0], "CommonFunctions.f_abracadabra");
 
+   def test_valid_qualified_identifier_more_than_two_elements(self):
+      result = QualifiedIdentifier.parseString('CommonFunctions.Magic.f_abracadabra');
+      self.assertEqual(result[0], "CommonFunctions.Magic.f_abracadabra");
+
    def test_NOT_Valid_qualified_identifier(self):
       self.assertRaises(ParseException, (QualifiedIdentifier + stringEnd).parseString, "19CommonFunctions.f_abracadabra");
 
@@ -96,6 +100,14 @@ class GrammarTest(unittest.TestCase):
    def test_NOT_valid_identifier_list_mix_of_ids_and_qualifiedids(self):
       self.assertRaises(ParseException, (IdentifierList + stringEnd).parseString, 
                        'f_abracadabra, pl_trampolin, result, Common.f_myfunc, hummer');
+
+   def test_valid_extended_identifier(self):
+      result = ExtendedIdentifier.parseString('CommonFunctions.f_abracadabra2');
+      self.assertEqual(result[0], "CommonFunctions.f_abracadabra2");
+
+   def test_NOT_valid_extended_identifier(self):
+      self.assertRaises(ParseException, (ExtendedIdentifier + stringEnd).parseString, 
+                       'CommonFunctions.MoreMagic.f_abracadabra2');
 
    # TODO: use this later on
    def sketch_for_the_parse_function_based_on_pyparsing(self):
