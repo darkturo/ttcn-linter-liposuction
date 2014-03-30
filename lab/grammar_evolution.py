@@ -192,7 +192,7 @@ OpCall = ConfigurationOps | GetLocalVerdict | TimerOps | TestcaseInstance | ( Fu
 # ExtendedFieldReference ::= { ( Dot ( Identifier | PredefinedType ) ) | ArrayOrBitRef | ( "[" Minus "]" ) }+
 PredefinedType = Forward();
 ArrayOrBitRef = Forward();
-ExtendedFieldReference << OneOrMore( ( Dot + ( Identifier | PredefinedType ) ) | ArrayOrBitRef | ( "[" + Minus + "]" ) );
+ExtendedFieldReference << ( OneOrMore( ( Dot + ( Identifier | PredefinedType ) ) | ArrayOrBitRef | ( "[" + Minus + "]" ) ) );
 
 # Primary ::= OpCall | Value | "(" SingleExpression ")"
 Value = Forward();
@@ -293,80 +293,72 @@ CompoundExpression << ( FieldExpressionList | ArrayExpression );
 # Expression ::= SingleExpression | CompoundExpression
 Expression << ( SingleExpression | CompoundExpression );
 
-#TMP
-InLineTemplate << ( Literal("42") | Identifier ); # TEMP
-StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
-VarInstance << "var integer v_i := 0";
-FreeText << ( Combine( Suppress('"') + ZeroOrMore( Word(alphanums + " !") ) + Suppress('"') ) );
-ConfigurationOps << Identifier; 
-GetLocalVerdict << Identifier;
-TimerOps << Identifier;
-TestcaseInstance << Identifier;
-FunctionInstance << Identifier; 
-ExtendedFieldReference << Identifier;
-TemplateOps << Identifier;
-ActivateOp << Identifier;
-PredefinedType << Identifier;
-ArrayOrBitRef << Identifier;
-Value << ( Identifier | Word(nums) | Word(alphanums)) ; 
-VariableRef << Identifier;
-TemplateBody << Identifier;
-ConstantExpression << SingleExpression;
-FieldReference << Identifier;
-## BasicStatements ::= Assignment | LogStatement | LoopConstruct | ConditionalConstruct | SelectCaseConstruct | StatementBlock
-#BasicStatements = Assignment | LogStatement | LoopConstruct | ConditionalConstruct | SelectCaseConstruct | StatementBlock;
-#
-## ContinueStatement ::= "continue"
-#ContinueStatement = Keyword("continue");
-#
-## BreakStatement ::= "break"
-#BreakStatement = Keyword("break");
-#
-## DeactivateKeyword ::= "deactivate"
-#DeactivateKeyword = Keyword("deactivate");
-#
-## DeactivateStatement ::= DeactivateKeyword [ "(" ComponentOrDefaultReference ")" ]
-#DeactivateStatement = DeactivateKeyword + Optional( "(" + ComponentOrDefaultReference + ")" );
-#
-## ActivateKeyword ::= "activate"
-#ActivateKeyword = Keyword("activate");
-#
-## ActivateOp ::= ActivateKeyword "(" AltstepInstance ")"
-#ActivateOp = ActivateKeyword + "(" + AltstepInstance + ")";
-#
-## RepeatStatement ::= "repeat"
-#RepeatStatement = Keyword("repeat");
-#
-## GotoKeyword ::= "goto"
-#GotoKeyword = Keyword("goto");
-#
-## GotoStatement ::= GotoKeyword Identifier
-#GotoStatement = GotoKeyword + Identifier;
-#
-## LabelKeyword ::= "label"
-#LabelKeyword = Keyword("label");
-#
-## LabelStatement ::= LabelKeyword Identifier
-#LabelStatement = LabelKeyword + Identifier;
-#
-## InterleavedGuard ::= "[" "]" GuardOp
-#InterleavedGuard = "[" + "]" + GuardOp
-#
-## InterleavedGuardElement ::= InterleavedGuard StatementBlock
-#InterleavedGuardElement = InterleavedGuard + StatementBlock;
-#
-## InterleavedGuardList ::= { InterleavedGuardElement [ SemiColon ] }+
-#InterleavedGuardList = OneOrMore( InterleavedGuardElement + Optional( SemiColon ) );
-#
-## InterleavedKeyword ::= "interleave"
-#InterleavedKeyword = Keyword("interleave");
-#
-## InterleavedConstruct ::= InterleavedKeyword "{" InterleavedGuardList "}"
-#InterleavedConstruct = InterleavedKeyword + "{" + InterleavedGuardList + "}"
-#
+# BasicStatements ::= Assignment | LogStatement | LoopConstruct | ConditionalConstruct | SelectCaseConstruct | StatementBlock
+BasicStatements = Assignment | LogStatement | LoopConstruct | ConditionalConstruct | SelectCaseConstruct | StatementBlock;
+
+# ContinueStatement ::= "continue"
+ContinueStatement = Keyword("continue");
+
+# BreakStatement ::= "break"
+BreakStatement = Keyword("break");
+
+# DeactivateKeyword ::= "deactivate"
+DeactivateKeyword = Keyword("deactivate");
+
+# DeactivateStatement ::= DeactivateKeyword [ "(" ComponentOrDefaultReference ")" ]
+ComponentOrDefaultReference = Forward();
+DeactivateStatement = DeactivateKeyword + Optional( "(" + ComponentOrDefaultReference + ")" );
+
+# ActivateKeyword ::= "activate"
+ActivateKeyword = Keyword("activate");
+
+# ActivateOp ::= ActivateKeyword "(" AltstepInstance ")"
+AltstepInstance = Forward();
+ActivateOp << ActivateKeyword + "(" + AltstepInstance + ")";
+
+# RepeatStatement ::= "repeat"
+RepeatStatement = Keyword("repeat");
+
+# GotoKeyword ::= "goto"
+GotoKeyword = Keyword("goto");
+
+# GotoStatement ::= GotoKeyword Identifier
+GotoStatement = GotoKeyword + Identifier;
+
+# LabelKeyword ::= "label"
+LabelKeyword = Keyword("label");
+
+# LabelStatement ::= LabelKeyword Identifier
+LabelStatement = LabelKeyword + Identifier;
+
+# InterleavedGuard ::= "[" "]" GuardOp
+GuardOp = Forward();
+InterleavedGuard = "[" + "]" + GuardOp
+
+# InterleavedGuardElement ::= InterleavedGuard StatementBlock
+InterleavedGuardElement = InterleavedGuard + StatementBlock;
+
+# InterleavedGuardList ::= { InterleavedGuardElement [ SemiColon ] }+
+InterleavedGuardList = OneOrMore( InterleavedGuardElement + Optional( SemiColon ) );
+
+# InterleavedKeyword ::= "interleave"
+InterleavedKeyword = Keyword("interleave");
+
+# InterleavedConstruct ::= InterleavedKeyword "{" InterleavedGuardList "}"
+InterleavedConstruct = InterleavedKeyword + "{" + InterleavedGuardList + "}"
+
 ## GuardOp ::= TimeoutStatement | ReceiveStatement | TriggerStatement | GetCallStatement | CatchStatement | CheckStatement | GetReplyStatement | DoneStatement | KilledStatement
-#GuardOp = TimeoutStatement | ReceiveStatement | TriggerStatement | GetCallStatement | CatchStatement | CheckStatement | GetReplyStatement | DoneStatement | KilledStatement;
-#
+TimeoutStatement = Forward();
+ReceiveStatement = Forward();
+TriggerStatement = Forward();
+GetCallStatement = Forward();
+CatchStatement = Forward();
+CheckStatement = Forward();
+GetReplyStatement = Forward();
+DoneStatement = Forward();
+KilledStatement = Forward();
+GuardOp << ( TimeoutStatement | ReceiveStatement | TriggerStatement | GetCallStatement | CatchStatement | CheckStatement | GetReplyStatement | DoneStatement | KilledStatement );
+
 ## AltGuardChar ::= "[" [ BooleanExpression ] "]"
 #AltGuardChar = "[" + Optional( BooleanExpression ) + "]";
 #
@@ -503,6 +495,25 @@ FieldReference << Identifier;
 ## universal charstring a character from any character set defined in ISO/IEC 10646
 #Char = Word(srange(r"[\0x00-\0x7F]", max=1) | Word(unicodeString, max=1) 
 #
+#TMP
+InLineTemplate << ( Literal("42") | Identifier ); # TEMP
+StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
+VarInstance << "var integer v_i := 0";
+FreeText << ( Combine( Suppress('"') + ZeroOrMore( Word(alphanums + " !") ) + Suppress('"') ) );
+ConfigurationOps << Identifier; 
+GetLocalVerdict << Identifier;
+TimerOps << Identifier;
+TestcaseInstance << Identifier;
+FunctionInstance << Identifier; 
+ExtendedFieldReference << Identifier;
+TemplateOps << Identifier;
+PredefinedType << Identifier;
+ArrayOrBitRef << Identifier;
+Value << ( Identifier | Word(nums) | Word(alphanums)) ; 
+VariableRef << Identifier;
+TemplateBody << Identifier;
+ConstantExpression << SingleExpression;
+FieldReference << Identifier;
 ## Cstring ::= """ { Char } """
 #Cstring = """ + ZeroOrMore( Char ) + """;
 #
@@ -884,9 +895,9 @@ FieldReference << Identifier;
 ## KillKeyword ::= "kill"
 #KillKeyword = Keyword("kill");
 #
-## ComponentOrDefaultReference ::= VariableRef | FunctionInstance
-#ComponentOrDefaultReference = VariableRef | FunctionInstance;
-#
+# ComponentOrDefaultReference ::= VariableRef | FunctionInstance
+ComponentOrDefaultReference << ( VariableRef | FunctionInstance );
+
 ## KillTCStatement ::= KillKeyword | ( ( ComponentReferenceOrLiteral | AllKeyword ComponentKeyword ) Dot KillKeyword )
 #KillTCStatement = KillKeyword | ( ( ComponentReferenceOrLiteral | AllKeyword + ComponentKeyword ) + Dot + KillKeyword );
 #
@@ -1181,9 +1192,11 @@ FieldReference << Identifier;
 ## ImportDef ::= ImportKeyword ImportFromSpec ( AllWithExcepts | ( "{" ImportSpec "}" ) )
 #ImportDef = ImportKeyword + ImportFromSpec + ( AllWithExcepts | ( "ZeroOrMore(" + ImportSpec + ")" ) );
 #
-## AltstepInstance ::= ExtendedIdentifier "(" [ FunctionActualParList ] ")"
-#AltstepInstance = ExtendedIdentifier + "(" + Optional( FunctionActualParList ) + ")";
-#
+# AltstepInstance ::= ExtendedIdentifier "(" [ FunctionActualParList ] ")"
+FunctionActualParList = Forward();
+AltstepInstance << ExtendedIdentifier + "(" + Optional( FunctionActualParList ) + ")";
+FunctionActualParList << ""; 
+
 ## AltstepLocalDef ::= VarInstance | TimerInstance | ConstDef | TemplateDef
 #AltstepLocalDef = VarInstance | TimerInstance | ConstDef | TemplateDef;
 #
@@ -1251,7 +1264,7 @@ FieldReference << Identifier;
 #FunctionActualPar = ArrayIdentifierRef | InLineTemplate | ComponentRef | Minus;
 #
 ## FunctionActualParList ::= ( FunctionActualPar { "," FunctionActualPar } ) | ( FunctionActualParAssignment { "," FunctionActualParAssignment } )
-#FunctionActualParList = ( FunctionActualPar + ZeroOrMore( "," + FunctionActualPar ) ) | ( FunctionActualParAssignment + ZeroOrMore( "," + FunctionActualParAssignment ) );
+#FunctionActualParList << ( ( FunctionActualPar + ZeroOrMore( "," + FunctionActualPar ) ) | ( FunctionActualParAssignment + ZeroOrMore( "," + FunctionActualParAssignment ) ) );
 #
 ## PreDefFunctionIdentifier ::= Identifier
 #PreDefFunctionIdentifier = Identifier;

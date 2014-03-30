@@ -206,6 +206,30 @@ select (expression)
    def test_log_message(self):
       result = LogStatement.parseString('log("hello world!")');
       self.assertEqual(result.asList(), ['log', '(', "hello world!", ')']);
+
+   def test_assignment_simple(self):
+      result = Assignment.parseString("v_i := 42");
+      self.assertEqual(result.asList(), ['v_i', ':=', "42"]);
+
+   def test_assignment_simple_with_identifier(self):
+      result = Assignment.parseString('''v_i := v_anotherVar''');
+      self.assertEqual(result.asList(), ['v_i', ':=', 'v_anotherVar']);
+   
+   def test_activate_altstep(self):
+      result = ( ActivateOp + stringEnd ).parseString('''activate( as_receiveDWR() )''');
+      self.assertEqual(result.asList(), ['activate', '(', 'as_receiveDWR', '(', ')', ')']);
+
+   def test_deactivate_altstep(self):
+      result = ( DeactivateStatement + stringEnd ).parseString('''deactivate( as_receiveDWR )''');
+      self.assertEqual(result.asList(), ['deactivate', '(', 'as_receiveDWR', ')']);
+
+   def test_label(self):
+      result = LabelStatement.parseString('''label l_myLabel''');
+      self.assertEqual(result.asList(), ['label', 'l_myLabel']);
+
+   def test_goto(self):
+      result = GotoStatement.parseString('''goto l_myLabel''');
+      self.assertEqual(result.asList(), ['goto', 'l_myLabel']);
       
 
    # TODO: use this later on
