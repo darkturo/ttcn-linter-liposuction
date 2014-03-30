@@ -157,36 +157,27 @@ LogKeyword = Keyword("log");
 # LogStatement ::= LogKeyword "(" LogItem { "," LogItem } ")"
 LogStatement = LogKeyword + "(" + delimitedList( LogItem ) + ")";
 
-#TMP
-InLineTemplate << ( Literal("42") | Identifier ); # TEMP
-ElseKeyword << Keyword("else");
-StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
-SingleExpression << Literal("expression"); 
-BooleanExpression << Literal("isExpression"); 
-VarInstance << "var integer v_i := 0";
-Assignment << (Identifier + ":=" + Identifier);
-FreeText << ( Combine( Suppress('"') + ZeroOrMore( Word(alphanums + " !") ) + Suppress('"') ) );
-## ShiftOp ::= "<<" | ">>" | "<@" | "@>"
-#ShiftOp = "<<" | ">>" | "<@" | "@>";
-#
-## StringOp ::= "&"
-#StringOp = "&";
-#
-## EqualOp ::= "==" | "!="
-#EqualOp = "==" | "!=";
-#
-## RelOp ::= "<" | ">" | ">=" | "<="
-#RelOp = "<" | ">" | ">=" | "<=";
-#
-## UnaryOp ::= "+" | "-"
-#UnaryOp = "+" | "-";
-#
-## MultiplyOp ::= "*" | "/" | "mod" | "rem"
-#MultiplyOp = "*" | "/" | Keyword("mod") | Keyword("rem");
-#
-## AddOp ::= "+" | "-" | StringOp
-#AddOp = "+" | "-" | StringOp;
-#
+# ShiftOp ::= "<<" | ">>" | "<@" | "@>"
+ShiftOp = Literal("<<") | Literal(">>") | Literal("<@") | Literal("@>");
+
+# StringOp ::= "&"
+StringOp = Literal("&");
+
+# EqualOp ::= "==" | "!="
+EqualOp = Literal("==") | Literal("!=");
+
+# RelOp ::= "<" | ">" | ">=" | "<="
+RelOp = Literal("<") | Literal(">") | Literal(">=") | Literal("<=");
+
+# UnaryOp ::= "+" | "-"
+UnaryOp = Literal("+") | Literal("-");
+
+# MultiplyOp ::= "*" | "/" | "mod" | "rem"
+MultiplyOp = Literal("*") | Literal("/") | Keyword("mod") | Keyword("rem");
+
+# AddOp ::= "+" | "-" | StringOp
+AddOp = Literal("+") | Literal("-") | StringOp;
+
 ## OpCall ::= ConfigurationOps | GetLocalVerdict | TimerOps | TestcaseInstance | ( FunctionInstance [ ExtendedFieldReference ] ) | ( TemplateOps [ ExtendedFieldReference ] ) | ActivateOp
 #OpCall = ConfigurationOps | GetLocalVerdict | TimerOps | TestcaseInstance | ( FunctionInstance + Optional( ExtendedFieldReference ) ) | ( TemplateOps + Optional( ExtendedFieldReference ) ) | ActivateOp;
 #
@@ -238,6 +229,14 @@ FreeText << ( Combine( Suppress('"') + ZeroOrMore( Word(alphanums + " !") ) + Su
 ## SingleExpression ::= XorExpression { "or" XorExpression }
 #SingleExpression = XorExpression + ZeroOrMore( Keyword("or") + XorExpression );
 #
+#TMP
+InLineTemplate << ( Literal("42") | Identifier ); # TEMP
+StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
+SingleExpression << Literal("expression"); 
+BooleanExpression << Literal("isExpression"); 
+VarInstance << "var integer v_i := 0";
+Assignment << (Identifier + ":=" + Identifier);
+FreeText << ( Combine( Suppress('"') + ZeroOrMore( Word(alphanums + " !") ) + Suppress('"') ) );
 ## Assignment ::= VariableRef AssignmentChar ( Expression | TemplateBody )
 #Assignment = VariableRef + AssignmentChar + ( Expression | TemplateBody );
 #
