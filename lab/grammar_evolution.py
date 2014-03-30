@@ -53,24 +53,24 @@ Bin = Literal("0") | Literal("1");
 
 # Bstring ::= "'" { Bin } "'" "B"
 Bstring = Combine("'" + ZeroOrMore( Bin ) + "'" + "B");
-#
-#   # LowerAlpha ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
-#   LowerAlpha = Literal("a") | Literal("b") | Literal("c") | Literal("d") | Literal("e") | Literal("f") | Literal("g") | Literal("h") | Literal("i") | Literal("j") | Literal("k") | Literal("l") | Literal("m") | Literal("n") | Literal("o") | Literal("p") | Literal("q") | Literal("r") | Literal("s") | Literal("t") | Literal("u") | Literal("v") | Literal("w") | Literal("x") | Literal("y") | Literal("z");
-#
-#   # UpperAlpha ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
-#   UpperAlpha = Literal("A") | Literal("B") | Literal("C") | Literal("D") | Literal("E") | Literal("F") | Literal("G") | Literal("H") | Literal("I") | Literal("J") | Literal("K") | Literal("L") | Literal("M") | Literal("N") | Literal("O") | Literal("P") | Literal("Q") | Literal("R") | Literal("S") | Literal("T") | Literal("U") | Literal("V") | Literal("W") | Literal("X") | Literal("Y") | Literal("Z");
-#
-#   # Alpha ::= UpperAlpha | LowerAlpha
-#   Alpha = UpperAlpha | LowerAlpha;
-#
-#   # AlphaNum ::= Alpha | Num
-#   AlphaNum = Alpha | Num;
-#
-#   # Identifier ::= Alpha { AlphaNum | Underscore }
-#   Identifier = Alpha & ( AlphaNum | Underscore )[:];
-#
-#   # QualifiedIdentifier ::= { Identifier Dot } Identifier
-#   QualifiedIdentifier = ( Identifier & Dot )[:] & Identifier;
+
+# LowerAlpha ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+LowerAlpha = Literal("a") | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z";
+
+# UpperAlpha ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
+UpperAlpha = Literal("A") | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z";
+
+# Alpha ::= UpperAlpha | LowerAlpha
+Alpha = UpperAlpha | LowerAlpha;
+
+# AlphaNum ::= Alpha | Num
+AlphaNum = Alpha | Num;
+
+# Identifier ::= Alpha { AlphaNum | Underscore }
+Identifier = Combine( Alpha + ZeroOrMore( AlphaNum | Underscore ) );
+
+# QualifiedIdentifier ::= { Identifier Dot } Identifier
+QualifiedIdentifier = Combine( ZeroOrMore( Identifier + Dot ) + Identifier );
 #
 #   # QualifiedIdentifierList   ::=    QualifiedIdentifier { "," QualifiedIdentifier }
 #   QualifiedIdentifierList = QualifiedIdentifier & (Literal(",") & QualifiedIdentifier)[:];

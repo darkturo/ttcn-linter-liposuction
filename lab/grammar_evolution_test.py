@@ -58,7 +58,21 @@ class GrammarTest(unittest.TestCase):
 
    def test_01012_is_NOT_a_valid_Bstring(self):
       self.assertRaises(ParseException, (Bstring + stringEnd).parseString, "'01012'B");
+
+   def test_pl_1293_is_a_valid_identifier(self):
+      result = Identifier.parseString('pl_1293');
+      self.assertEqual(result[0], "pl_1293");
       
+   def test_f_superduper_is_a_valid_identifier(self):
+      result = Identifier.parseString('f_superduper');
+      self.assertEqual(result[0], "f_superduper");
+
+   def test_9_val_is_NOT_a_valid_identifier(self):
+      self.assertRaises(ParseException, (Identifier + stringEnd).parseString, "9_val");
+
+   def test_valid_qualified_identifier(self):
+      result = QualifiedIdentifier.parseString('CommonFunctions.f_abracadabra');
+      self.assertEqual(result[0], "CommonFunctions.f_abracadabra");
 
    # TODO: use this later on
    def sketch_for_the_parse_function_based_on_pyparsing(self):
