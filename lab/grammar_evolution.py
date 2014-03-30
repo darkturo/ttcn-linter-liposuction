@@ -249,28 +249,29 @@ Assignment << ( VariableRef.setName("lhs") + \
                 AssignmentChar + \
                 ( Expression | TemplateBody ).setName("rhs") );
 
-## ArrayElementConstExpressionList ::= ConstantExpression { "," ConstantExpression }
-#ArrayElementConstExpressionList = ConstantExpression + ZeroOrMore( "," + ConstantExpression );
-#
-## ArrayConstExpression ::= "{" [ ArrayElementConstExpressionList ] "}"
-#ArrayConstExpression = "ZeroOrMore(" + Optional( ArrayElementConstExpressionList ) + ")";
-#
-## FieldConstExpressionSpec ::= FieldReference AssignmentChar ConstantExpression
-#FieldConstExpressionSpec = FieldReference + AssignmentChar + ConstantExpression;
-#
-## FieldConstExpressionList ::= "{" FieldConstExpressionSpec { "," FieldConstExpressionSpec } "}"
-#FieldConstExpressionList = "ZeroOrMore(" + FieldConstExpressionSpec + { + "," + FieldConstExpressionSpec ) + "}";
-#
-## CompoundConstExpression ::= FieldConstExpressionList | ArrayConstExpression
-#CompoundConstExpression = FieldConstExpressionList | ArrayConstExpression;
-#
-## BooleanExpression ::= SingleExpression
-#BooleanExpression = SingleExpression;
-#
+# ArrayElementConstExpressionList ::= ConstantExpression { "," ConstantExpression }
+ConstantExpression = Forward();
+ArrayElementConstExpressionList = delimitedList( ConstantExpression );
+
+# ArrayConstExpression ::= "{" [ ArrayElementConstExpressionList ] "}"
+ArrayConstExpression = "{" + Optional( ArrayElementConstExpressionList ) + "}";
+
+# FieldConstExpressionSpec ::= FieldReference AssignmentChar ConstantExpression
+FieldReference = Forward();
+FieldConstExpressionSpec = FieldReference + AssignmentChar + ConstantExpression;
+
+# FieldConstExpressionList ::= "{" FieldConstExpressionSpec { "," FieldConstExpressionSpec } "}"
+FieldConstExpressionList = "{" + delimitedList( FieldConstExpressionSpec ) + "}";
+
+# CompoundConstExpression ::= FieldConstExpressionList | ArrayConstExpression
+CompoundConstExpression = FieldConstExpressionList | ArrayConstExpression;
+
+# BooleanExpression ::= SingleExpression
+BooleanExpression << SingleExpression;
+
 #TMP
 InLineTemplate << ( Literal("42") | Identifier ); # TEMP
 StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
-BooleanExpression << Literal("isExpression"); 
 VarInstance << "var integer v_i := 0";
 FreeText << ( Combine( Suppress('"') + ZeroOrMore( Word(alphanums + " !") ) + Suppress('"') ) );
 ConfigurationOps << Identifier; 
@@ -287,6 +288,8 @@ Value << ( Identifier | Word(nums) | Word(alphanums)) ;
 VariableRef << Identifier;
 Expression << SingleExpression;
 TemplateBody << Identifier;
+ConstantExpression << SingleExpression;
+FieldReference << Identifier;
 ## ConstantExpression ::= SingleExpression | CompoundConstExpression
 #ConstantExpression = SingleExpression | CompoundConstExpression;
 #
@@ -294,7 +297,7 @@ TemplateBody << Identifier;
 #NotUsedOrExpression = Expression | Minus;
 #
 ## ArrayElementExpressionList ::= NotUsedOrExpression { "," NotUsedOrExpression }
-#ArrayElementExpressionList = NotUsedOrExpression + ZeroOrMore( "," + NotUsedOrExpression );
+#ArrayElementExpressionList = delimitedList( NotUsedOrExpression );
 #
 ## ArrayExpression ::= "{" [ ArrayElementExpressionList ] "}"
 #ArrayExpression = "ZeroOrMore(" + Optional( ArrayElementExpressionList ) + ")";
@@ -414,7 +417,7 @@ TemplateBody << Identifier;
 #DefOrFieldRef = QualifiedIdentifier | ( ( FieldReference | "[" + Minus + "]" ) + Optional( ExtendedFieldReference ) ) | AllRef;
 #
 ## DefOrFieldRefList ::= DefOrFieldRef { "," DefOrFieldRef }
-#DefOrFieldRefList = DefOrFieldRef + ZeroOrMore( "," + DefOrFieldRef );
+#DefOrFieldRefList = delimitedList( DefOrFieldRef );
 #
 ## AttribQualifier ::= "(" DefOrFieldRefList ")"
 #AttribQualifier = "(" + DefOrFieldRefList + ")";
@@ -724,13 +727,13 @@ TemplateBody << Identifier;
 #VariableEntry = VariableRef | Minus;
 #
 ## VariableList ::= VariableEntry { "," VariableEntry }
-#VariableList = VariableEntry + ZeroOrMore( "," + VariableEntry );
+#VariableList = delimitedList( VariableEntry );
 #
 ## VariableAssignment ::= VariableRef AssignmentChar Identifier
 #VariableAssignment = VariableRef + AssignmentChar + Identifier;
 #
 ## AssignmentList ::= VariableAssignment { "," VariableAssignment }
-#AssignmentList = VariableAssignment + ZeroOrMore( "," + VariableAssignment );
+#AssignmentList = delimitedList( VariableAssignment );
 #
 ## ParamAssignmentList ::= "(" ( AssignmentList | VariableList ) ")"
 #ParamAssignmentList = "(" + ( AssignmentList | VariableList ) + ")";
@@ -778,7 +781,7 @@ TemplateBody << Identifier;
 #SingleValueSpec = VariableRef + Optional( AssignmentChar + FieldReference + ExtendedFieldReference );
 #
 ## ValueSpec ::= ValueKeyword ( VariableRef | ( "(" SingleValueSpec { "," SingleValueSpec } ")" ) )
-#ValueSpec = ValueKeyword + ( VariableRef | ( "(" + SingleValueSpec + ZeroOrMore( "," + SingleValueSpec ) + ")" ) );
+#ValueSpec = ValueKeyword + ( VariableRef | ( "(" + delimitedList( SingleValueSpec ) + ")" ) );
 #
 ## PortRedirectSymbol ::= "->"
 #PortRedirectSymbol = "->";
@@ -862,7 +865,7 @@ TemplateBody << Identifier;
 #ToKeyword = Keyword("to");
 #
 ## AddressRefList ::= "(" InLineTemplate { "," InLineTemplate } ")"
-#AddressRefList = "(" + InLineTemplate + ZeroOrMore( "," + InLineTemplate ) + ")";
+#AddressRefList = "(" + delimitedList( InLineTemplate ) + ")";
 #
 ## ToClause ::= ToKeyword ( InLineTemplate | AddressRefList | AllKeyword ComponentKeyword )
 #ToClause = ToKeyword + ( InLineTemplate | AddressRefList | AllKeyword + ComponentKeyword );
@@ -1006,7 +1009,7 @@ TemplateBody << Identifier;
 #SingleTempVarInstance = Identifier + Optional( ArrayDef ) + Optional( AssignmentChar + TemplateBody );
 #
 ## TempVarList ::= SingleTempVarInstance { "," SingleTempVarInstance }
-#TempVarList = SingleTempVarInstance + ZeroOrMore( "," + SingleTempVarInstance );
+#TempVarList = delimitedList( SingleTempVarInstance );
 #
 ## VarKeyword ::= "var"
 #VarKeyword = Keyword("var");
@@ -1015,7 +1018,7 @@ TemplateBody << Identifier;
 #SingleVarInstance = Identifier + Optional( ArrayDef ) + Optional( AssignmentChar + Expression );
 #
 ## VarList ::= SingleVarInstance { "," SingleVarInstance }
-#VarList = SingleVarInstance + ZeroOrMore( "," + SingleVarInstance );
+#VarList = delimitedList( SingleVarInstance );
 #
 ## VarInstance ::= VarKeyword ( ( Type VarList ) | ( ( TemplateKeyword | RestrictedTemplate ) Type TempVarList ) )
 #VarInstance = VarKeyword + ( ( Type + VarList ) | ( ( TemplateKeyword | RestrictedTemplate ) + Type + TempVarList ) );
@@ -1111,7 +1114,7 @@ TemplateBody << Identifier;
 #AllGroupsWithExcept = AllKeyword + Optional( ExceptKeyword + QualifiedIdentifierList );
 #
 ## GroupRefListWithExcept ::= QualifiedIdentifierWithExcept { "," QualifiedIdentifierWithExcept }
-#GroupRefListWithExcept = QualifiedIdentifierWithExcept + ZeroOrMore( "," + QualifiedIdentifierWithExcept );
+#GroupRefListWithExcept = delimitedList( QualifiedIdentifierWithExcept );
 #
 ## ImportGroupSpec ::= GroupKeyword ( GroupRefListWithExcept | AllGroupsWithExcept )
 #ImportGroupSpec = GroupKeyword + ( GroupRefListWithExcept | AllGroupsWithExcept );
@@ -1195,7 +1198,7 @@ TemplateBody << Identifier;
 #AltstepDef = AltstepKeyword + Identifier + "(" + Optional( FunctionFormalParList ) + ")" + Optional( RunsOnSpec ) + "ZeroOrMore(" + AltstepLocalDefList + AltGuardList + ")";
 #
 ## TestcaseActualParList ::= ( TemplateInstanceActualPar { "," TemplateInstanceActualPar } ) | ( TemplateInstanceAssignment { "," TemplateInstanceAssignment } )
-#TestcaseActualParList = ( TemplateInstanceActualPar + ZeroOrMore( "," + TemplateInstanceActualPar ) ) | ( TemplateInstanceAssignment + ZeroOrMore( "," + TemplateInstanceAssignment ) );
+#TestcaseActualParList = ( delimitedList( TemplateInstanceActualPar ) ) | ( delimitedList( TemplateInstanceAssignment ) );
 #
 ## ExecuteKeyword ::= "execute"
 #ExecuteKeyword = Keyword("execute");
@@ -1231,7 +1234,7 @@ TemplateBody << Identifier;
 #ExceptionSpec = ExceptionKeyword + "(" + TypeList + ")";
 #
 ## SignatureFormalParList ::= FormalValuePar { "," FormalValuePar }
-#SignatureFormalParList = FormalValuePar + ZeroOrMore( "," + FormalValuePar );
+#SignatureFormalParList = delimitedList( FormalValuePar );
 #
 ## SignatureKeyword ::= "signature"
 #SignatureKeyword = Keyword("signature");
