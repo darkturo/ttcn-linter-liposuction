@@ -1,111 +1,112 @@
-from lepl import *;
+from pyparsing import *;
 
-with TraceVariables(), DroppedSpace():
-   InLineTemplate = Literal("inlineTemplate"); # TEMP
-   StatementBlock = Literal("example_block"); # TEMP
-   SingleExpression = Literal("expression"); 
+InLineTemplate = Literal("inlineTemplate"); # TEMP
+StatementBlock = Literal("example_block"); # TEMP
+SingleExpression = Literal("expression"); 
 
-   # AssignmentChar ::= ":="
-   AssignmentChar = Literal(":=");
+# AssignmentChar ::= ":="
+AssignmentChar = Literal(":=");
 
-   # Underscore ::= "_"
-   Underscore = Literal("_");
+# Underscore ::= "_"
+Underscore = Literal("_");
 
-   # Colon ::= ":"
-   Colon = Literal(":");
+# Colon ::= ":"
+Colon = Literal(":");
 
-   # SemiColon ::= ";"
-   SemiColon = Literal(";");
+# SemiColon ::= ";"
+SemiColon = Literal(";");
 
-   # Minus ::= "-"
-   Minus = Literal("-")
+# Minus ::= "-"
+Minus = Literal("-")
 
-   # Dot ::= "."
-   Dot = Literal(".")
+# Dot ::= "."
+Dot = Literal(".")
 
-   # NonZeroNum ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
-   NonZeroNum = Literal("1") | Literal("2") | Literal("3") | Literal("4") | Literal("5") | Literal("6") | Literal("7") | Literal("8") | Literal("9");
+# NonZeroNum ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+# NOTE: I set the first "1" explicity as Literal, so that the | operator
+#       coherces the following numbers.
+NonZeroNum = Literal("1") | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 
-   # Num ::= "0" | NonZeroNum
-   Num = Literal("0") | NonZeroNum;
+# Num ::= "0" | NonZeroNum
+Num = "0" | NonZeroNum
 
-   # DecimalNumber ::= { Num }+
-   DecimalNumber = ( Num )[1:];
+# DecimalNumber ::= { Num }+
+DecimalNumber = Combine( OneOrMore( Num ) );
 
-   # Number ::= ( NonZeroNum { Num } ) | "0"
-   Number = ( NonZeroNum & ( Num )[:] ) | Literal("0");
+# Number ::= ( NonZeroNum { Num } ) | "0"
+Number = Combine( NonZeroNum + ZeroOrMore( Num ) | "0" );
 
-   # Hex ::= Num | "A" | "B" | "C" | "D" | "E" | "F" | "a" | "b" | "c" | "d" | "e" | "f"
-   Hex = Num | Literal("A") | Literal("B") | Literal("C") | Literal("D") | Literal("E") | Literal("F") | Literal("a") | Literal("b") | Literal("c") | Literal("d") | Literal("e") | Literal("f");
+# Hex ::= Num | "A" | "B" | "C" | "D" | "E" | "F" | "a" | "b" | "c" | "d" | "e" | "f"
+Hex = Num | "A" | "B" | "C" | "D" | "E" | "F" | "a" | "b" | "c" | "d" | "e" | "f";
 
-   # Hstring ::= "'" { Hex } "'" "H"
-   Hstring = Literal("'") & ( Hex )[:] & Literal("'") & Literal("H");
+# Hstring ::= "'" { Hex } "'" "H"
+Hstring = "'" + ZeroOrMore( Hex ) + "'" + "H";
 
-   # Oct ::= Hex Hex
-   Oct = Hex & Hex;
+# Oct ::= Hex Hex
+Oct = Hex + Hex
 
-   # Ostring ::= "'" { Oct } "'" "O"
-   Ostring = Literal("'") & ( Oct )[:] & Literal("'") & Literal("O");
+# Ostring ::= "'" { Oct } "'" "O"
+Ostring = "'" + OneOrMore( Oct ) + "'" + "O";
 
-   # Bin ::= "0" | "1"
-   Bin = Literal("0") | Literal("1");
-
-   # Bstring ::= "'" { Bin } "'" "B"
-   Bstring = Literal("'") & ( Bin )[:] & Literal("'") & Literal("B");
-
-   # LowerAlpha ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
-   LowerAlpha = Literal("a") | Literal("b") | Literal("c") | Literal("d") | Literal("e") | Literal("f") | Literal("g") | Literal("h") | Literal("i") | Literal("j") | Literal("k") | Literal("l") | Literal("m") | Literal("n") | Literal("o") | Literal("p") | Literal("q") | Literal("r") | Literal("s") | Literal("t") | Literal("u") | Literal("v") | Literal("w") | Literal("x") | Literal("y") | Literal("z");
-
-   # UpperAlpha ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
-   UpperAlpha = Literal("A") | Literal("B") | Literal("C") | Literal("D") | Literal("E") | Literal("F") | Literal("G") | Literal("H") | Literal("I") | Literal("J") | Literal("K") | Literal("L") | Literal("M") | Literal("N") | Literal("O") | Literal("P") | Literal("Q") | Literal("R") | Literal("S") | Literal("T") | Literal("U") | Literal("V") | Literal("W") | Literal("X") | Literal("Y") | Literal("Z");
-
-   # Alpha ::= UpperAlpha | LowerAlpha
-   Alpha = UpperAlpha | LowerAlpha;
-
-   # AlphaNum ::= Alpha | Num
-   AlphaNum = Alpha | Num;
-
-   # Identifier ::= Alpha { AlphaNum | Underscore }
-   Identifier = Alpha & ( AlphaNum | Underscore )[:];
-
-   # QualifiedIdentifier ::= { Identifier Dot } Identifier
-   QualifiedIdentifier = ( Identifier & Dot )[:] & Identifier;
-
-   # QualifiedIdentifierList   ::=    QualifiedIdentifier { "," QualifiedIdentifier }
-   QualifiedIdentifierList = QualifiedIdentifier & (Literal(",") & QualifiedIdentifier)[:];
-
-   # IdentifierList   ::=    Identifier { "," Identifier }
-   IdentifierList = Identifier & ( Literal(",") & Identifier )[:]
-
-   # ExtendedIdentifier     ::=     [ Identifier Dot ] Identifier
-   ExtendedIdentifier = ( Identifier & Dot )[:1] & Identifier
-
-   # CaseKeyword ::= "case"
-   CaseKeyword = Literal("case");
-   
-   # ElseKeyword ::= "else"
-   ElseKeyword = Literal("else");
-
-   # SelectCase ::= CaseKeyword ( "(" InLineTemplate { "," InLineTemplate } ")" | ElseKeyword ) StatementBlock
-   SelectCase = CaseKeyword & ( Literal("(") & InLineTemplate & ( Literal(",") & InLineTemplate )[:] & Literal(")" ) | ElseKeyword ) & StatementBlock
-
-   # SelectCaseBody ::= "{" { SelectCase }+ "}"
-   SelectCaseBody = Literal("{") & ( SelectCase )[1:] & Literal("}")
-
-   # SelectKeyword ::= "select"
-   SelectKeyword = Literal("select") 
-
-   # SelectCaseConstruct ::= SelectKeyword "(" SingleExpression ")" SelectCaseBody
-   SelectCaseConstruct = SelectKeyword & Literal("(") & SingleExpression & Literal(")") & SelectCaseBody;
-
-#   # ElseClause ::= ElseKeyword StatementBlock
-#   ElseClause = ElseKeyword & StatementBlock;
-
-   TTCN3Module = SelectCaseConstruct 
-   #raiseError = Never ^ "Parsing error: {results[0]}";
-   #TTCN3Module = SelectCaseConstruct % raiseError
-   
-# ElseIfClause ::= ElseKeyword IfKeyword "(" BooleanExpression ")" StatementBlock
+#   # Bin ::= "0" | "1"
+#   Bin = Literal("0") | Literal("1");
+#
+#   # Bstring ::= "'" { Bin } "'" "B"
+#   Bstring = Literal("'") & ( Bin )[:] & Literal("'") & Literal("B");
+#
+#   # LowerAlpha ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+#   LowerAlpha = Literal("a") | Literal("b") | Literal("c") | Literal("d") | Literal("e") | Literal("f") | Literal("g") | Literal("h") | Literal("i") | Literal("j") | Literal("k") | Literal("l") | Literal("m") | Literal("n") | Literal("o") | Literal("p") | Literal("q") | Literal("r") | Literal("s") | Literal("t") | Literal("u") | Literal("v") | Literal("w") | Literal("x") | Literal("y") | Literal("z");
+#
+#   # UpperAlpha ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
+#   UpperAlpha = Literal("A") | Literal("B") | Literal("C") | Literal("D") | Literal("E") | Literal("F") | Literal("G") | Literal("H") | Literal("I") | Literal("J") | Literal("K") | Literal("L") | Literal("M") | Literal("N") | Literal("O") | Literal("P") | Literal("Q") | Literal("R") | Literal("S") | Literal("T") | Literal("U") | Literal("V") | Literal("W") | Literal("X") | Literal("Y") | Literal("Z");
+#
+#   # Alpha ::= UpperAlpha | LowerAlpha
+#   Alpha = UpperAlpha | LowerAlpha;
+#
+#   # AlphaNum ::= Alpha | Num
+#   AlphaNum = Alpha | Num;
+#
+#   # Identifier ::= Alpha { AlphaNum | Underscore }
+#   Identifier = Alpha & ( AlphaNum | Underscore )[:];
+#
+#   # QualifiedIdentifier ::= { Identifier Dot } Identifier
+#   QualifiedIdentifier = ( Identifier & Dot )[:] & Identifier;
+#
+#   # QualifiedIdentifierList   ::=    QualifiedIdentifier { "," QualifiedIdentifier }
+#   QualifiedIdentifierList = QualifiedIdentifier & (Literal(",") & QualifiedIdentifier)[:];
+#
+#   # IdentifierList   ::=    Identifier { "," Identifier }
+#   IdentifierList = Identifier & ( Literal(",") & Identifier )[:]
+#
+#   # ExtendedIdentifier     ::=     [ Identifier Dot ] Identifier
+#   ExtendedIdentifier = ( Identifier & Dot )[:1] & Identifier
+#
+#   # CaseKeyword ::= "case"
+#   CaseKeyword = Literal("case");
+#   
+#   # ElseKeyword ::= "else"
+#   ElseKeyword = Literal("else");
+#
+#   # SelectCase ::= CaseKeyword ( "(" InLineTemplate { "," InLineTemplate } ")" | ElseKeyword ) StatementBlock
+#   SelectCase = CaseKeyword & ( Literal("(") & InLineTemplate & ( Literal(",") & InLineTemplate )[:] & Literal(")" ) | ElseKeyword ) & StatementBlock
+#
+#   # SelectCaseBody ::= "{" { SelectCase }+ "}"
+#   SelectCaseBody = Literal("{") & ( SelectCase )[1:] & Literal("}")
+#
+#   # SelectKeyword ::= "select"
+#   SelectKeyword = Literal("select") 
+#
+#   # SelectCaseConstruct ::= SelectKeyword "(" SingleExpression ")" SelectCaseBody
+#   SelectCaseConstruct = SelectKeyword & Literal("(") & SingleExpression & Literal(")") & SelectCaseBody;
+#
+##   # ElseClause ::= ElseKeyword StatementBlock
+##   ElseClause = ElseKeyword & StatementBlock;
+#
+#   TTCN3Module = SelectCaseConstruct 
+#   #raiseError = Never ^ "Parsing error: {results[0]}";
+#   #TTCN3Module = SelectCaseConstruct % raiseError
+#   
+## ElseIfClause ::= ElseKeyword IfKeyword "(" BooleanExpression ")" StatementBlock
 # IfKeyword ::= "if"
 # ConditionalConstruct ::= IfKeyword "(" BooleanExpression ")" StatementBlock { ElseIfClause } [ ElseClause ]
 # DoKeyword ::= "do"
