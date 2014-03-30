@@ -40,19 +40,19 @@ Number = Combine( NonZeroNum + ZeroOrMore( Num ) | "0" );
 Hex = Num | "A" | "B" | "C" | "D" | "E" | "F" | "a" | "b" | "c" | "d" | "e" | "f";
 
 # Hstring ::= "'" { Hex } "'" "H"
-Hstring = "'" + ZeroOrMore( Hex ) + "'" + "H";
+Hstring = Combine("'" + ZeroOrMore( Hex ) + "'" + "H");
 
 # Oct ::= Hex Hex
 Oct = Hex + Hex
 
 # Ostring ::= "'" { Oct } "'" "O"
-Ostring = "'" + OneOrMore( Oct ) + "'" + "O";
+Ostring = Combine("'" + OneOrMore( Oct ) + "'" + "O");
 
-#   # Bin ::= "0" | "1"
-#   Bin = Literal("0") | Literal("1");
-#
-#   # Bstring ::= "'" { Bin } "'" "B"
-#   Bstring = Literal("'") & ( Bin )[:] & Literal("'") & Literal("B");
+# Bin ::= "0" | "1"
+Bin = Literal("0") | Literal("1");
+
+# Bstring ::= "'" { Bin } "'" "B"
+Bstring = Combine("'" + ZeroOrMore( Bin ) + "'" + "B");
 #
 #   # LowerAlpha ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
 #   LowerAlpha = Literal("a") | Literal("b") | Literal("c") | Literal("d") | Literal("e") | Literal("f") | Literal("g") | Literal("h") | Literal("i") | Literal("j") | Literal("k") | Literal("l") | Literal("m") | Literal("n") | Literal("o") | Literal("p") | Literal("q") | Literal("r") | Literal("s") | Literal("t") | Literal("u") | Literal("v") | Literal("w") | Literal("x") | Literal("y") | Literal("z");

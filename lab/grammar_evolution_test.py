@@ -23,6 +23,43 @@ class GrammarTest(unittest.TestCase):
    def test_033_is_NOT_a_valid_Number(self):
       self.assertRaises(ParseException, (Number + stringEnd).parseString, "033");
 
+   def test_29a_is_a_valid_HexString(self):
+      result = Hstring.parseString("'29a'H");
+      self.assertEqual(result[0], "'29a'H");
+
+   def test_029a_is_also_a_valid_HexString(self):
+      result = Hstring.parseString("'029a'H");
+      self.assertEqual(result[0], "'029a'H");
+
+   def test_47ak_is_NOT_a_valid_HexString(self):
+      self.assertRaises(ParseException, (Hstring + stringEnd).parseString, "'47ak'H");
+
+   def test_ab_is_a_valid_Oct(self):
+      result = Oct.parseString("ab");
+      self.assertEqual("".join(result), "ab");
+
+   def test_abcd_is_NOT_a_valid_Oct(self):
+      self.assertRaises(ParseException, (Oct + stringEnd).parseString, "abcd");
+
+   def test_abcd_is_a_valid_Ostring(self):
+      result = Ostring.parseString("'abcd'O");
+      self.assertEqual(result[0], "'abcd'O");
+
+   def test_12abcd_is_also_a_valid_Ostring(self):
+      result = Ostring.parseString("'12abcd'O");
+      self.assertEqual(result[0], "'12abcd'O");
+
+   def test_12abcd8_is_NOT_a_valid_Ostring(self):
+      self.assertRaises(ParseException, (Ostring + stringEnd).parseString, "'12abcd8'O");
+
+   def test_0101_is_a_valid_Bstring(self):
+      result = Bstring.parseString("'0101'B");
+      self.assertEqual(result[0], "'0101'B");
+
+   def test_01012_is_NOT_a_valid_Bstring(self):
+      self.assertRaises(ParseException, (Bstring + stringEnd).parseString, "'01012'B");
+      
+
    # TODO: use this later on
    def sketch_for_the_parse_function_based_on_pyparsing(self):
       txt="0666";
