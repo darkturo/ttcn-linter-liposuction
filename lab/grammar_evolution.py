@@ -147,15 +147,16 @@ ForStatement = ForKeyword + "(" + \
 ## LoopConstruct ::= ForStatement | WhileStatement | DoWhileStatement
 LoopConstruct = ForStatement | WhileStatement | DoWhileStatement;
 
-## LogItem ::= FreeText | InLineTemplate
-#LogItem = FreeText | InLineTemplate;
-#
-## LogKeyword ::= "log"
-#LogKeyword = Keyword("log");
-#
-## LogStatement ::= LogKeyword "(" LogItem { "," LogItem } ")"
-#LogStatement = LogKeyword + "(" + LogItem + ZeroOrMore( "," + LogItem ) + ")";
-#
+# LogItem ::= FreeText | InLineTemplate
+FreeText = Forward();
+LogItem = FreeText | InLineTemplate;
+
+# LogKeyword ::= "log"
+LogKeyword = Keyword("log");
+
+# LogStatement ::= LogKeyword "(" LogItem { "," LogItem } ")"
+LogStatement = LogKeyword + "(" + delimitedList( LogItem ) + ")";
+
 #TMP
 InLineTemplate << ( Literal("42") | Identifier ); # TEMP
 ElseKeyword << Keyword("else");
@@ -164,6 +165,7 @@ SingleExpression << Literal("expression");
 BooleanExpression << Literal("isExpression"); 
 VarInstance << "var integer v_i := 0";
 Assignment << (Identifier + ":=" + Identifier);
+FreeText << ( Combine( Suppress('"') + ZeroOrMore( Word(alphanums + " !") ) + Suppress('"') ) );
 ## ShiftOp ::= "<<" | ">>" | "<@" | "@>"
 #ShiftOp = "<<" | ">>" | "<@" | "@>";
 #

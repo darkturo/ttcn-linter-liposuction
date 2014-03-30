@@ -203,6 +203,10 @@ select (expression)
       }''');
       self.assertEqual(result.asList(), ['for', '(', [['var integer v_i := 0'], ['isExpression'], ['v_i', ':=', 'some_value']], ')', '{', '}']);
 
+   def test_log_message(self):
+      result = LogStatement.parseString('log("hello world!")');
+      self.assertEqual(result.asList(), ['log', '(', "hello world!", ')']);
+      
 
    # TODO: use this later on
    def sketch_for_the_parse_function_based_on_pyparsing(self):
