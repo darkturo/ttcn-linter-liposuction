@@ -74,6 +74,29 @@ class GrammarTest(unittest.TestCase):
       result = QualifiedIdentifier.parseString('CommonFunctions.f_abracadabra');
       self.assertEqual(result[0], "CommonFunctions.f_abracadabra");
 
+   def test_NOT_Valid_qualified_identifier(self):
+      self.assertRaises(ParseException, (QualifiedIdentifier + stringEnd).parseString, "19CommonFunctions.f_abracadabra");
+
+   def test_valid_qualified_identifier_list(self):
+      result = QualifiedIdentifierList.parseString('CommonFunctions.f_abracadabra, CommonFunctions.f_trampolin');
+      self.assertEqual(result.asList(), ["CommonFunctions.f_abracadabra", "CommonFunctions.f_trampolin"]);
+
+   def test_NOT_valid_qualified_identifier_list(self):
+      self.assertRaises(ParseException, (QualifiedIdentifierList + stringEnd).parseString, 
+                       'CommonFunctions.f_abracadabra, CommonFunctions.3_trampolin');
+
+   def test_valid_identifier_list(self):
+      result = IdentifierList.parseString('f_abracadabra, pl_trampolin, result, prueba');
+      self.assertEqual(result.asList(), ['f_abracadabra', 'pl_trampolin', 'result', 'prueba']);
+
+   def test_NOT_valid_identifier_list_id_should_not_start_with_number(self):
+      self.assertRaises(ParseException, (IdentifierList + stringEnd).parseString, 
+                       'f_abracadabra, pl_trampolin, result, 3m, hummer');
+
+   def test_NOT_valid_identifier_list_mix_of_ids_and_qualifiedids(self):
+      self.assertRaises(ParseException, (IdentifierList + stringEnd).parseString, 
+                       'f_abracadabra, pl_trampolin, result, Common.f_myfunc, hummer');
+
    # TODO: use this later on
    def sketch_for_the_parse_function_based_on_pyparsing(self):
       txt="0666";

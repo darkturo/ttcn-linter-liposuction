@@ -71,12 +71,12 @@ Identifier = Combine( Alpha + ZeroOrMore( AlphaNum | Underscore ) );
 
 # QualifiedIdentifier ::= { Identifier Dot } Identifier
 QualifiedIdentifier = Combine( ZeroOrMore( Identifier + Dot ) + Identifier );
-#
-#   # QualifiedIdentifierList   ::=    QualifiedIdentifier { "," QualifiedIdentifier }
-#   QualifiedIdentifierList = QualifiedIdentifier & (Literal(",") & QualifiedIdentifier)[:];
-#
-#   # IdentifierList   ::=    Identifier { "," Identifier }
-#   IdentifierList = Identifier & ( Literal(",") & Identifier )[:]
+
+# QualifiedIdentifierList   ::=    QualifiedIdentifier { "," QualifiedIdentifier }
+QualifiedIdentifierList = delimitedList( QualifiedIdentifier );
+
+# IdentifierList   ::=    Identifier { "," Identifier }
+IdentifierList = delimitedList( Identifier );
 #
 #   # ExtendedIdentifier     ::=     [ Identifier Dot ] Identifier
 #   ExtendedIdentifier = ( Identifier & Dot )[:1] & Identifier
