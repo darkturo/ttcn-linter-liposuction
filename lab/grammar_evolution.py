@@ -97,24 +97,23 @@ SingleExpression = Forward();
 SelectCaseConstruct = SelectKeyword + "(" + SingleExpression + ")" + SelectCaseBody;
 
 
-#TMP
-InLineTemplate << ( Literal("42") | Identifier ); # TEMP
+# ElseKeyword ::= "else"
 ElseKeyword << Keyword("else");
-StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
-SingleExpression << Literal("expression"); 
 
-## ElseKeyword ::= "else"
-## ElseKeyword ::= "else"
-##   # ElseClause ::= ElseKeyword StatementBlock
-##   ElseClause = ElseKeyword & StatementBlock;
-#
-#   TTCN3Module = SelectCaseConstruct 
-#   #raiseError = Never ^ "Parsing error: {results[0]}";
-#   #TTCN3Module = SelectCaseConstruct % raiseError
-#   
-## ElseIfClause ::= ElseKeyword IfKeyword "(" BooleanExpression ")" StatementBlock
+# ElseClause ::= ElseKeyword StatementBlock
+ElseClause = ElseKeyword + StatementBlock;
+
+# ElseIfClause ::= ElseKeyword IfKeyword "(" BooleanExpression ")" StatementBlock
+IfKeyword = Forward();
+BooleanExpression = Forward();
+ElseIfClause = ElseKeyword + IfKeyword + "(" + BooleanExpression + ")" + StatementBlock;
+
 # IfKeyword ::= "if"
+IfKeyword << Keyword("if");
+
 # ConditionalConstruct ::= IfKeyword "(" BooleanExpression ")" StatementBlock { ElseIfClause } [ ElseClause ]
+ConditionalConstruct = Group( IfKeyword + "(" + BooleanExpression + ")" + StatementBlock ) + ZeroOrMore( Group( ElseIfClause ) ) + Optional( Group( ElseClause ) );
+
 # DoKeyword ::= "do"
 # DoWhileStatement ::= DoKeyword StatementBlock WhileKeyword "(" BooleanExpression ")"
 # WhileKeyword ::= "while"
@@ -124,6 +123,12 @@ SingleExpression << Literal("expression");
 # ForStatement ::= ForKeyword "(" Initial SemiColon BooleanExpression SemiColon Assignment ")" StatementBlock
 # LoopConstruct ::= ForStatement | WhileStatement | DoWhileStatement
 # LogItem ::= FreeText | InLineTemplate
+#TMP
+InLineTemplate << ( Literal("42") | Identifier ); # TEMP
+ElseKeyword << Keyword("else");
+StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
+SingleExpression << Literal("expression"); 
+BooleanExpression << Literal("isExpression"); 
 # LogKeyword ::= "log"
 # LogStatement ::= LogKeyword "(" LogItem { "," LogItem } ")"
 # ShiftOp ::= "<<" | ">>" | "<@" | "@>"

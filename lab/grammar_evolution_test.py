@@ -158,6 +158,33 @@ select (expression)
                                           ['case', 'else', '{', '}']
                                          ], '}']);
 
+   def test_simple_example_with_if(self):
+      result = ConditionalConstruct.parseString('''if (isExpression) { }''');
+      self.assertEqual(result.asList(), [['if', '(', 'isExpression', ')', '{', '}']]);
+
+   def test_example_with_if_else(self):
+      result = ConditionalConstruct.parseString('''if (isExpression) { } else { }''');
+      self.assertEqual(result.asList(), [['if', '(', 'isExpression', ')', '{', '}'], ['else', '{', '}']]);
+
+   def test_example_with_if_ifelse(self):
+      result = ConditionalConstruct.parseString('''if (isExpression) { } else if (isExpression) { }''');
+      self.assertEqual(result.asList(), [['if', '(', 'isExpression', ')', '{', '}'], ['else', 'if', '(', 'isExpression', ')', '{', '}']]);
+
+   def test_example_with_if_ifelse_else(self):
+      result = ConditionalConstruct.parseString('''
+      if (isExpression) 
+      { 
+      } 
+      else if (isExpression) 
+      { 
+      }
+      else
+      {
+      }''');
+      self.assertEqual(result.asList(), [['if', '(', 'isExpression', ')', '{', '}'], 
+                                         ['else', 'if', '(', 'isExpression', ')', '{', '}'],
+                                         ['else', '{', '}']]);
+
 
    # TODO: use this later on
    def sketch_for_the_parse_function_based_on_pyparsing(self):
