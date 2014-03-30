@@ -1,9 +1,5 @@
 from pyparsing import *;
 
-InLineTemplate = Literal("inlineTemplate"); # TEMP
-StatementBlock = Literal("example_block"); # TEMP
-SingleExpression = Literal("expression"); 
-
 # AssignmentChar ::= ":="
 AssignmentChar = Literal(":=");
 
@@ -82,23 +78,33 @@ IdentifierList = delimitedList( Identifier );
 ExtendedIdentifier = Combine( Optional( Identifier + Dot ) + Identifier );
 
 # CaseKeyword ::= "case"
-#   CaseKeyword = Literal("case");
-#   
-#   # ElseKeyword ::= "else"
-#   ElseKeyword = Literal("else");
-#
-#   # SelectCase ::= CaseKeyword ( "(" InLineTemplate { "," InLineTemplate } ")" | ElseKeyword ) StatementBlock
-#   SelectCase = CaseKeyword & ( Literal("(") & InLineTemplate & ( Literal(",") & InLineTemplate )[:] & Literal(")" ) | ElseKeyword ) & StatementBlock
-#
-#   # SelectCaseBody ::= "{" { SelectCase }+ "}"
-#   SelectCaseBody = Literal("{") & ( SelectCase )[1:] & Literal("}")
-#
-#   # SelectKeyword ::= "select"
-#   SelectKeyword = Literal("select") 
-#
-#   # SelectCaseConstruct ::= SelectKeyword "(" SingleExpression ")" SelectCaseBody
-#   SelectCaseConstruct = SelectKeyword & Literal("(") & SingleExpression & Literal(")") & SelectCaseBody;
-#
+CaseKeyword = Keyword("case");
+
+# SelectCase ::= CaseKeyword ( "(" InLineTemplate { "," InLineTemplate } ")" | ElseKeyword ) StatementBlock
+InLineTemplate = Forward();
+ElseKeyword = Forward();
+StatementBlock = Forward();
+SelectCase = CaseKeyword + ( "(" + delimitedList( InLineTemplate ) + ")" | ElseKeyword ) + StatementBlock;
+
+# SelectCaseBody ::= "{" { SelectCase }+ "}"
+SelectCaseBody = "{" + Group( OneOrMore( Group( SelectCase ) ) ) + "}";
+
+# SelectKeyword ::= "select"
+SelectKeyword = Keyword("select") ;
+
+# SelectCaseConstruct ::= SelectKeyword "(" SingleExpression ")" SelectCaseBody
+SingleExpression = Forward();
+SelectCaseConstruct = SelectKeyword + "(" + SingleExpression + ")" + SelectCaseBody;
+
+
+#TMP
+InLineTemplate << ( Literal("42") | Identifier ); # TEMP
+ElseKeyword << Keyword("else");
+StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
+SingleExpression << Literal("expression"); 
+
+## ElseKeyword ::= "else"
+## ElseKeyword ::= "else"
 ##   # ElseClause ::= ElseKeyword StatementBlock
 ##   ElseClause = ElseKeyword & StatementBlock;
 #

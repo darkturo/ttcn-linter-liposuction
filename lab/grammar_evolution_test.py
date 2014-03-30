@@ -1,5 +1,6 @@
 import unittest;
 from grammar_evolution import *;
+
 class GrammarTest(unittest.TestCase):
    def test_029939_is_a_valid_decimal_number(self):
       result = DecimalNumber.parseString("029939");
@@ -108,6 +109,55 @@ class GrammarTest(unittest.TestCase):
    def test_NOT_valid_extended_identifier(self):
       self.assertRaises(ParseException, (ExtendedIdentifier + stringEnd).parseString, 
                        'CommonFunctions.MoreMagic.f_abracadabra2');
+      
+   def test_SelectCase_simple(self):
+      result = SelectCase.parseString('case (42) {}');
+      self.assertEqual(result.asList(), ['case', '(', '42', ')', '{', '}']);
+   
+   def test_SelectCase_simple_mlines(self):
+      result = SelectCase.parseString('''
+case ( t_someSpecificTemplate ) 
+{
+}
+''');
+      self.assertEqual(result.asList(), ['case', '(', 't_someSpecificTemplate', ')', '{', '}']);
+
+   def test_SelectCase_else(self):
+      result = SelectCase.parseString('case else { }');
+      self.assertEqual(result.asList(), ['case', 'else', '{', '}']);
+
+   def test_SelectCaseConstruct_single_case(self):
+      result = SelectCaseConstruct.parseString('''
+select (expression)
+{
+   case ( t_someSpecificTemplate ) 
+   {
+   }
+}
+''');
+      self.assertEqual(result.asList(), ['select', '(', 'expression', ')', '{', [ [ 'case', '(', 't_someSpecificTemplate', ')', '{', '}'] ], '}']);
+
+   def test_SelectCaseConstruct_multiple_cases(self):
+      result = SelectCaseConstruct.parseString('''
+select (expression)
+{
+   case ( t_someSpecificTemplate ) 
+   {
+   }
+   case ( 42 ) 
+   {
+   }
+   case else
+   {
+   }
+}
+''');
+      self.assertEqual(result.asList(), ['select', '(', 'expression', ')', '{', [
+                                          [ 'case', '(', 't_someSpecificTemplate', ')', '{', '}'],
+                                          ['case', '(', '42', ')', '{', '}'],
+                                          ['case', 'else', '{', '}']
+                                         ], '}']);
+
 
    # TODO: use this later on
    def sketch_for_the_parse_function_based_on_pyparsing(self):
@@ -120,7 +170,7 @@ class GrammarTest(unittest.TestCase):
          print("\nerror: %s: %s" % (msg, txt))
          print(" " * (len("error: %s: " % msg) + (e.loc)) + "^")
 
-code='''select(expression) { case (inlineTemplate) example_block }'''
+#code='''select(expression) { case (inlineTemplate) example_block }'''
 #grammar_evolution.parse(code);
 
 
