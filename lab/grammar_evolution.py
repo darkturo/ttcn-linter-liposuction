@@ -1,6 +1,5 @@
 from lepl import *;
 
-#with TraceVariables():
 with TraceVariables(), DroppedSpace():
    InLineTemplate = Literal("inlineTemplate"); # TEMP
    StatementBlock = Literal("example_block"); # TEMP
@@ -105,7 +104,6 @@ with TraceVariables(), DroppedSpace():
    TTCN3Module = SelectCaseConstruct 
    #raiseError = Never ^ "Parsing error: {results[0]}";
    #TTCN3Module = SelectCaseConstruct % raiseError
-   TTCN3Module.config.lines(discard='[ \t\r\n]', block_start=NO_BLOCKS);
    
 # ElseIfClause ::= ElseKeyword IfKeyword "(" BooleanExpression ")" StatementBlock
 # IfKeyword ::= "if"
@@ -679,4 +677,4 @@ with TraceVariables(), DroppedSpace():
 #   TTCN3Module = TTCN3ModuleKeyword & ModuleId & Literal("{") & ( ModuleDefinitionsList )[:1] & ( ModuleControlPart )[:1] & Literal("}") & ( WithStatement )[:1] & ( SemiColon )[:1]
 
 def parse(text):
-   print "**>>", TTCN3Module.parse(text);
+   print "**>>", (TTCN3Module & Eof()).parse(text);
