@@ -124,9 +124,9 @@ DoWhileStatement = DoKeyword + StatementBlock + WhileKeyword + "(" + BooleanExpr
 # WhileKeyword ::= "while"
 WhileKeyword << Keyword("while");
 
-## WhileStatement ::= WhileKeyword "(" BooleanExpression ")" StatementBlock
-#WhileStatement = WhileKeyword + "(" + BooleanExpression + ")" + StatementBlock;
-#
+# WhileStatement ::= WhileKeyword "(" BooleanExpression ")" StatementBlock
+WhileStatement = WhileKeyword + "(" + BooleanExpression + ")" + StatementBlock;
+
 ## Initial ::= VarInstance | Assignment
 #Initial = VarInstance | Assignment;
 #

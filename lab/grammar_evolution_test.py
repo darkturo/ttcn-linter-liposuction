@@ -189,6 +189,13 @@ select (expression)
       result = DoWhileStatement.parseString('''do { } while(isExpression)''');
       self.assertEqual(result.asList(), ['do', '{', '}', 'while', '(', 'isExpression', ')']);
 
+   def test_example_while_loop(self):
+      result = WhileStatement.parseString('''
+      while(isExpression) 
+      {
+      }               ''');
+      self.assertEqual(result.asList(), ['while', '(', 'isExpression', ')', '{', '}']);
+
 
    # TODO: use this later on
    def sketch_for_the_parse_function_based_on_pyparsing(self):
