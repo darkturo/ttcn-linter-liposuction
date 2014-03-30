@@ -178,65 +178,87 @@ MultiplyOp = Literal("*") | Literal("/") | Keyword("mod") | Keyword("rem");
 # AddOp ::= "+" | "-" | StringOp
 AddOp = Literal("+") | Literal("-") | StringOp;
 
-## OpCall ::= ConfigurationOps | GetLocalVerdict | TimerOps | TestcaseInstance | ( FunctionInstance [ ExtendedFieldReference ] ) | ( TemplateOps [ ExtendedFieldReference ] ) | ActivateOp
-#OpCall = ConfigurationOps | GetLocalVerdict | TimerOps | TestcaseInstance | ( FunctionInstance + Optional( ExtendedFieldReference ) ) | ( TemplateOps + Optional( ExtendedFieldReference ) ) | ActivateOp;
-#
-## ExtendedFieldReference ::= { ( Dot ( Identifier | PredefinedType ) ) | ArrayOrBitRef | ( "[" Minus "]" ) }+
-#ExtendedFieldReference = OneOrMore( ( Dot + ( Identifier | PredefinedType ) ) | ArrayOrBitRef | ( "Optional(" + Minus + ")" ) );
-#
-## Primary ::= OpCall | Value | "(" SingleExpression ")"
-#Primary = OpCall | Value | "(" + SingleExpression + ")";
-#
-## UnaryExpression ::= [ UnaryOp ] Primary
-#UnaryExpression = Optional( UnaryOp ) + Primary;
-#
-## MulExpression ::= UnaryExpression { MultiplyOp UnaryExpression } | CompoundExpression
-#MulExpression = UnaryExpression + ZeroOrMore( MultiplyOp + UnaryExpression ) | CompoundExpression;
-#
-## AddExpression ::= MulExpression { AddOp MulExpression }
-#AddExpression = MulExpression + ZeroOrMore( AddOp + MulExpression );
-#
-## BitNotExpression ::= [ "not4b" ] AddExpression
-#BitNotExpression = Optional( Keyword("not4b") ) + AddExpression;
-#
-## BitAndExpression ::= BitNotExpression { "and4b" BitNotExpression }
-#BitAndExpression = BitNotExpression + ZeroOrMore( Keyword("and4b") + BitNotExpression );
-#
-## BitXorExpression ::= BitAndExpression { "xor4b" BitAndExpression }
-#BitXorExpression = BitAndExpression + ZeroOrMore( Keyword("xor4b") + BitAndExpression );
-#
-## BitOrExpression ::= BitXorExpression { "or4b" BitXorExpression }
-#BitOrExpression = BitXorExpression + ZeroOrMore( Keyword("or4b") + BitXorExpression );
-#
-## ShiftExpression ::= BitOrExpression { ShiftOp BitOrExpression }
-#ShiftExpression = BitOrExpression + ZeroOrMore( ShiftOp + BitOrExpression );
-#
-## RelExpression ::= ShiftExpression [ RelOp ShiftExpression ] | CompoundExpression
-#RelExpression = ShiftExpression + Optional( RelOp + ShiftExpression ) | CompoundExpression;
-#
-## EqualExpression ::= RelExpression { EqualOp RelExpression }
-#EqualExpression = RelExpression + ZeroOrMore( EqualOp + RelExpression );
-#
-## NotExpression ::= [ "not" ] EqualExpression
-#NotExpression = Optional( Keyword("not") ) + EqualExpression;
-#
-## AndExpression ::= NotExpression { "and" NotExpression }
-#AndExpression = NotExpression + ZeroOrMore( Keyword("and") + NotExpression );
-#
-## XorExpression ::= AndExpression { "xor" AndExpression }
-#XorExpression = AndExpression + ZeroOrMore( Keyword("xor") + AndExpression );
-#
-## SingleExpression ::= XorExpression { "or" XorExpression }
-#SingleExpression = XorExpression + ZeroOrMore( Keyword("or") + XorExpression );
-#
+# OpCall ::= ConfigurationOps | GetLocalVerdict | TimerOps | TestcaseInstance | ( FunctionInstance [ ExtendedFieldReference ] ) | ( TemplateOps [ ExtendedFieldReference ] ) | ActivateOp
+ConfigurationOps = Forward();
+GetLocalVerdict = Forward();
+TimerOps = Forward();
+TestcaseInstance = Forward();
+FunctionInstance = Forward();
+ExtendedFieldReference = Forward();
+TemplateOps = Forward();
+ActivateOp = Forward();
+OpCall = ConfigurationOps | GetLocalVerdict | TimerOps | TestcaseInstance | ( FunctionInstance + Optional( ExtendedFieldReference ) ) | ( TemplateOps + Optional( ExtendedFieldReference ) ) | ActivateOp;
+
+# ExtendedFieldReference ::= { ( Dot ( Identifier | PredefinedType ) ) | ArrayOrBitRef | ( "[" Minus "]" ) }+
+PredefinedType = Forward();
+ArrayOrBitRef = Forward();
+ExtendedFieldReference << OneOrMore( ( Dot + ( Identifier | PredefinedType ) ) | ArrayOrBitRef | ( "[" + Minus + "]" ) );
+
+# Primary ::= OpCall | Value | "(" SingleExpression ")"
+Value = Forward();
+Primary = OpCall | Value | "(" + SingleExpression + ")";
+
+# UnaryExpression ::= [ UnaryOp ] Primary
+UnaryExpression = Optional( UnaryOp ) + Primary;
+
+# MulExpression ::= UnaryExpression { MultiplyOp UnaryExpression } | CompoundExpression
+CompoundExpression = Forward();
+MulExpression = UnaryExpression + ZeroOrMore( MultiplyOp + UnaryExpression ) | CompoundExpression;
+
+# AddExpression ::= MulExpression { AddOp MulExpression }
+AddExpression = MulExpression + ZeroOrMore( AddOp + MulExpression );
+
+# BitNotExpression ::= [ "not4b" ] AddExpression
+BitNotExpression = Optional( Keyword("not4b") ) + AddExpression;
+
+# BitAndExpression ::= BitNotExpression { "and4b" BitNotExpression }
+BitAndExpression = BitNotExpression + ZeroOrMore( Keyword("and4b") + BitNotExpression );
+
+# BitXorExpression ::= BitAndExpression { "xor4b" BitAndExpression }
+BitXorExpression = BitAndExpression + ZeroOrMore( Keyword("xor4b") + BitAndExpression );
+
+# BitOrExpression ::= BitXorExpression { "or4b" BitXorExpression }
+BitOrExpression = BitXorExpression + ZeroOrMore( Keyword("or4b") + BitXorExpression );
+
+# ShiftExpression ::= BitOrExpression { ShiftOp BitOrExpression }
+ShiftExpression = BitOrExpression + ZeroOrMore( ShiftOp + BitOrExpression );
+
+# RelExpression ::= ShiftExpression [ RelOp ShiftExpression ] | CompoundExpression
+RelExpression = ShiftExpression + Optional( RelOp + ShiftExpression ) | CompoundExpression;
+
+# EqualExpression ::= RelExpression { EqualOp RelExpression }
+EqualExpression = RelExpression + ZeroOrMore( EqualOp + RelExpression );
+
+# NotExpression ::= [ "not" ] EqualExpression
+NotExpression = Optional( Keyword("not") ) + EqualExpression;
+
+# AndExpression ::= NotExpression { "and" NotExpression }
+AndExpression = NotExpression + ZeroOrMore( Keyword("and") + NotExpression );
+
+# XorExpression ::= AndExpression { "xor" AndExpression }
+XorExpression = AndExpression + ZeroOrMore( Keyword("xor") + AndExpression );
+
+# SingleExpression ::= XorExpression { "or" XorExpression }
+SingleExpression << ( XorExpression + ZeroOrMore( Keyword("or") + XorExpression ) );
+
 #TMP
 InLineTemplate << ( Literal("42") | Identifier ); # TEMP
 StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
-SingleExpression << Literal("expression"); 
 BooleanExpression << Literal("isExpression"); 
 VarInstance << "var integer v_i := 0";
 Assignment << (Identifier + ":=" + Identifier);
 FreeText << ( Combine( Suppress('"') + ZeroOrMore( Word(alphanums + " !") ) + Suppress('"') ) );
+ConfigurationOps << Identifier; 
+GetLocalVerdict << Identifier;
+TimerOps << Identifier;
+TestcaseInstance << Identifier;
+FunctionInstance << Identifier; 
+ExtendedFieldReference << Identifier;
+TemplateOps << Identifier;
+ActivateOp << Identifier;
+PredefinedType << Identifier;
+ArrayOrBitRef << Identifier;
+Value << ( Identifier | Word(nums) | Word(alphanums)) ; 
 ## Assignment ::= VariableRef AssignmentChar ( Expression | TemplateBody )
 #Assignment = VariableRef + AssignmentChar + ( Expression | TemplateBody );
 #
