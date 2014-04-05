@@ -230,6 +230,11 @@ select (expression)
    def test_goto(self):
       result = GotoStatement.parseString('''goto l_myLabel''');
       self.assertEqual(result.asList(), ['goto', 'l_myLabel']);
+
+   def test_interleave_construct(self):
+      txt = 'interleave { [] c_TestComponentn.done { }; }'
+      result = InterleavedConstruct.parseString(txt, parseAll=True);
+      self.assertEqual(len(result.asList()), 10);
       
 
    # TODO: use this later on
