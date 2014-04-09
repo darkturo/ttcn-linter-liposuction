@@ -254,6 +254,10 @@ alt {
    def test_return_with_value(self):
       result = ReturnStatement.parseString('''return true''');
       self.assertEqual(result.asList(), ['return', 'true']);
+
+   def test_action_text(self):
+      result = SUTStatements.parseString('''action ( "this is just a test" )''');
+      self.assertEqual(result.asList(), ['action', '(', 'this is just a test', ')']);
       
 
    # TODO: use this later on

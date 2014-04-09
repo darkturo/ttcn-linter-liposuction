@@ -381,15 +381,15 @@ AltConstruct = AltKeyword + "{" + AltGuardList + "}";
 ReturnKeyword = Forward();
 ReturnStatement = ReturnKeyword + Optional( Expression | InLineTemplate );
 
-## ActionText ::= FreeText | Expression
-#ActionText = FreeText | Expression;
-#
-## ActionKeyword ::= "action"
-#ActionKeyword = Keyword("action");
-#
-## SUTStatements ::= ActionKeyword "(" ActionText { StringOp ActionText } ")"
-#SUTStatements = ActionKeyword + "(" + ActionText + ZeroOrMore( StringOp + ActionText ) + ")";
-#
+# ActionText ::= FreeText | Expression
+ActionText = FreeText | Expression;
+
+# ActionKeyword ::= "action"
+ActionKeyword = Keyword("action");
+
+# SUTStatements ::= ActionKeyword "(" ActionText { StringOp ActionText } ")"
+SUTStatements = ActionKeyword + "(" + ActionText + ZeroOrMore( StringOp + ActionText ) + ")";
+
 ## GetLocalVerdict ::= "getverdict"
 #GetLocalVerdict = Keyword("getverdict");
 #
