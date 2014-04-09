@@ -235,6 +235,25 @@ select (expression)
       txt = 'interleave { [] c_TestComponentn.done { }; }'
       result = InterleavedConstruct.parseString(txt, parseAll=True);
       self.assertEqual(len(result.asList()), 10);
+
+   def test_alt_construct_simple(self):
+      result = AltConstruct.parseString(
+'''
+alt {
+   [] receive()
+   {
+   }
+}
+      ''');
+      self.assertEqual(len(result.asList()), 10);
+
+   def test_return_without_value(self):
+      result = ReturnStatement.parseString('''return''');
+      self.assertEqual(result.asList(), ['return']);
+
+   def test_return_with_value(self):
+      result = ReturnStatement.parseString('''return true''');
+      self.assertEqual(result.asList(), ['return', 'true']);
       
 
    # TODO: use this later on

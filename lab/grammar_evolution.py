@@ -347,7 +347,7 @@ InterleavedKeyword = Keyword("interleave");
 # InterleavedConstruct ::= InterleavedKeyword "{" InterleavedGuardList "}"
 InterleavedConstruct = InterleavedKeyword + "{" + InterleavedGuardList + "}"
 
-## GuardOp ::= TimeoutStatement | ReceiveStatement | TriggerStatement | GetCallStatement | CatchStatement | CheckStatement | GetReplyStatement | DoneStatement | KilledStatement
+# GuardOp ::= TimeoutStatement | ReceiveStatement | TriggerStatement | GetCallStatement | CatchStatement | CheckStatement | GetReplyStatement | DoneStatement | KilledStatement
 TimeoutStatement = Forward();
 ReceiveStatement = Forward();
 TriggerStatement = Forward();
@@ -359,27 +359,28 @@ DoneStatement = Forward();
 KilledStatement = Forward();
 GuardOp << ( TimeoutStatement | ReceiveStatement | TriggerStatement | GetCallStatement | CatchStatement | CheckStatement | GetReplyStatement | DoneStatement | KilledStatement );
 
-## AltGuardChar ::= "[" [ BooleanExpression ] "]"
-#AltGuardChar = "[" + Optional( BooleanExpression ) + "]";
-#
-## ElseStatement ::= "[" ElseKeyword "]" StatementBlock
-#ElseStatement = "[" + ElseKeyword + "]" + StatementBlock;
-#
-## GuardStatement ::= AltGuardChar ( AltstepInstance [ StatementBlock ] | GuardOp StatementBlock )
-#GuardStatement = AltGuardChar + ( AltstepInstance + Optional( StatementBlock ) | GuardOp + StatementBlock );
-#
-## AltGuardList ::= { GuardStatement | ElseStatement [ SemiColon ] }
-#AltGuardList = ZeroOrMore( GuardStatement | ElseStatement + Optional( SemiColon ) );
-#
-## AltKeyword ::= "alt"
-#AltKeyword = Keyword("alt");
-#
-## AltConstruct ::= AltKeyword "{" AltGuardList "}"
-#AltConstruct = AltKeyword + "{" + AltGuardList + "}";
-#
-## ReturnStatement ::= ReturnKeyword [ Expression | InLineTemplate ]
-#ReturnStatement = ReturnKeyword + Optional( Expression | InLineTemplate );
-#
+# AltGuardChar ::= "[" [ BooleanExpression ] "]"
+AltGuardChar = "[" + Optional( BooleanExpression ) + "]";
+
+# ElseStatement ::= "[" ElseKeyword "]" StatementBlock
+ElseStatement = "[" + ElseKeyword + "]" + StatementBlock;
+
+# GuardStatement ::= AltGuardChar ( AltstepInstance [ StatementBlock ] | GuardOp StatementBlock )
+GuardStatement = AltGuardChar + ( AltstepInstance + Optional( StatementBlock ) | GuardOp + StatementBlock );
+
+# AltGuardList ::= { GuardStatement | ElseStatement [ SemiColon ] }
+AltGuardList = ZeroOrMore( GuardStatement | ElseStatement + Optional( SemiColon ) );
+
+# AltKeyword ::= "alt"
+AltKeyword = Keyword("alt");
+
+# AltConstruct ::= AltKeyword "{" AltGuardList "}"
+AltConstruct = AltKeyword + "{" + AltGuardList + "}";
+
+# ReturnStatement ::= ReturnKeyword [ Expression | InLineTemplate ]
+ReturnKeyword = Forward();
+ReturnStatement = ReturnKeyword + Optional( Expression | InLineTemplate );
+
 ## ActionText ::= FreeText | Expression
 #ActionText = FreeText | Expression;
 #
@@ -655,9 +656,9 @@ FieldReference << Identifier;
 ## CheckStateStatement ::= PortOrAllAny Dot CheckStateKeyword "(" SingleExpression ")"
 #CheckStateStatement = PortOrAllAny + Dot + CheckStateKeyword + "(" + SingleExpression + ")";
 #
-## AnyKeyword ::= "any"
-#AnyKeyword = Keyword("any");
-#
+# AnyKeyword ::= "any"
+AnyKeyword = Keyword("any");
+
 ## HaltKeyword ::= "halt"
 #HaltKeyword = Keyword("halt");
 #
@@ -979,18 +980,20 @@ ComponentOrDefaultReference << ( VariableRef | FunctionInstance );
 ## KilledKeyword ::= "killed"
 #KilledKeyword = Keyword("killed");
 #
-## DoneKeyword ::= "done"
-#DoneKeyword = Keyword("done");
-#
-## ComponentId ::= ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) ComponentKeyword
-#ComponentId = ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) + ComponentKeyword;
-#
+# DoneKeyword ::= "done"
+DoneKeyword = Keyword("done");
+
+# ComponentId ::= ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) ComponentKeyword
+AllKeyword = Forward();
+ComponentKeyword = Forward();
+ComponentId = ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) + ComponentKeyword;
+
 ## KilledStatement ::= ComponentId Dot KilledKeyword
 #KilledStatement = ComponentId + Dot + KilledKeyword;
 #
-## DoneStatement ::= ComponentId Dot DoneKeyword
-#DoneStatement = ComponentId + Dot + DoneKeyword;
-#
+# DoneStatement ::= ComponentId Dot DoneKeyword
+DoneStatement << ( ComponentId + Dot + DoneKeyword );
+
 ## SelfOp ::= "self"
 #SelfOp = Keyword("self");
 #
@@ -1194,7 +1197,7 @@ ComponentOrDefaultReference << ( VariableRef | FunctionInstance );
 #
 # AltstepInstance ::= ExtendedIdentifier "(" [ FunctionActualParList ] ")"
 FunctionActualParList = Forward();
-AltstepInstance << ExtendedIdentifier + "(" + Optional( FunctionActualParList ) + ")";
+AltstepInstance << ( ExtendedIdentifier + "(" + Optional( FunctionActualParList ) + ")" );
 FunctionActualParList << ""; 
 
 ## AltstepLocalDef ::= VarInstance | TimerInstance | ConstDef | TemplateDef
@@ -1305,9 +1308,9 @@ FunctionActualParList << "";
 ## RunsOnSpec ::= RunsKeyword OnKeyword ComponentType
 #RunsOnSpec = RunsKeyword + OnKeyword + ComponentType;
 #
-## ReturnKeyword ::= "return"
-#ReturnKeyword = Keyword("return");
-#
+# ReturnKeyword ::= "return"
+ReturnKeyword << Keyword("return");
+
 ## ReturnType ::= ReturnKeyword [ TemplateKeyword | RestrictedTemplate ] Type
 #ReturnType = ReturnKeyword + Optional( TemplateKeyword | RestrictedTemplate ) + Type;
 #
@@ -1567,9 +1570,9 @@ FunctionActualParList << "";
 ## ExtendsKeyword ::= "extends"
 #ExtendsKeyword = Keyword("extends");
 #
-## ComponentKeyword ::= "component"
-#ComponentKeyword = Keyword("component");
-#
+# ComponentKeyword ::= "component"
+ComponentKeyword << Keyword("component");
+
 ## ComponentDef ::= ComponentKeyword Identifier [ ExtendsKeyword ComponentType { "," ComponentType } ] "{" [ ComponentDefList ] "}"
 #ComponentDef = ComponentKeyword + Identifier + Optional( ExtendsKeyword + ComponentType + ZeroOrMore( "," + ComponentType ) ) + "ZeroOrMore(" + Optional( ComponentDefList ) + ")";
 #
@@ -1606,9 +1609,9 @@ FunctionActualParList << "";
 ## TypeList ::= Type { "," Type }
 #TypeList = Type + ZeroOrMore( "," + Type );
 #
-## AllKeyword ::= "all"
-#AllKeyword = Keyword("all");
-#
+# AllKeyword ::= "all"
+AllKeyword << Keyword("all");
+
 ## AllOrTypeList ::= AllKeyword | TypeList
 #AllOrTypeList = AllKeyword | TypeList;
 #
