@@ -390,15 +390,15 @@ ActionKeyword = Keyword("action");
 # SUTStatements ::= ActionKeyword "(" ActionText { StringOp ActionText } ")"
 SUTStatements = ActionKeyword + "(" + ActionText + ZeroOrMore( StringOp + ActionText ) + ")";
 
-## GetLocalVerdict ::= "getverdict"
-#GetLocalVerdict = Keyword("getverdict");
-#
-## SetVerdictKeyword ::= "setverdict"
-#SetVerdictKeyword = Keyword("setverdict");
-#
-## SetLocalVerdict ::= SetVerdictKeyword "(" SingleExpression { "," LogItem } ")"
-#SetLocalVerdict = SetVerdictKeyword + "(" + SingleExpression + ZeroOrMore( "," + LogItem ) + ")";
-#
+# GetLocalVerdict ::= "getverdict"
+GetLocalVerdict = Keyword("getverdict");
+
+# SetVerdictKeyword ::= "setverdict"
+SetVerdictKeyword = Keyword("setverdict");
+
+# SetLocalVerdict ::= SetVerdictKeyword "(" SingleExpression { "," LogItem } ")"
+SetLocalVerdict = SetVerdictKeyword + "(" + SingleExpression + ZeroOrMore( "," + LogItem ) + ")";
+
 ## BehaviourStatements ::= TestcaseInstance | FunctionInstance | ReturnStatement | AltConstruct | InterleavedConstruct | LabelStatement | GotoStatement | RepeatStatement | DeactivateStatement | AltstepInstance | ActivateOp | BreakStatement | ContinueStatement
 #BehaviourStatements = TestcaseInstance | FunctionInstance | ReturnStatement | AltConstruct | InterleavedConstruct | LabelStatement | GotoStatement | RepeatStatement | DeactivateStatement | AltstepInstance | ActivateOp | BreakStatement | ContinueStatement;
 #
@@ -502,7 +502,6 @@ StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
 VarInstance << "var integer v_i := 0";
 FreeText << ( Combine( Suppress('"') + ZeroOrMore( Word(alphanums + " !") ) + Suppress('"') ) );
 ConfigurationOps << Identifier; 
-GetLocalVerdict << Identifier;
 TimerOps << Identifier;
 TestcaseInstance << Identifier;
 FunctionInstance << Identifier; 

@@ -258,6 +258,14 @@ alt {
    def test_action_text(self):
       result = SUTStatements.parseString('''action ( "this is just a test" )''');
       self.assertEqual(result.asList(), ['action', '(', 'this is just a test', ')']);
+
+   def test_setverdict(self):
+      result = SetLocalVerdict.parseString('''setverdict(pass)''');
+      self.assertEqual(result.asList(), ['setverdict', '(', 'pass', ')']);
+
+   def test_setverdict_with_additional_text(self):
+      result = SetLocalVerdict.parseString('''setverdict(fail, "The component x is unboundedly wrong")''');
+      self.assertEqual(result.asList(), ['setverdict', '(', 'fail', ',', "The component x is unboundedly wrong", ')']);
       
 
    # TODO: use this later on
