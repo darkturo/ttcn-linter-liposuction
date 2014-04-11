@@ -266,6 +266,10 @@ alt {
    def test_setverdict_with_additional_text(self):
       result = SetLocalVerdict.parseString('''setverdict(fail, "The component x is unboundedly wrong")''');
       self.assertEqual(result.asList(), ['setverdict', '(', 'fail', ',', "The component x is unboundedly wrong", ')']);
+
+   def test_with_statement(self):
+      result = WithStatement.parseString('''with { extension { super.powers } }''');
+      self.assertEqual(length(result.asList()), 5);
       
 
    # TODO: use this later on
