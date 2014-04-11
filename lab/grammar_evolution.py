@@ -648,9 +648,10 @@ TimerRefOrAll = ArrayIdentifierRef | AllKeyword + TimerKeyword;
 # StopTimerStatement ::= TimerRefOrAll Dot StopKeyword
 StopTimerStatement = TimerRefOrAll + Dot + StopKeyword;
 
-## StartTimerStatement ::= ArrayIdentifierRef Dot StartKeyword [ "(" Expression ")" ]
-#StartTimerStatement = ArrayIdentifierRef + Dot + StartKeyword + Optional( "(" + Expression + ")" );
-#
+# StartTimerStatement ::= ArrayIdentifierRef Dot StartKeyword [ "(" Expression ")" ]
+StartKeyword = Forward();
+StartTimerStatement = ArrayIdentifierRef + Dot + StartKeyword + Optional( "(" + Expression + ")" );
+
 ## TimerOps ::= ReadTimerOp | RunningTimerOp
 #TimerOps = ReadTimerOp | RunningTimerOp;
 #
@@ -934,9 +935,9 @@ ComponentOrDefaultReference << ( VariableRef | FunctionInstance );
 ## StopTCStatement ::= StopKeyword | ( ComponentReferenceOrLiteral | AllKeyword ComponentKeyword ) Dot StopKeyword
 #StopTCStatement = StopKeyword | ( ComponentReferenceOrLiteral | AllKeyword + ComponentKeyword ) + Dot + StopKeyword;
 #
-## StartKeyword ::= "start"
-#StartKeyword = Keyword("start");
-#
+# StartKeyword ::= "start"
+StartKeyword << Keyword("start");
+
 ## StartTCStatement ::= ComponentOrDefaultReference Dot StartKeyword "(" FunctionInstance ")"
 #StartTCStatement = ComponentOrDefaultReference + Dot + StartKeyword + "(" + FunctionInstance + ")";
 #
