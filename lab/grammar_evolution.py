@@ -520,146 +520,134 @@ ExtendedAlphaNum << Regex(r'(?=[^"])[ -~]');
 #Char = Word(srange(r"[\0x00-\0x7F]"), max=1) | Word(unicodeString, max=1); 
 Char = Regex(r'.'); 
 
-#TMP
-InLineTemplate << ( Literal("42") | Identifier ); # TEMP
-StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
-VarInstance << "var integer v_i := 0";
-ConfigurationOps << Identifier; 
-TimerOps << Identifier;
-TestcaseInstance << Identifier;
-FunctionInstance << Identifier; 
-ExtendedFieldReference << Identifier;
-TemplateOps << Identifier;
-PredefinedType << Identifier;
-ArrayOrBitRef << Identifier;
-Value << ( Identifier | Word(nums) | Word(alphanums)) ; 
-VariableRef << Identifier;
-TemplateBody << Identifier;
-ConstantExpression << SingleExpression;
-FieldReference << Identifier;
-## Cstring ::= """ { Char } """
-#Cstring = """ + ZeroOrMore( Char ) + """;
-#
-## ReferencedValue ::= ExtendedIdentifier [ ExtendedFieldReference ]
-#ReferencedValue = ExtendedIdentifier + Optional( ExtendedFieldReference );
-#
-## Exponential ::= "E"
-#Exponential = "E";
-#
-## FloatENotation ::= Number [ Dot DecimalNumber ] Exponential [ Minus ] Number
-#FloatENotation = Number + Optional( Dot + DecimalNumber ) + Exponential + Optional( Minus ) + Number;
-#
-## FloatDotNotation ::= Number Dot DecimalNumber
-#FloatDotNotation = Number + Dot + DecimalNumber;
-#
-## NaNKeyword ::= "not_a_number"
-#NaNKeyword = Keyword("not_a_number");
-#
-## FloatValue ::= FloatDotNotation | FloatENotation | NaNKeyword
-#FloatValue = FloatDotNotation | FloatENotation | NaNKeyword;
-#
-## CharKeyword ::= "char"
-#CharKeyword = Keyword("char");
-#
-## Quadruple ::= CharKeyword "(" Number "," Number "," Number "," Number ")"
-#Quadruple = CharKeyword + "(" + Number + "," + Number + "," + Number + "," + Number + ")";
-#
-## CharStringValue ::= Cstring | Quadruple
-#CharStringValue = Cstring | Quadruple;
-#
-## VerdictTypeValue ::= "pass" | "fail" | "inconc" | "none" | "error"
-#VerdictTypeValue = Keyword("pass") | Keyword("fail") | Keyword("inconc") | Keyword("none") | Keyword("error");
-#
-## BooleanValue ::= "true" | "false"
-#BooleanValue = Keyword("true") | Keyword("false");
-#
-## PredefinedValue ::= Bstring | BooleanValue | CharStringValue | Number | Ostring | Hstring | VerdictTypeValue | Identifier | FloatValue | AddressValue | OmitKeyword
-#PredefinedValue = Bstring | BooleanValue | CharStringValue | Number | Ostring | Hstring | VerdictTypeValue | Identifier | FloatValue | AddressValue | OmitKeyword;
-#
-## Value ::= PredefinedValue | ReferencedValue
-#Value = PredefinedValue | ReferencedValue;
-#
-## ArrayDef ::= { "[" SingleExpression [ ".." SingleExpression ] "]" }+
-#ArrayDef = OneOrMore( "[" + SingleExpression + Optional( ".." + SingleExpression ) + "]" );
-#
+# Cstring ::= """ { Char } """
+Cstring = '"' + ZeroOrMore( Char ) + '"';
+
+# ReferencedValue ::= ExtendedIdentifier [ ExtendedFieldReference ]
+ReferencedValue = ExtendedIdentifier + Optional( ExtendedFieldReference );
+
+# Exponential ::= "E"
+Exponential = "E";
+
+# FloatENotation ::= Number [ Dot DecimalNumber ] Exponential [ Minus ] Number
+FloatENotation = Number + Optional( Dot + DecimalNumber ) + Exponential + Optional( Minus ) + Number;
+
+# FloatDotNotation ::= Number Dot DecimalNumber
+FloatDotNotation = Number + Dot + DecimalNumber;
+
+# NaNKeyword ::= "not_a_number"
+NaNKeyword = Keyword("not_a_number");
+
+# FloatValue ::= FloatDotNotation | FloatENotation | NaNKeyword
+FloatValue = FloatDotNotation | FloatENotation | NaNKeyword;
+
+# CharKeyword ::= "char"
+CharKeyword = Keyword("char");
+
+# Quadruple ::= CharKeyword "(" Number "," Number "," Number "," Number ")"
+Quadruple = CharKeyword + "(" + Number + "," + Number + "," + Number + "," + Number + ")";
+
+# CharStringValue ::= Cstring | Quadruple
+CharStringValue = Cstring | Quadruple;
+
+# VerdictTypeValue ::= "pass" | "fail" | "inconc" | "none" | "error"
+VerdictTypeValue = Keyword("pass") | Keyword("fail") | Keyword("inconc") | Keyword("none") | Keyword("error");
+
+# BooleanValue ::= "true" | "false"
+BooleanValue = Keyword("true") | Keyword("false");
+
+# PredefinedValue ::= Bstring | BooleanValue | CharStringValue | Number | Ostring | Hstring | VerdictTypeValue | Identifier | FloatValue | AddressValue | OmitKeyword
+PredefinedValue = Bstring | BooleanValue | CharStringValue | Number | Ostring | Hstring | VerdictTypeValue | Identifier | FloatValue | AddressValue | OmitKeyword;
+
+# Value ::= PredefinedValue | ReferencedValue
+Value << ( PredefinedValue | ReferencedValue );
+
+# ArrayDef ::= { "[" SingleExpression [ ".." SingleExpression ] "]" }+
+ArrayDef = OneOrMore( "[" + SingleExpression + Optional( ".." + SingleExpression ) + "]" );
+
 ## TypeReference ::= Identifier
 #TypeReference = Identifier;
 #
 # ReferencedType ::= ExtendedIdentifier [ ExtendedFieldReference ]
 ReferencedType = ExtendedIdentifier + Optional( ExtendedFieldReference );
 
-## UniversalKeyword ::= "universal"
-#UniversalKeyword = Keyword("universal");
-#
-## UniversalCharString ::= UniversalKeyword CharStringKeyword
-#UniversalCharString = UniversalKeyword + CharStringKeyword;
-#
-## CharStringKeyword ::= "charstring"
-#CharStringKeyword = Keyword("charstring");
-#
-## AnyTypeKeyword ::= "anytype"
-#AnyTypeKeyword = Keyword("anytype");
-#
-## DefaultKeyword ::= "default"
-#DefaultKeyword = Keyword("default");
-#
-## AddressKeyword ::= "address"
-#AddressKeyword = Keyword("address");
-#
-## FloatKeyword ::= "float"
-#FloatKeyword = Keyword("float");
-#
-## VerdictTypeKeyword ::= "verdicttype"
-#VerdictTypeKeyword = Keyword("verdicttype");
-#
-## HexStringKeyword ::= "hexstring"
-#HexStringKeyword = Keyword("hexstring");
-#
-## OctetStringKeyword ::= "octetstring"
-#OctetStringKeyword = Keyword("octetstring");
-#
-## IntegerKeyword ::= "integer"
-#IntegerKeyword = Keyword("integer");
-#
-## BooleanKeyword ::= "boolean"
-#BooleanKeyword = Keyword("boolean");
-#
-## BitStringKeyword ::= "bitstring"
-#BitStringKeyword = Keyword("bitstring");
-#
-## PredefinedType ::= BitStringKeyword | BooleanKeyword | CharStringKeyword | UniversalCharString | IntegerKeyword | OctetStringKeyword | HexStringKeyword | VerdictTypeKeyword | FloatKeyword | AddressKeyword | DefaultKeyword | AnyTypeKeyword
-#PredefinedType = BitStringKeyword | BooleanKeyword | CharStringKeyword | UniversalCharString | IntegerKeyword | OctetStringKeyword | HexStringKeyword | VerdictTypeKeyword | FloatKeyword | AddressKeyword | DefaultKeyword | AnyTypeKeyword;
-#
+# UniversalKeyword ::= "universal"
+UniversalKeyword = Keyword("universal");
+
+# UniversalCharString ::= UniversalKeyword CharStringKeyword
+CharStringKeyword = Forward();
+UniversalCharString = UniversalKeyword + CharStringKeyword;
+
+# CharStringKeyword ::= "charstring"
+CharStringKeyword << Keyword("charstring");
+
+# AnyTypeKeyword ::= "anytype"
+AnyTypeKeyword = Keyword("anytype");
+
+# DefaultKeyword ::= "default"
+DefaultKeyword = Keyword("default");
+
+# AddressKeyword ::= "address"
+AddressKeyword = Keyword("address");
+
+# FloatKeyword ::= "float"
+FloatKeyword = Keyword("float");
+
+# VerdictTypeKeyword ::= "verdicttype"
+VerdictTypeKeyword = Keyword("verdicttype");
+
+# HexStringKeyword ::= "hexstring"
+HexStringKeyword = Keyword("hexstring");
+
+# OctetStringKeyword ::= "octetstring"
+OctetStringKeyword = Keyword("octetstring");
+
+# IntegerKeyword ::= "integer"
+IntegerKeyword = Keyword("integer");
+
+# BooleanKeyword ::= "boolean"
+BooleanKeyword = Keyword("boolean");
+
+# BitStringKeyword ::= "bitstring"
+BitStringKeyword = Keyword("bitstring");
+
+# PredefinedType ::= BitStringKeyword | BooleanKeyword | CharStringKeyword | UniversalCharString | IntegerKeyword | OctetStringKeyword | HexStringKeyword | VerdictTypeKeyword | FloatKeyword | AddressKeyword | DefaultKeyword | AnyTypeKeyword
+PredefinedType << ( BitStringKeyword | BooleanKeyword | CharStringKeyword | UniversalCharString | IntegerKeyword | OctetStringKeyword | HexStringKeyword | VerdictTypeKeyword | FloatKeyword | AddressKeyword | DefaultKeyword | AnyTypeKeyword );
+
 # Type ::= PredefinedType | ReferencedType
 Type << ( PredefinedType | ReferencedType );
 
-## TestcaseOperation ::= TestcaseKeyword "." StopKeyword [ "(" { ( FreeText | InLineTemplate ) [ "," ] } ")" ]
-#TestcaseOperation = TestcaseKeyword + "." + StopKeyword + Optional( "(" + ZeroOrMore( ( FreeText | InLineTemplate ) + [ + "," ) ) + ")" + ];
-#
-## TimeoutKeyword ::= "timeout"
-#TimeoutKeyword = Keyword("timeout");
-#
-## TimerRefOrAny ::= ArrayIdentifierRef | ( AnyKeyword TimerKeyword )
-#TimerRefOrAny = ArrayIdentifierRef | ( AnyKeyword + TimerKeyword );
-#
-## TimeoutStatement ::= TimerRefOrAny Dot TimeoutKeyword
-#TimeoutStatement = TimerRefOrAny + Dot + TimeoutKeyword;
-#
-## RunningTimerOp ::= TimerRefOrAny Dot RunningKeyword
-#RunningTimerOp = TimerRefOrAny + Dot + RunningKeyword;
-#
-## ReadKeyword ::= "read"
-#ReadKeyword = Keyword("read");
-#
-## ReadTimerOp ::= ArrayIdentifierRef Dot ReadKeyword
-#ReadTimerOp = ArrayIdentifierRef + Dot + ReadKeyword;
-#
-## TimerRefOrAll ::= ArrayIdentifierRef | AllKeyword TimerKeyword
-#TimerRefOrAll = ArrayIdentifierRef | AllKeyword + TimerKeyword;
-#
-## StopTimerStatement ::= TimerRefOrAll Dot StopKeyword
-#StopTimerStatement = TimerRefOrAll + Dot + StopKeyword;
-#
+# TestcaseOperation ::= TestcaseKeyword "." StopKeyword [ "(" { ( FreeText | InLineTemplate ) [ "," ] } ")" ]
+StopKeyword = Forward();
+TestcaseOperation = TestcaseKeyword + "." + StopKeyword + Optional( "(" + ZeroOrMore( ( FreeText | InLineTemplate ) + Optional( "," ) ) + ")" );
+
+# TimeoutKeyword ::= "timeout"
+TimeoutKeyword = Keyword("timeout");
+
+# TimerRefOrAny ::= ArrayIdentifierRef | ( AnyKeyword TimerKeyword )
+ArrayIdentifierRef = Forward();
+AnyKeyword = Forward();
+TimerRefOrAny = ArrayIdentifierRef | ( AnyKeyword + TimerKeyword );
+
+# TimeoutStatement ::= TimerRefOrAny Dot TimeoutKeyword
+TimeoutStatement = TimerRefOrAny + Dot + TimeoutKeyword;
+
+# RunningTimerOp ::= TimerRefOrAny Dot RunningKeyword
+RunningKeyword = Forward();
+RunningTimerOp = TimerRefOrAny + Dot + RunningKeyword;
+
+# ReadKeyword ::= "read"
+ReadKeyword = Keyword("read");
+
+# ReadTimerOp ::= ArrayIdentifierRef Dot ReadKeyword
+ReadTimerOp = ArrayIdentifierRef + Dot + ReadKeyword;
+
+# TimerRefOrAll ::= ArrayIdentifierRef | AllKeyword TimerKeyword
+TimerRefOrAll = ArrayIdentifierRef | AllKeyword + TimerKeyword;
+
+# StopTimerStatement ::= TimerRefOrAll Dot StopKeyword
+StopTimerStatement = TimerRefOrAll + Dot + StopKeyword;
+
 ## StartTimerStatement ::= ArrayIdentifierRef Dot StartKeyword [ "(" Expression ")" ]
 #StartTimerStatement = ArrayIdentifierRef + Dot + StartKeyword + Optional( "(" + Expression + ")" );
 #
@@ -679,7 +667,7 @@ Type << ( PredefinedType | ReferencedType );
 #CheckStateStatement = PortOrAllAny + Dot + CheckStateKeyword + "(" + SingleExpression + ")";
 #
 # AnyKeyword ::= "any"
-AnyKeyword = Keyword("any");
+AnyKeyword << Keyword("any");
 
 ## HaltKeyword ::= "halt"
 #HaltKeyword = Keyword("halt");
@@ -687,9 +675,9 @@ AnyKeyword = Keyword("any");
 ## HaltStatement ::= PortOrAll Dot HaltKeyword
 #HaltStatement = PortOrAll + Dot + HaltKeyword;
 #
-## StopKeyword ::= "stop"
-#StopKeyword = Keyword("stop");
-#
+# StopKeyword ::= "stop"
+StopKeyword << Keyword("stop");
+
 ## StopStatement ::= PortOrAll Dot StopKeyword
 #StopStatement = PortOrAll + Dot + StopKeyword;
 #
@@ -717,6 +705,22 @@ AnyKeyword = Keyword("any");
 ## CatchStatement ::= PortOrAny Dot PortCatchOp
 #CatchStatement = PortOrAny + Dot + PortCatchOp;
 #
+#TMP
+InLineTemplate << ( Literal("42") | Identifier ); # TEMP
+StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
+VarInstance << "var integer v_i := 0";
+ConfigurationOps << Identifier; 
+TimerOps << Identifier;
+TestcaseInstance << Identifier;
+FunctionInstance << Identifier; 
+ExtendedFieldReference << Identifier;
+TemplateOps << Identifier;
+PredefinedType << Identifier;
+ArrayOrBitRef << Identifier;
+VariableRef << Identifier;
+TemplateBody << Identifier;
+ConstantExpression << SingleExpression;
+FieldReference << Identifier;
 ## CheckPortOpsPresent ::= PortReceiveOp | PortGetCallOp | PortGetReplyOp | PortCatchOp
 #CheckPortOpsPresent = PortReceiveOp | PortGetCallOp | PortGetReplyOp | PortCatchOp;
 #
@@ -993,9 +997,9 @@ ComponentOrDefaultReference << ( VariableRef | FunctionInstance );
 ## AliveOp ::= ComponentId Dot AliveKeyword
 #AliveOp = ComponentId + Dot + AliveKeyword;
 #
-## RunningKeyword ::= "running"
-#RunningKeyword = Keyword("running");
-#
+# RunningKeyword ::= "running"
+RunningKeyword << Keyword("running");
+
 ## RunningOp ::= ComponentId Dot RunningKeyword
 #RunningOp = ComponentId + Dot + RunningKeyword;
 #
@@ -1027,9 +1031,9 @@ DoneStatement << ( ComponentId + Dot + DoneKeyword );
 ## ConfigurationStatements ::= ConnectStatement | MapStatement | DisconnectStatement | UnmapStatement | DoneStatement | KilledStatement | StartTCStatement | StopTCStatement | KillTCStatement
 #ConfigurationStatements = ConnectStatement | MapStatement | DisconnectStatement | UnmapStatement | DoneStatement | KilledStatement | StartTCStatement | StopTCStatement | KillTCStatement;
 #
-## ArrayIdentifierRef ::= Identifier { ArrayOrBitRef }
-#ArrayIdentifierRef = Identifier + ZeroOrMore( ArrayOrBitRef );
-#
+# ArrayIdentifierRef ::= Identifier { ArrayOrBitRef }
+ArrayIdentifierRef = Identifier + ZeroOrMore( ArrayOrBitRef );
+
 # TimerKeyword ::= "timer"
 TimerKeyword << Keyword("timer");
 

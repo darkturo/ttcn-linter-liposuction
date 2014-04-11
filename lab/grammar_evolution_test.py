@@ -270,6 +270,14 @@ alt {
    def test_with_statement(self):
       result = WithStatement.parseString('''with { extension "super.powers" }''');
       self.assertEqual(len(result.asList()), 5);
+
+   def test_timeout_statement(self):
+      result = TimeoutStatement.parseString('''any timer.timeout''');
+      self.assertEqual(len(result.asList()), 4);
+
+   def test_stop_timer(self):
+      result = StopTimerStatement.parseString('''all timer.stop''');
+      self.assertEqual(len(result.asList()), 4);
       
 
    # TODO: use this later on
