@@ -268,8 +268,8 @@ alt {
       self.assertEqual(result.asList(), ['setverdict', '(', 'fail', ',', "The component x is unboundedly wrong", ')']);
 
    def test_with_statement(self):
-      result = WithStatement.parseString('''with { extension { super.powers } }''');
-      self.assertEqual(length(result.asList()), 5);
+      result = WithStatement.parseString('''with { extension "super.powers" }''');
+      self.assertEqual(len(result.asList()), 5);
       
 
    # TODO: use this later on
