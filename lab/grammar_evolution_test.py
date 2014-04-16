@@ -334,6 +334,10 @@ alt {
    def test_connect_statement(self):
       result = ConnectStatement.parseString('''connect( myComponent:Port, system:Port )''');
       self.assertEqual(len(result.asList()), 10);
+
+   def test_disconnect_statement(self):
+      result = DisconnectStatement.parseString('''disconnect( myComponent:Port, system:Port )''');
+      self.assertEqual(len(result.asList()), 10);
       
 
    # TODO: use this later on

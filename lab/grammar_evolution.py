@@ -973,8 +973,8 @@ AllPortsSpec = "(" + ComponentRef + ":" + AllKeyword + PortKeyword + ")";
 PortRef = Forward();
 AllConnectionsSpec << ( "(" + PortRef + ")" );
 
-## DisconnectStatement ::= DisconnectKeyword [ SingleConnectionSpec | AllConnectionsSpec | AllPortsSpec | AllCompsAllPortsSpec ]
-#DisconnectStatement = DisconnectKeyword + Optional( SingleConnectionSpec | AllConnectionsSpec | AllPortsSpec | AllCompsAllPortsSpec );
+# DisconnectStatement ::= DisconnectKeyword [ SingleConnectionSpec | AllConnectionsSpec | AllPortsSpec | AllCompsAllPortsSpec ]
+DisconnectStatement = DisconnectKeyword + Optional( SingleConnectionSpec | AllConnectionsSpec | AllPortsSpec | AllCompsAllPortsSpec );
 
 # ComponentRefAssignment ::= Identifier ":=" ComponentRef
 ComponentRefAssignment = Identifier + ":=" + ComponentRef;
