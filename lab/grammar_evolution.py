@@ -1045,12 +1045,13 @@ ArrayIdentifierRef << ( Identifier + ZeroOrMore( ArrayOrBitRef ) );
 # TimerKeyword ::= "timer"
 TimerKeyword << Keyword("timer");
 
-## TimerInstance ::= TimerKeyword VarList
-#TimerInstance = TimerKeyword + VarList;
-#
-## VariableRef ::= Identifier [ ExtendedFieldReference ]
-#VariableRef = Identifier + Optional( ExtendedFieldReference );
-#
+# TimerInstance ::= TimerKeyword VarList
+VarList = Forward();
+TimerInstance = TimerKeyword + VarList;
+
+# VariableRef ::= Identifier [ ExtendedFieldReference ]
+VariableRef << Identifier + Optional( ExtendedFieldReference );
+
 ## SingleTempVarInstance ::= Identifier [ ArrayDef ] [ AssignmentChar TemplateBody ]
 #SingleTempVarInstance = Identifier + Optional( ArrayDef ) + Optional( AssignmentChar + TemplateBody );
 #
@@ -1060,12 +1061,12 @@ TimerKeyword << Keyword("timer");
 ## VarKeyword ::= "var"
 #VarKeyword = Keyword("var");
 #
-## SingleVarInstance ::= Identifier [ ArrayDef ] [ AssignmentChar Expression ]
-#SingleVarInstance = Identifier + Optional( ArrayDef ) + Optional( AssignmentChar + Expression );
-#
-## VarList ::= SingleVarInstance { "," SingleVarInstance }
-#VarList = delimitedList( SingleVarInstance );
-#
+# SingleVarInstance ::= Identifier [ ArrayDef ] [ AssignmentChar Expression ]
+SingleVarInstance = Identifier + Optional( ArrayDef ) + Optional( AssignmentChar + Expression );
+
+# VarList ::= SingleVarInstance { "," SingleVarInstance }
+VarList << delimitedList( SingleVarInstance );
+
 ## VarInstance ::= VarKeyword ( ( Type VarList ) | ( ( TemplateKeyword | RestrictedTemplate ) Type TempVarList ) )
 #VarInstance = VarKeyword + ( ( Type + VarList ) | ( ( TemplateKeyword | RestrictedTemplate ) + Type + TempVarList ) );
 #
@@ -1295,7 +1296,6 @@ ExtendedFieldReference << Identifier;
 TemplateOps << Identifier;
 PredefinedType << Identifier;
 ArrayOrBitRef << Identifier;
-VariableRef << Identifier;
 TemplateBody << Identifier;
 ConstantExpression << SingleExpression;
 FieldReference << Identifier;
