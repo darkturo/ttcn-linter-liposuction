@@ -290,6 +290,18 @@ alt {
    def test_halt_statement(self):
       result = HaltStatement.parseString('''all port.halt''');
       self.assertEqual(len(result.asList()), 4);
+
+   def test_stop_statement(self):
+      result = StopStatement.parseString('''all port.stop''');
+      self.assertEqual(len(result.asList()), 4);
+
+   def test_start_statement(self):
+      result = StartStatement.parseString('''all port.start''');
+      self.assertEqual(len(result.asList()), 4);
+
+   def test_clear_statement(self):
+      result = ClearStatement.parseString('''all port.clear''');
+      self.assertEqual(len(result.asList()), 4);
       
 
    # TODO: use this later on

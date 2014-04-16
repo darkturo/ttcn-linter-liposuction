@@ -681,21 +681,21 @@ HaltStatement = PortOrAll + Dot + HaltKeyword;
 # StopKeyword ::= "stop"
 StopKeyword << Keyword("stop");
 
-## StopStatement ::= PortOrAll Dot StopKeyword
-#StopStatement = PortOrAll + Dot + StopKeyword;
-#
-## StartStatement ::= PortOrAll Dot StartKeyword
-#StartStatement = PortOrAll + Dot + StartKeyword;
-#
-## ClearOpKeyword ::= "clear"
-#ClearOpKeyword = Keyword("clear");
-#
+# StopStatement ::= PortOrAll Dot StopKeyword
+StopStatement = PortOrAll + Dot + StopKeyword;
+
+# StartStatement ::= PortOrAll Dot StartKeyword
+StartStatement = PortOrAll + Dot + StartKeyword;
+
+# ClearOpKeyword ::= "clear"
+ClearOpKeyword = Keyword("clear");
+
 # PortOrAll ::= ArrayIdentifierRef | AllKeyword PortKeyword
 PortOrAll << ( ArrayIdentifierRef | AllKeyword + PortKeyword );
 
-## ClearStatement ::= PortOrAll Dot ClearOpKeyword
-#ClearStatement = PortOrAll + Dot + ClearOpKeyword;
-#
+# ClearStatement ::= PortOrAll Dot ClearOpKeyword
+ClearStatement = PortOrAll + Dot + ClearOpKeyword;
+
 ## CatchOpParameter ::= Signature "," InLineTemplate | TimeoutKeyword
 #CatchOpParameter = Signature + "," + InLineTemplate | TimeoutKeyword;
 #
