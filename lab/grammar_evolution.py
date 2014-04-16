@@ -1029,9 +1029,10 @@ DoneStatement << ( ComponentId + Dot + DoneKeyword );
 # SelfOp ::= "self"
 SelfOp << Keyword("self");
 
-## CreateOp ::= ComponentType Dot CreateKeyword [ "(" ( SingleExpression | Minus ) [ "," SingleExpression ] ")" ] [ AliveKeyword ]
-#CreateOp = ComponentType + Dot + CreateKeyword + Optional( "(" + ( SingleExpression | Minus ) + [ + "," + SingleExpression ) + ")" + ] + Optional( AliveKeyword );
-#
+# CreateOp ::= ComponentType Dot CreateKeyword [ "(" ( SingleExpression | Minus ) [ "," SingleExpression ] ")" ] [ AliveKeyword ]
+ComponentType = Forward();
+CreateOp = ComponentType + Dot + CreateKeyword + Optional( "(" + ( SingleExpression | Minus ) + Optional("," + SingleExpression ) + ")" ) + Optional( AliveKeyword );
+
 ## ConfigurationOps ::= CreateOp | SelfOp | SystemKeyword | MTCKeyword | RunningOp | AliveOp
 #ConfigurationOps = CreateOp | SelfOp | SystemKeyword | MTCKeyword | RunningOp | AliveOp;
 #
@@ -1610,9 +1611,9 @@ ConstKeyword << Keyword("const");
 ## ComponentDefList ::= { ComponentElementDef [ WithStatement ] [ SemiColon ] }
 #ComponentDefList = ZeroOrMore( ComponentElementDef + Optional( WithStatement ) + Optional( SemiColon ) );
 #
-## ComponentType ::= ExtendedIdentifier
-#ComponentType = ExtendedIdentifier;
-#
+# ComponentType ::= ExtendedIdentifier
+ComponentType << ExtendedIdentifier;
+
 ## ExtendsKeyword ::= "extends"
 #ExtendsKeyword = Keyword("extends");
 #
