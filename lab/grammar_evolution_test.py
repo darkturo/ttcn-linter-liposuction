@@ -282,6 +282,10 @@ alt {
    def test_start_timer(self):
       result = StartTimerStatement.parseString('''t_myTimer.start''');
       self.assertEqual(len(result.asList()), 3);
+
+   def test_check_statement(self):
+      result = CheckStateStatement.parseString('''myVar port.checkstate(2)''');
+      self.assertEqual(len(result.asList()), 7);
       
 
    # TODO: use this later on

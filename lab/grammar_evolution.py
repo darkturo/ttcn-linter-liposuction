@@ -661,12 +661,14 @@ TimerStatements = StartTimerStatement | StopTimerStatement | TimeoutStatement;
 # CheckStateKeyword ::= "checkstate"
 CheckStateKeyword = Keyword("checkstate");
 
-## PortOrAllAny ::= PortOrAll | AnyKeyword PortKeyword
-#PortOrAllAny = PortOrAll | AnyKeyword + PortKeyword;
-#
-## CheckStateStatement ::= PortOrAllAny Dot CheckStateKeyword "(" SingleExpression ")"
-#CheckStateStatement = PortOrAllAny + Dot + CheckStateKeyword + "(" + SingleExpression + ")";
-#
+# PortOrAllAny ::= PortOrAll | AnyKeyword PortKeyword
+PortOrAll = Forward();
+PortKeyword = Forward();
+PortOrAllAny = PortOrAll | AnyKeyword + PortKeyword;
+
+# CheckStateStatement ::= PortOrAllAny Dot CheckStateKeyword "(" SingleExpression ")"
+CheckStateStatement = PortOrAllAny + Dot + CheckStateKeyword + "(" + SingleExpression + ")";
+
 # AnyKeyword ::= "any"
 AnyKeyword << Keyword("any");
 
@@ -688,9 +690,9 @@ StopKeyword << Keyword("stop");
 ## ClearOpKeyword ::= "clear"
 #ClearOpKeyword = Keyword("clear");
 #
-## PortOrAll ::= ArrayIdentifierRef | AllKeyword PortKeyword
-#PortOrAll = ArrayIdentifierRef | AllKeyword + PortKeyword;
-#
+# PortOrAll ::= ArrayIdentifierRef | AllKeyword PortKeyword
+PortOrAll << ( ArrayIdentifierRef | AllKeyword + PortKeyword );
+
 ## ClearStatement ::= PortOrAll Dot ClearOpKeyword
 #ClearStatement = PortOrAll + Dot + ClearOpKeyword;
 #
@@ -1667,9 +1669,9 @@ AllKeyword << Keyword("all");
 ## PortDefAttribs ::= MessageAttribs | ProcedureAttribs | MixedAttribs
 #PortDefAttribs = MessageAttribs | ProcedureAttribs | MixedAttribs;
 #
-## PortKeyword ::= "port"
-#PortKeyword = Keyword("port");
-#
+# PortKeyword ::= "port"
+PortKeyword << Keyword("port");
+
 ## PortDefBody ::= Identifier PortDefAttribs
 #PortDefBody = Identifier + PortDefAttribs;
 #
