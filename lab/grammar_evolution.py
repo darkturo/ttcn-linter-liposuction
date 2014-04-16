@@ -989,12 +989,12 @@ PortRef << ( ComponentRef + Colon + ArrayIdentifierRef );
 # SingleConnectionSpec ::= "(" PortRef "," PortRef ")"
 SingleConnectionSpec << "(" + PortRef + "," + PortRef + ")";
 
-## ConnectKeyword ::= "connect"
-#ConnectKeyword = Keyword("connect");
-#
-## ConnectStatement ::= ConnectKeyword SingleConnectionSpec
-#ConnectStatement = ConnectKeyword + SingleConnectionSpec;
-#
+# ConnectKeyword ::= "connect"
+ConnectKeyword = Keyword("connect");
+
+# ConnectStatement ::= ConnectKeyword SingleConnectionSpec
+ConnectStatement = ConnectKeyword + SingleConnectionSpec;
+
 ## AliveKeyword ::= "alive"
 #AliveKeyword = Keyword("alive");
 #
