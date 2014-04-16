@@ -338,6 +338,14 @@ alt {
    def test_disconnect_statement(self):
       result = DisconnectStatement.parseString('''disconnect( myComponent:Port, system:Port )''');
       self.assertEqual(len(result.asList()), 10);
+
+   def test_killed_statement(self):
+      result = KilledStatement.parseString('''myComponent.killed''');
+      self.assertEqual(len(result.asList()), 3);
+   
+   def test_done_statement(self):
+      result = DoneStatement.parseString('''myComponent.done''');
+      self.assertEqual(len(result.asList()), 3);
       
 
    # TODO: use this later on

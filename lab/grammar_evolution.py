@@ -1020,9 +1020,9 @@ DoneKeyword = Keyword("done");
 # ComponentId ::= ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) ComponentKeyword
 ComponentId << ( ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) + ComponentKeyword );
 
-## KilledStatement ::= ComponentId Dot KilledKeyword
-#KilledStatement = ComponentId + Dot + KilledKeyword;
-#
+# KilledStatement ::= ComponentId Dot KilledKeyword
+KilledStatement = ComponentId + Dot + KilledKeyword;
+
 # DoneStatement ::= ComponentId Dot DoneKeyword
 DoneStatement << ( ComponentId + Dot + DoneKeyword );
 
