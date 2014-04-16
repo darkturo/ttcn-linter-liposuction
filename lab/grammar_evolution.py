@@ -959,15 +959,16 @@ ParamClause << ( ParamKeyword + FunctionActualParList );
 # MapStatement ::= MapKeyword SingleConnectionSpec [ ParamClause ]
 MapStatement = MapKeyword + SingleConnectionSpec + Optional( ParamClause );
 
-## DisconnectKeyword ::= "disconnect"
-#DisconnectKeyword = Keyword("disconnect");
-#
-## AllCompsAllPortsSpec ::= "(" AllKeyword ComponentKeyword ":" AllKeyword PortKeyword ")"
-#AllCompsAllPortsSpec = "(" + AllKeyword + ComponentKeyword + ":" + AllKeyword + PortKeyword + ")";
-#
-## AllPortsSpec ::= "(" ComponentRef ":" AllKeyword PortKeyword ")"
-#AllPortsSpec = "(" + ComponentRef + ":" + AllKeyword + PortKeyword + ")";
-#
+# DisconnectKeyword ::= "disconnect"
+DisconnectKeyword = Keyword("disconnect");
+
+# AllCompsAllPortsSpec ::= "(" AllKeyword ComponentKeyword ":" AllKeyword PortKeyword ")"
+AllCompsAllPortsSpec = "(" + AllKeyword + ComponentKeyword + ":" + AllKeyword + PortKeyword + ")";
+
+# AllPortsSpec ::= "(" ComponentRef ":" AllKeyword PortKeyword ")"
+ComponentRef = Forward();
+AllPortsSpec = "(" + ComponentRef + ":" + AllKeyword + PortKeyword + ")";
+
 # AllConnectionsSpec ::= "(" PortRef ")"
 PortRef = Forward();
 AllConnectionsSpec << ( "(" + PortRef + ")" );
@@ -976,7 +977,6 @@ AllConnectionsSpec << ( "(" + PortRef + ")" );
 #DisconnectStatement = DisconnectKeyword + Optional( SingleConnectionSpec | AllConnectionsSpec | AllPortsSpec | AllCompsAllPortsSpec );
 
 # ComponentRefAssignment ::= Identifier ":=" ComponentRef
-ComponentRef = Forward();
 ComponentRefAssignment = Identifier + ":=" + ComponentRef;
 
 # ComponentRef ::= ComponentOrDefaultReference | SystemKeyword | SelfOp | MTCKeyword
