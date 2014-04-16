@@ -995,29 +995,30 @@ ConnectKeyword = Keyword("connect");
 # ConnectStatement ::= ConnectKeyword SingleConnectionSpec
 ConnectStatement = ConnectKeyword + SingleConnectionSpec;
 
-## AliveKeyword ::= "alive"
-#AliveKeyword = Keyword("alive");
-#
-## CreateKeyword ::= "create"
-#CreateKeyword = Keyword("create");
-#
-## AliveOp ::= ComponentId Dot AliveKeyword
-#AliveOp = ComponentId + Dot + AliveKeyword;
-#
+# AliveKeyword ::= "alive"
+AliveKeyword = Keyword("alive");
+
+# CreateKeyword ::= "create"
+CreateKeyword = Keyword("create");
+
+# AliveOp ::= ComponentId Dot AliveKeyword
+ComponentId = Forward();
+AliveOp = ComponentId + Dot + AliveKeyword;
+
 # RunningKeyword ::= "running"
 RunningKeyword << Keyword("running");
 
-## RunningOp ::= ComponentId Dot RunningKeyword
-#RunningOp = ComponentId + Dot + RunningKeyword;
-#
-## KilledKeyword ::= "killed"
-#KilledKeyword = Keyword("killed");
-#
+# RunningOp ::= ComponentId Dot RunningKeyword
+RunningOp = ComponentId + Dot + RunningKeyword;
+
+# KilledKeyword ::= "killed"
+KilledKeyword = Keyword("killed");
+
 # DoneKeyword ::= "done"
 DoneKeyword = Keyword("done");
 
 # ComponentId ::= ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) ComponentKeyword
-ComponentId = ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) + ComponentKeyword;
+ComponentId << ( ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) + ComponentKeyword );
 
 ## KilledStatement ::= ComponentId Dot KilledKeyword
 #KilledStatement = ComponentId + Dot + KilledKeyword;
