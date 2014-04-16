@@ -929,9 +929,9 @@ MTCKeyword = Forward();
 SelfOp = Forward();
 ComponentReferenceOrLiteral << ( ComponentOrDefaultReference | MTCKeyword | SelfOp );
 
-## StopTCStatement ::= StopKeyword | ( ComponentReferenceOrLiteral | AllKeyword ComponentKeyword ) Dot StopKeyword
-#StopTCStatement = StopKeyword | ( ComponentReferenceOrLiteral | AllKeyword + ComponentKeyword ) + Dot + StopKeyword;
-#
+# StopTCStatement ::= StopKeyword | ( ComponentReferenceOrLiteral | AllKeyword ComponentKeyword ) Dot StopKeyword
+StopTCStatement = StopKeyword | ( ComponentReferenceOrLiteral | AllKeyword + ComponentKeyword ) + Dot + StopKeyword;
+
 # StartKeyword ::= "start"
 StartKeyword << Keyword("start");
 
@@ -1036,8 +1036,8 @@ CreateOp = ComponentType + Dot + CreateKeyword + Optional( "(" + ( SingleExpress
 # ConfigurationOps ::= CreateOp | SelfOp | SystemKeyword | MTCKeyword | RunningOp | AliveOp
 ConfigurationOps << ( CreateOp | SelfOp | SystemKeyword | MTCKeyword | RunningOp | AliveOp );
 
-## ConfigurationStatements ::= ConnectStatement | MapStatement | DisconnectStatement | UnmapStatement | DoneStatement | KilledStatement | StartTCStatement | StopTCStatement | KillTCStatement
-#ConfigurationStatements = ConnectStatement | MapStatement | DisconnectStatement | UnmapStatement | DoneStatement | KilledStatement | StartTCStatement | StopTCStatement | KillTCStatement;
+# ConfigurationStatements ::= ConnectStatement | MapStatement | DisconnectStatement | UnmapStatement | DoneStatement | KilledStatement | StartTCStatement | StopTCStatement | KillTCStatement
+ConfigurationStatements = ConnectStatement | MapStatement | DisconnectStatement | UnmapStatement | DoneStatement | KilledStatement | StartTCStatement | StopTCStatement | KillTCStatement;
 #
 # ArrayIdentifierRef ::= Identifier { ArrayOrBitRef }
 ArrayIdentifierRef << ( Identifier + ZeroOrMore( ArrayOrBitRef ) );
