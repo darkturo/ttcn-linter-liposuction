@@ -672,12 +672,12 @@ CheckStateStatement = PortOrAllAny + Dot + CheckStateKeyword + "(" + SingleExpre
 # AnyKeyword ::= "any"
 AnyKeyword << Keyword("any");
 
-## HaltKeyword ::= "halt"
-#HaltKeyword = Keyword("halt");
-#
-## HaltStatement ::= PortOrAll Dot HaltKeyword
-#HaltStatement = PortOrAll + Dot + HaltKeyword;
-#
+# HaltKeyword ::= "halt"
+HaltKeyword = Keyword("halt");
+
+# HaltStatement ::= PortOrAll Dot HaltKeyword
+HaltStatement = PortOrAll + Dot + HaltKeyword;
+
 # StopKeyword ::= "stop"
 StopKeyword << Keyword("stop");
 

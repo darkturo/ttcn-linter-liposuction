@@ -286,6 +286,10 @@ alt {
    def test_check_statement(self):
       result = CheckStateStatement.parseString('''myVar port.checkstate(2)''');
       self.assertEqual(len(result.asList()), 7);
+
+   def test_halt_statement(self):
+      result = HaltStatement.parseString('''all port.halt''');
+      self.assertEqual(len(result.asList()), 4);
       
 
    # TODO: use this later on
