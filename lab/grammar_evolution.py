@@ -859,40 +859,40 @@ PortReplyOp = ReplyKeyword + "(" + InLineTemplate + Optional( ReplyValue ) + ")"
 
 # ReplyStatement ::= ArrayIdentifierRef Dot PortReplyOp
 ReplyStatement = ArrayIdentifierRef + Dot + PortReplyOp;
-#
-## CallBodyOps ::= GetReplyStatement | CatchStatement
-#CallBodyOps = GetReplyStatement | CatchStatement;
-#
-## CallBodyGuard ::= AltGuardChar CallBodyOps
-#CallBodyGuard = AltGuardChar + CallBodyOps;
-#
-## CallBodyStatement ::= CallBodyGuard StatementBlock
-#CallBodyStatement = CallBodyGuard + StatementBlock;
-#
-## CallBodyStatementList ::= { CallBodyStatement [ SemiColon ] }+
-#CallBodyStatementList = OneOrMore( CallBodyStatement + Optional( SemiColon ) );
-#
-## PortCallBody ::= "{" CallBodyStatementList "}"
-#PortCallBody = "{" + CallBodyStatementList + "}";
-#
-## NowaitKeyword ::= "nowait"
-#NowaitKeyword = Keyword("nowait");
-#
-## CallTimerValue ::= Expression | NowaitKeyword
-#CallTimerValue = Expression | NowaitKeyword;
-#
-## CallParameters ::= InLineTemplate [ "," CallTimerValue ]
-#CallParameters = InLineTemplate + Optional( "," + CallTimerValue );
-#
-## CallOpKeyword ::= "call"
-#CallOpKeyword = Keyword("call");
-#
-## PortCallOp ::= CallOpKeyword "(" CallParameters ")" [ ToClause ]
-#PortCallOp = CallOpKeyword + "(" + CallParameters + ")" + Optional( ToClause );
-#
-## CallStatement ::= ArrayIdentifierRef Dot PortCallOp [ PortCallBody ]
-#CallStatement = ArrayIdentifierRef + Dot + PortCallOp + Optional( PortCallBody );
-#
+
+# CallBodyOps ::= GetReplyStatement | CatchStatement
+CallBodyOps = GetReplyStatement | CatchStatement;
+
+# CallBodyGuard ::= AltGuardChar CallBodyOps
+CallBodyGuard = AltGuardChar + CallBodyOps;
+
+# CallBodyStatement ::= CallBodyGuard StatementBlock
+CallBodyStatement = CallBodyGuard + StatementBlock;
+
+# CallBodyStatementList ::= { CallBodyStatement [ SemiColon ] }+
+CallBodyStatementList = OneOrMore( CallBodyStatement + Optional( SemiColon ) );
+
+# PortCallBody ::= "{" CallBodyStatementList "}"
+PortCallBody = "{" + CallBodyStatementList + "}";
+
+# NowaitKeyword ::= "nowait"
+NowaitKeyword = Keyword("nowait");
+
+# CallTimerValue ::= Expression | NowaitKeyword
+CallTimerValue = Expression | NowaitKeyword;
+
+# CallParameters ::= InLineTemplate [ "," CallTimerValue ]
+CallParameters = InLineTemplate + Optional( "," + CallTimerValue );
+
+# CallOpKeyword ::= "call"
+CallOpKeyword = Keyword("call");
+
+# PortCallOp ::= CallOpKeyword "(" CallParameters ")" [ ToClause ]
+PortCallOp = CallOpKeyword + "(" + CallParameters + ")" + Optional( ToClause );
+
+# CallStatement ::= ArrayIdentifierRef Dot PortCallOp [ PortCallBody ]
+CallStatement = ArrayIdentifierRef + Dot + PortCallOp + Optional( PortCallBody );
+
 # ToKeyword ::= "to"
 ToKeyword = Keyword("to");
 
@@ -902,21 +902,21 @@ AddressRefList << ( "(" + delimitedList( InLineTemplate ) + ")" );
 # ToClause ::= ToKeyword ( InLineTemplate | AddressRefList | AllKeyword ComponentKeyword )
 ToClause << ToKeyword + ( InLineTemplate | AddressRefList | AllKeyword + ComponentKeyword );
 
-## SendOpKeyword ::= "send"
-#SendOpKeyword = Keyword("send");
-#
-## PortSendOp ::= SendOpKeyword "(" InLineTemplate ")" [ ToClause ]
-#PortSendOp = SendOpKeyword + "(" + InLineTemplate + ")" + Optional( ToClause );
-#
-## SendStatement ::= ArrayIdentifierRef Dot PortSendOp
-#SendStatement = ArrayIdentifierRef + Dot + PortSendOp;
-#
-## CommunicationStatements ::= SendStatement | CallStatement | ReplyStatement | RaiseStatement | ReceiveStatement | TriggerStatement | GetCallStatement | GetReplyStatement | CatchStatement | CheckStatement | ClearStatement | StartStatement | StopStatement | HaltStatement | CheckStateStatement
-#CommunicationStatements = SendStatement | CallStatement | ReplyStatement | RaiseStatement | ReceiveStatement | TriggerStatement | GetCallStatement | GetReplyStatement | CatchStatement | CheckStatement | ClearStatement | StartStatement | StopStatement | HaltStatement | CheckStateStatement;
-#
-## KillKeyword ::= "kill"
-#KillKeyword = Keyword("kill");
-#
+# SendOpKeyword ::= "send"
+SendOpKeyword = Keyword("send");
+
+# PortSendOp ::= SendOpKeyword "(" InLineTemplate ")" [ ToClause ]
+PortSendOp = SendOpKeyword + "(" + InLineTemplate + ")" + Optional( ToClause );
+
+# SendStatement ::= ArrayIdentifierRef Dot PortSendOp
+SendStatement = ArrayIdentifierRef + Dot + PortSendOp;
+
+# CommunicationStatements ::= SendStatement | CallStatement | ReplyStatement | RaiseStatement | ReceiveStatement | TriggerStatement | GetCallStatement | GetReplyStatement | CatchStatement | CheckStatement | ClearStatement | StartStatement | StopStatement | HaltStatement | CheckStateStatement
+CommunicationStatements = SendStatement | CallStatement | ReplyStatement | RaiseStatement | ReceiveStatement | TriggerStatement | GetCallStatement | GetReplyStatement | CatchStatement | CheckStatement | ClearStatement | StartStatement | StopStatement | HaltStatement | CheckStateStatement;
+
+# KillKeyword ::= "kill"
+KillKeyword = Keyword("kill");
+
 # ComponentOrDefaultReference ::= VariableRef | FunctionInstance
 ComponentOrDefaultReference << ( VariableRef | FunctionInstance );
 
