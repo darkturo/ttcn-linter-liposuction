@@ -652,15 +652,15 @@ StopTimerStatement = TimerRefOrAll + Dot + StopKeyword;
 StartKeyword = Forward();
 StartTimerStatement = ArrayIdentifierRef + Dot + StartKeyword + Optional( "(" + Expression + ")" );
 
-## TimerOps ::= ReadTimerOp | RunningTimerOp
-#TimerOps = ReadTimerOp | RunningTimerOp;
-#
-## TimerStatements ::= StartTimerStatement | StopTimerStatement | TimeoutStatement
-#TimerStatements = StartTimerStatement | StopTimerStatement | TimeoutStatement;
-#
-## CheckStateKeyword ::= "checkstate"
-#CheckStateKeyword = Keyword("checkstate");
-#
+# TimerOps ::= ReadTimerOp | RunningTimerOp
+TimerOps << ( ReadTimerOp | RunningTimerOp );
+
+# TimerStatements ::= StartTimerStatement | StopTimerStatement | TimeoutStatement
+TimerStatements = StartTimerStatement | StopTimerStatement | TimeoutStatement;
+
+# CheckStateKeyword ::= "checkstate"
+CheckStateKeyword = Keyword("checkstate");
+
 ## PortOrAllAny ::= PortOrAll | AnyKeyword PortKeyword
 #PortOrAllAny = PortOrAll | AnyKeyword + PortKeyword;
 #
@@ -711,7 +711,6 @@ InLineTemplate << ( Literal("42") | Identifier ); # TEMP
 StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
 VarInstance << "var integer v_i := 0";
 ConfigurationOps << Identifier; 
-TimerOps << Identifier;
 TestcaseInstance << Identifier;
 FunctionInstance << Identifier; 
 ExtendedFieldReference << Identifier;
@@ -1033,7 +1032,7 @@ DoneStatement << ( ComponentId + Dot + DoneKeyword );
 #ConfigurationStatements = ConnectStatement | MapStatement | DisconnectStatement | UnmapStatement | DoneStatement | KilledStatement | StartTCStatement | StopTCStatement | KillTCStatement;
 #
 # ArrayIdentifierRef ::= Identifier { ArrayOrBitRef }
-ArrayIdentifierRef = Identifier + ZeroOrMore( ArrayOrBitRef );
+ArrayIdentifierRef << ( Identifier + ZeroOrMore( ArrayOrBitRef ) );
 
 # TimerKeyword ::= "timer"
 TimerKeyword << Keyword("timer");

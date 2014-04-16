@@ -278,6 +278,10 @@ alt {
    def test_stop_timer(self):
       result = StopTimerStatement.parseString('''all timer.stop''');
       self.assertEqual(len(result.asList()), 4);
+
+   def test_start_timer(self):
+      result = StartTimerStatement.parseString('''t_myTimer.start''');
+      self.assertEqual(len(result.asList()), 3);
       
 
    # TODO: use this later on
