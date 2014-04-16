@@ -767,9 +767,9 @@ SenderSpec = Forward();
 ## ParamAssignmentList ::= "(" ( AssignmentList | VariableList ) ")"
 #ParamAssignmentList = "(" + ( AssignmentList | VariableList ) + ")";
 #
-## ParamKeyword ::= "param"
-#ParamKeyword = Keyword("param");
-#
+# ParamKeyword ::= "param"
+ParamKeyword = Keyword("param");
+
 ## ParamSpec ::= ParamKeyword ParamAssignmentList
 #ParamSpec = ParamKeyword + ParamAssignmentList;
 #
@@ -938,18 +938,24 @@ StartKeyword << Keyword("start");
 # StartTCStatement ::= ComponentOrDefaultReference Dot StartKeyword "(" FunctionInstance ")"
 StartTCStatement = ComponentOrDefaultReference + Dot + StartKeyword + "(" + FunctionInstance + ")";
 
-## UnmapKeyword ::= "unmap"
-#UnmapKeyword = Keyword("unmap");
-#
-## UnmapStatement ::= UnmapKeyword [ SingleConnectionSpec [ ParamClause ] | AllConnectionsSpec [ ParamClause ] | AllPortsSpec | AllCompsAllPortsSpec ]
-#UnmapStatement = UnmapKeyword + Optional( SingleConnectionSpec + [ + ParamClause ) | AllConnectionsSpec + Optional( ParamClause ) | AllPortsSpec | AllCompsAllPortsSpec + ];
-#
+# UnmapKeyword ::= "unmap"
+UnmapKeyword = Keyword("unmap");
+
+# UnmapStatement ::= UnmapKeyword [ SingleConnectionSpec [ ParamClause ] | AllConnectionsSpec [ ParamClause ] | AllPortsSpec | AllCompsAllPortsSpec ]
+SingleConnectionSpec = Forward();
+ParamClause = Forward();
+AllConnectionsSpec = Forward();
+AllPortsSpec = Forward();
+AllCompsAllPortsSpec = Forward();
+UnmapStatement = UnmapKeyword + Optional( SingleConnectionSpec + Optional( ParamClause ) | AllConnectionsSpec + Optional( ParamClause ) | AllPortsSpec | AllCompsAllPortsSpec );
+
 ## MapKeyword ::= "map"
 #MapKeyword = Keyword("map");
 #
-## ParamClause ::= ParamKeyword FunctionActualParList
-#ParamClause = ParamKeyword + FunctionActualParList;
-#
+# ParamClause ::= ParamKeyword FunctionActualParList
+FunctionActualParList = Forward();
+ParamClause << ( ParamKeyword + FunctionActualParList );
+
 ## MapStatement ::= MapKeyword SingleConnectionSpec [ ParamClause ]
 #MapStatement = MapKeyword + SingleConnectionSpec + Optional( ParamClause );
 #
@@ -962,24 +968,27 @@ StartTCStatement = ComponentOrDefaultReference + Dot + StartKeyword + "(" + Func
 ## AllPortsSpec ::= "(" ComponentRef ":" AllKeyword PortKeyword ")"
 #AllPortsSpec = "(" + ComponentRef + ":" + AllKeyword + PortKeyword + ")";
 #
-## AllConnectionsSpec ::= "(" PortRef ")"
-#AllConnectionsSpec = "(" + PortRef + ")";
-#
+# AllConnectionsSpec ::= "(" PortRef ")"
+PortRef = Forward();
+AllConnectionsSpec << ( "(" + PortRef + ")" );
+
 ## DisconnectStatement ::= DisconnectKeyword [ SingleConnectionSpec | AllConnectionsSpec | AllPortsSpec | AllCompsAllPortsSpec ]
 #DisconnectStatement = DisconnectKeyword + Optional( SingleConnectionSpec | AllConnectionsSpec | AllPortsSpec | AllCompsAllPortsSpec );
-#
-## ComponentRefAssignment ::= Identifier ":=" ComponentRef
-#ComponentRefAssignment = Identifier + ":=" + ComponentRef;
-#
-## ComponentRef ::= ComponentOrDefaultReference | SystemKeyword | SelfOp | MTCKeyword
-#ComponentRef = ComponentOrDefaultReference | SystemKeyword | SelfOp | MTCKeyword;
-#
-## PortRef ::= ComponentRef Colon ArrayIdentifierRef
-#PortRef = ComponentRef + Colon + ArrayIdentifierRef;
-#
-## SingleConnectionSpec ::= "(" PortRef "," PortRef ")"
-#SingleConnectionSpec = "(" + PortRef + "," + PortRef + ")";
-#
+
+# ComponentRefAssignment ::= Identifier ":=" ComponentRef
+ComponentRef = Forward();
+ComponentRefAssignment = Identifier + ":=" + ComponentRef;
+
+# ComponentRef ::= ComponentOrDefaultReference | SystemKeyword | SelfOp | MTCKeyword
+SystemKeyword = Forward();
+ComponentRef << ( ComponentOrDefaultReference | SystemKeyword | SelfOp | MTCKeyword );
+
+# PortRef ::= ComponentRef Colon ArrayIdentifierRef
+PortRef << ( ComponentRef + Colon + ArrayIdentifierRef );
+
+# SingleConnectionSpec ::= "(" PortRef "," PortRef ")"
+SingleConnectionSpec << "(" + PortRef + "," + PortRef + ")";
+
 ## ConnectKeyword ::= "connect"
 #ConnectKeyword = Keyword("connect");
 #
@@ -1218,9 +1227,7 @@ ExceptKeyword << Keyword("except");
 #ImportDef = ImportKeyword + ImportFromSpec + ( AllWithExcepts | ( "ZeroOrMore(" + ImportSpec + ")" ) );
 #
 # AltstepInstance ::= ExtendedIdentifier "(" [ FunctionActualParList ] ")"
-FunctionActualParList = Forward();
 AltstepInstance << ( ExtendedIdentifier + "(" + Optional( FunctionActualParList ) + ")" );
-FunctionActualParList << ""; 
 
 ## AltstepLocalDef ::= VarInstance | TimerInstance | ConstDef | TemplateDef
 #AltstepLocalDef = VarInstance | TimerInstance | ConstDef | TemplateDef;
@@ -1243,9 +1250,9 @@ AltstepKeyword << Keyword("altstep");
 ## TestcaseInstance ::= ExecuteKeyword "(" ExtendedIdentifier "(" [ TestcaseActualParList ] ")" [ "," ( Expression | Minus ) [ "," SingleExpression ] ] ")"
 #TestcaseInstance = ExecuteKeyword + "(" + ExtendedIdentifier + "(" + Optional( TestcaseActualParList ) + ")" + Optional( "," + ( Expression | Minus ) + [ + "," + SingleExpression ) + ] + ")";
 #
-## SystemKeyword ::= "system"
-#SystemKeyword = Keyword("system");
-#
+# SystemKeyword ::= "system"
+SystemKeyword << Keyword("system");
+
 ## SystemSpec ::= SystemKeyword ComponentType
 #SystemSpec = SystemKeyword + ComponentType;
 #
@@ -1294,18 +1301,19 @@ FieldReference << Identifier;
 ## SignatureDef ::= SignatureKeyword Identifier "(" [ SignatureFormalParList ] ")" [ ReturnType | NoBlockKeyword ] [ ExceptionSpec ]
 #SignatureDef = SignatureKeyword + Identifier + "(" + Optional( SignatureFormalParList ) + ")" + Optional( ReturnType | NoBlockKeyword ) + Optional( ExceptionSpec );
 #
-## ArrayIdentifierRefAssignment ::= Identifier ":=" ArrayIdentifierRef
-#ArrayIdentifierRefAssignment = Identifier + ":=" + ArrayIdentifierRef;
-#
-## FunctionActualParAssignment ::= TemplateInstanceAssignment | ComponentRefAssignment | ArrayIdentifierRefAssignment
-#FunctionActualParAssignment = TemplateInstanceAssignment | ComponentRefAssignment | ArrayIdentifierRefAssignment;
-#
-## FunctionActualPar ::= ArrayIdentifierRef | InLineTemplate | ComponentRef | Minus
-#FunctionActualPar = ArrayIdentifierRef | InLineTemplate | ComponentRef | Minus;
-#
-## FunctionActualParList ::= ( FunctionActualPar { "," FunctionActualPar } ) | ( FunctionActualParAssignment { "," FunctionActualParAssignment } )
-#FunctionActualParList << ( ( FunctionActualPar + ZeroOrMore( "," + FunctionActualPar ) ) | ( FunctionActualParAssignment + ZeroOrMore( "," + FunctionActualParAssignment ) ) );
-#
+# ArrayIdentifierRefAssignment ::= Identifier ":=" ArrayIdentifierRef
+ArrayIdentifierRefAssignment = Identifier + ":=" + ArrayIdentifierRef;
+
+# FunctionActualParAssignment ::= TemplateInstanceAssignment | ComponentRefAssignment | ArrayIdentifierRefAssignment
+TemplateInstanceAssignment = Forward();
+FunctionActualParAssignment = TemplateInstanceAssignment | ComponentRefAssignment | ArrayIdentifierRefAssignment;
+
+# FunctionActualPar ::= ArrayIdentifierRef | InLineTemplate | ComponentRef | Minus
+FunctionActualPar = ArrayIdentifierRef | InLineTemplate | ComponentRef | Minus;
+
+# FunctionActualParList ::= ( FunctionActualPar { "," FunctionActualPar } ) | ( FunctionActualParAssignment { "," FunctionActualParAssignment } )
+FunctionActualParList << ( ( FunctionActualPar + ZeroOrMore( "," + FunctionActualPar ) ) | ( FunctionActualParAssignment + ZeroOrMore( "," + FunctionActualParAssignment ) ) );
+
 ## PreDefFunctionIdentifier ::= Identifier
 #PreDefFunctionIdentifier = Identifier;
 #

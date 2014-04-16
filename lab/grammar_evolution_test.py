@@ -322,6 +322,10 @@ alt {
    def test_start_statement(self):
       result = StartTCStatement.parseString('''myPtc.start( f_doSilentFunction) )''');
       self.assertEqual(len(result.asList()), 6);
+
+   def test_unmap_statement(self):
+      result = UnmapStatement.parseString('''unmap( system:PTC )''');
+      self.assertEqual(len(result.asList()), 6);
       
 
    # TODO: use this later on
