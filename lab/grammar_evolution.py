@@ -935,9 +935,9 @@ ComponentReferenceOrLiteral << ( ComponentOrDefaultReference | MTCKeyword | Self
 # StartKeyword ::= "start"
 StartKeyword << Keyword("start");
 
-## StartTCStatement ::= ComponentOrDefaultReference Dot StartKeyword "(" FunctionInstance ")"
-#StartTCStatement = ComponentOrDefaultReference + Dot + StartKeyword + "(" + FunctionInstance + ")";
-#
+# StartTCStatement ::= ComponentOrDefaultReference Dot StartKeyword "(" FunctionInstance ")"
+StartTCStatement = ComponentOrDefaultReference + Dot + StartKeyword + "(" + FunctionInstance + ")";
+
 ## UnmapKeyword ::= "unmap"
 #UnmapKeyword = Keyword("unmap");
 #

@@ -314,6 +314,14 @@ alt {
    def test_raise_statement(self):
       result = RaiseStatement.parseString('''myId.raise( something, 42 )''');
       self.assertEqual(len(result.asList()), 8);
+
+   def test_killtc_statement(self):
+      result = KillTCStatement.parseString('''mtc.kill''');
+      self.assertEqual(len(result.asList()), 3);
+
+   def test_start_statement(self):
+      result = StartTCStatement.parseString('''myPtc.start( f_doSilentFunction) )''');
+      self.assertEqual(len(result.asList()), 6);
       
 
    # TODO: use this later on
