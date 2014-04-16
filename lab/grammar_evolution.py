@@ -696,37 +696,27 @@ PortOrAll << ( ArrayIdentifierRef | AllKeyword + PortKeyword );
 # ClearStatement ::= PortOrAll Dot ClearOpKeyword
 ClearStatement = PortOrAll + Dot + ClearOpKeyword;
 
-## CatchOpParameter ::= Signature "," InLineTemplate | TimeoutKeyword
-#CatchOpParameter = Signature + "," + InLineTemplate | TimeoutKeyword;
-#
-## CatchOpKeyword ::= "catch"
-#CatchOpKeyword = Keyword("catch");
-#
-## PortCatchOp ::= CatchOpKeyword [ "(" CatchOpParameter ")" ] [ FromClause ] [ PortRedirect ]
-#PortCatchOp = CatchOpKeyword + Optional( "(" + CatchOpParameter + ")" ) + Optional( FromClause ) + Optional( PortRedirect );
-#
-## CatchStatement ::= PortOrAny Dot PortCatchOp
-#CatchStatement = PortOrAny + Dot + PortCatchOp;
-#
-#TMP
-InLineTemplate << ( Literal("42") | Identifier ); # TEMP
-StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
-VarInstance << "var integer v_i := 0";
-ConfigurationOps << Identifier; 
-TestcaseInstance << Identifier;
-FunctionInstance << Identifier; 
-ExtendedFieldReference << Identifier;
-TemplateOps << Identifier;
-PredefinedType << Identifier;
-ArrayOrBitRef << Identifier;
-VariableRef << Identifier;
-TemplateBody << Identifier;
-ConstantExpression << SingleExpression;
-FieldReference << Identifier;
+# CatchOpParameter ::= Signature "," InLineTemplate | TimeoutKeyword
+Signature = Forward();
+CatchOpParameter = Signature + "," + InLineTemplate | TimeoutKeyword;
+
+# CatchOpKeyword ::= "catch"
+CatchOpKeyword = Keyword("catch");
+
+# PortCatchOp ::= CatchOpKeyword [ "(" CatchOpParameter ")" ] [ FromClause ] [ PortRedirect ]
+FromClause = Forward();
+PortRedirect = Forward();
+PortCatchOp = CatchOpKeyword + Optional( "(" + CatchOpParameter + ")" ) + Optional( FromClause ) + Optional( PortRedirect );
+
+# CatchStatement ::= PortOrAny Dot PortCatchOp
+PortOrAny = Forward();
+CatchStatement = PortOrAny + Dot + PortCatchOp;
+
 ## CheckPortOpsPresent ::= PortReceiveOp | PortGetCallOp | PortGetReplyOp | PortCatchOp
 #CheckPortOpsPresent = PortReceiveOp | PortGetCallOp | PortGetReplyOp | PortCatchOp;
 #
 ## RedirectPresent ::= PortRedirectSymbol SenderSpec
+SenderSpec = Forward();
 #RedirectPresent = PortRedirectSymbol + SenderSpec;
 #
 ## FromClausePresent ::= FromClause [ PortRedirectSymbol SenderSpec ]
@@ -807,42 +797,44 @@ FieldReference << Identifier;
 ## TriggerStatement ::= PortOrAny Dot PortTriggerOp
 #TriggerStatement = PortOrAny + Dot + PortTriggerOp;
 #
-## SenderKeyword ::= "sender"
-#SenderKeyword = Keyword("sender");
-#
-## SenderSpec ::= SenderKeyword VariableRef
-#SenderSpec = SenderKeyword + VariableRef;
-#
+# SenderKeyword ::= "sender"
+SenderKeyword = Keyword("sender");
+
+# SenderSpec ::= SenderKeyword VariableRef
+SenderSpec << SenderKeyword + VariableRef;
+
 # ValueKeyword ::= "value"
 ValueKeyword << Keyword("value");
 
-## SingleValueSpec ::= VariableRef [ AssignmentChar FieldReference ExtendedFieldReference ]
-#SingleValueSpec = VariableRef + Optional( AssignmentChar + FieldReference + ExtendedFieldReference );
-#
-## ValueSpec ::= ValueKeyword ( VariableRef | ( "(" SingleValueSpec { "," SingleValueSpec } ")" ) )
-#ValueSpec = ValueKeyword + ( VariableRef | ( "(" + delimitedList( SingleValueSpec ) + ")" ) );
-#
-## PortRedirectSymbol ::= "->"
-#PortRedirectSymbol = "->";
-#
-## PortRedirect ::= PortRedirectSymbol ( ValueSpec [ SenderSpec ] | SenderSpec )
-#PortRedirect = PortRedirectSymbol + ( ValueSpec + Optional( SenderSpec ) | SenderSpec );
-#
-## FromKeyword ::= "from"
-#FromKeyword = Keyword("from");
-#
-## FromClause ::= FromKeyword ( InLineTemplate | AddressRefList | AnyKeyword ComponentKeyword )
-#FromClause = FromKeyword + ( InLineTemplate | AddressRefList | AnyKeyword + ComponentKeyword );
-#
-## ReceiveOpKeyword ::= "receive"
-#ReceiveOpKeyword = Keyword("receive");
-#
-## PortReceiveOp ::= ReceiveOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirect ]
-#PortReceiveOp = ReceiveOpKeyword + Optional( "(" + InLineTemplate + ")" ) + Optional( FromClause ) + Optional( PortRedirect );
-#
-## PortOrAny ::= ArrayIdentifierRef | AnyKeyword PortKeyword
-#PortOrAny = ArrayIdentifierRef | AnyKeyword + PortKeyword;
-#
+# SingleValueSpec ::= VariableRef [ AssignmentChar FieldReference ExtendedFieldReference ]
+SingleValueSpec = VariableRef + Optional( AssignmentChar + FieldReference + ExtendedFieldReference );
+
+# ValueSpec ::= ValueKeyword ( VariableRef | ( "(" SingleValueSpec { "," SingleValueSpec } ")" ) )
+ValueSpec = ValueKeyword + ( VariableRef | ( "(" + delimitedList( SingleValueSpec ) + ")" ) );
+
+# PortRedirectSymbol ::= "->"
+PortRedirectSymbol = "->";
+
+# PortRedirect ::= PortRedirectSymbol ( ValueSpec [ SenderSpec ] | SenderSpec )
+PortRedirect << ( PortRedirectSymbol + ( ValueSpec + Optional( SenderSpec ) | SenderSpec ) );
+
+# FromKeyword ::= "from"
+FromKeyword = Keyword("from");
+
+# FromClause ::= FromKeyword ( InLineTemplate | AddressRefList | AnyKeyword ComponentKeyword )
+AddressRefList = Forward();
+ComponentKeyword = Forward();
+FromClause << ( FromKeyword + ( InLineTemplate | AddressRefList | AnyKeyword + ComponentKeyword ) );
+
+# ReceiveOpKeyword ::= "receive"
+ReceiveOpKeyword = Keyword("receive");
+
+# PortReceiveOp ::= ReceiveOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirect ]
+PortReceiveOp = ReceiveOpKeyword + Optional( "(" + InLineTemplate + ")" ) + Optional( FromClause ) + Optional( PortRedirect );
+
+# PortOrAny ::= ArrayIdentifierRef | AnyKeyword PortKeyword
+PortOrAny << ( ArrayIdentifierRef | AnyKeyword + PortKeyword );
+
 ## ReceiveStatement ::= PortOrAny Dot PortReceiveOp
 #ReceiveStatement = PortOrAny + Dot + PortReceiveOp;
 #
@@ -903,9 +895,9 @@ ValueKeyword << Keyword("value");
 ## ToKeyword ::= "to"
 #ToKeyword = Keyword("to");
 #
-## AddressRefList ::= "(" InLineTemplate { "," InLineTemplate } ")"
-#AddressRefList = "(" + delimitedList( InLineTemplate ) + ")";
-#
+# AddressRefList ::= "(" InLineTemplate { "," InLineTemplate } ")"
+AddressRefList << ( "(" + delimitedList( InLineTemplate ) + ")" );
+
 ## ToClause ::= ToKeyword ( InLineTemplate | AddressRefList | AllKeyword ComponentKeyword )
 #ToClause = ToKeyword + ( InLineTemplate | AddressRefList | AllKeyword + ComponentKeyword );
 #
@@ -1012,7 +1004,6 @@ RunningKeyword << Keyword("running");
 DoneKeyword = Keyword("done");
 
 # ComponentId ::= ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) ComponentKeyword
-ComponentKeyword = Forward();
 ComponentId = ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) + ComponentKeyword;
 
 ## KilledStatement ::= ComponentId Dot KilledKeyword
@@ -1266,9 +1257,9 @@ TestcaseKeyword << Keyword("testcase");
 ## NoBlockKeyword ::= "noblock"
 #NoBlockKeyword = Keyword("noblock");
 #
-## Signature ::= ExtendedIdentifier
-#Signature = ExtendedIdentifier;
-#
+# Signature ::= ExtendedIdentifier
+Signature << ExtendedIdentifier;
+
 ## ExceptionKeyword ::= "exception"
 #ExceptionKeyword = Keyword("exception");
 #
@@ -1281,6 +1272,21 @@ TestcaseKeyword << Keyword("testcase");
 # SignatureKeyword ::= "signature"
 SignatureKeyword << Keyword("signature");
 
+#TMP
+InLineTemplate << ( Literal("42") | Identifier ); # TEMP
+StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
+VarInstance << "var integer v_i := 0";
+ConfigurationOps << Identifier; 
+TestcaseInstance << Identifier;
+FunctionInstance << Identifier; 
+ExtendedFieldReference << Identifier;
+TemplateOps << Identifier;
+PredefinedType << Identifier;
+ArrayOrBitRef << Identifier;
+VariableRef << Identifier;
+TemplateBody << Identifier;
+ConstantExpression << SingleExpression;
+FieldReference << Identifier;
 ## SignatureDef ::= SignatureKeyword Identifier "(" [ SignatureFormalParList ] ")" [ ReturnType | NoBlockKeyword ] [ ExceptionSpec ]
 #SignatureDef = SignatureKeyword + Identifier + "(" + Optional( SignatureFormalParList ) + ")" + Optional( ReturnType | NoBlockKeyword ) + Optional( ExceptionSpec );
 #

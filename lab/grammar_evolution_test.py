@@ -302,6 +302,10 @@ alt {
    def test_clear_statement(self):
       result = ClearStatement.parseString('''all port.clear''');
       self.assertEqual(len(result.asList()), 4);
+
+   def test_catch_statement(self):
+      result = CatchStatement.parseString('''any port.catch''');
+      self.assertEqual(len(result.asList()), 4);
       
 
    # TODO: use this later on
