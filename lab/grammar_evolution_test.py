@@ -306,6 +306,14 @@ alt {
    def test_catch_statement(self):
       result = CatchStatement.parseString('''any port.catch''');
       self.assertEqual(len(result.asList()), 4);
+
+   def test_reply_statement(self):
+      result = ReplyStatement.parseString('''myId.reply( 42 )''');
+      self.assertEqual(len(result.asList()), 6);
+
+   def test_raise_statement(self):
+      result = RaiseStatement.parseString('''myId.raise( something, 42 )''');
+      self.assertEqual(len(result.asList()), 8);
       
 
    # TODO: use this later on

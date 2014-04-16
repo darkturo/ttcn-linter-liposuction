@@ -848,17 +848,17 @@ PortRaiseOp = RaiseKeyword + "(" + Signature + "," + InLineTemplate + ")" + Opti
 # RaiseStatement ::= ArrayIdentifierRef Dot PortRaiseOp
 RaiseStatement = ArrayIdentifierRef + Dot + PortRaiseOp;
 
-## ReplyValue ::= ValueKeyword Expression
-#ReplyValue = ValueKeyword + Expression;
-#
-## ReplyKeyword ::= "reply"
-#ReplyKeyword = Keyword("reply");
-#
-## PortReplyOp ::= ReplyKeyword "(" InLineTemplate [ ReplyValue ] ")" [ ToClause ]
-#PortReplyOp = ReplyKeyword + "(" + InLineTemplate + Optional( ReplyValue ) + ")" + Optional( ToClause );
-#
-## ReplyStatement ::= ArrayIdentifierRef Dot PortReplyOp
-#ReplyStatement = ArrayIdentifierRef + Dot + PortReplyOp;
+# ReplyValue ::= ValueKeyword Expression
+ReplyValue = ValueKeyword + Expression;
+
+# ReplyKeyword ::= "reply"
+ReplyKeyword = Keyword("reply");
+
+# PortReplyOp ::= ReplyKeyword "(" InLineTemplate [ ReplyValue ] ")" [ ToClause ]
+PortReplyOp = ReplyKeyword + "(" + InLineTemplate + Optional( ReplyValue ) + ")" + Optional( ToClause );
+
+# ReplyStatement ::= ArrayIdentifierRef Dot PortReplyOp
+ReplyStatement = ArrayIdentifierRef + Dot + PortReplyOp;
 #
 ## CallBodyOps ::= GetReplyStatement | CatchStatement
 #CallBodyOps = GetReplyStatement | CatchStatement;
@@ -1385,7 +1385,7 @@ FunctionKeyword << Keyword("function");
 #DerivedRefWithParList = ModifiesKeyword + TemplateRefWithParList;
 #
 ## InLineTemplate ::= [ ( Type | Signature ) Colon ] [ DerivedRefWithParList AssignmentChar ] TemplateBody
-#InLineTemplate = Optional( ( Type | Signature ) + Colon ) + Optional( DerivedRefWithParList + AssignmentChar ) + TemplateBody;
+#InLineTemplate << Optional( ( Type | Signature ) + Colon ) + Optional( DerivedRefWithParList + AssignmentChar ) + TemplateBody;
 #
 ## TemplateRefWithParList ::= ExtendedIdentifier [ TemplateActualParList ]
 #TemplateRefWithParList = ExtendedIdentifier + Optional( TemplateActualParList );
