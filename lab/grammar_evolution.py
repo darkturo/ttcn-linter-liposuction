@@ -949,16 +949,16 @@ AllPortsSpec = Forward();
 AllCompsAllPortsSpec = Forward();
 UnmapStatement = UnmapKeyword + Optional( SingleConnectionSpec + Optional( ParamClause ) | AllConnectionsSpec + Optional( ParamClause ) | AllPortsSpec | AllCompsAllPortsSpec );
 
-## MapKeyword ::= "map"
-#MapKeyword = Keyword("map");
-#
+# MapKeyword ::= "map"
+MapKeyword = Keyword("map");
+
 # ParamClause ::= ParamKeyword FunctionActualParList
 FunctionActualParList = Forward();
 ParamClause << ( ParamKeyword + FunctionActualParList );
 
-## MapStatement ::= MapKeyword SingleConnectionSpec [ ParamClause ]
-#MapStatement = MapKeyword + SingleConnectionSpec + Optional( ParamClause );
-#
+# MapStatement ::= MapKeyword SingleConnectionSpec [ ParamClause ]
+MapStatement = MapKeyword + SingleConnectionSpec + Optional( ParamClause );
+
 ## DisconnectKeyword ::= "disconnect"
 #DisconnectKeyword = Keyword("disconnect");
 #

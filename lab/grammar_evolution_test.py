@@ -326,6 +326,10 @@ alt {
    def test_unmap_statement(self):
       result = UnmapStatement.parseString('''unmap( system:PTC )''');
       self.assertEqual(len(result.asList()), 6);
+
+   def test_map_statement(self):
+      result = MapStatement.parseString('''map( myComponent:Port, system:Port )''');
+      self.assertEqual(len(result.asList()), 10);
       
 
    # TODO: use this later on
