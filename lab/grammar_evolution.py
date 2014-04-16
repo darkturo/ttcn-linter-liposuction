@@ -835,18 +835,19 @@ PortReceiveOp = ReceiveOpKeyword + Optional( "(" + InLineTemplate + ")" ) + Opti
 # PortOrAny ::= ArrayIdentifierRef | AnyKeyword PortKeyword
 PortOrAny << ( ArrayIdentifierRef | AnyKeyword + PortKeyword );
 
-## ReceiveStatement ::= PortOrAny Dot PortReceiveOp
-#ReceiveStatement = PortOrAny + Dot + PortReceiveOp;
-#
-## RaiseKeyword ::= "raise"
-#RaiseKeyword = Keyword("raise");
-#
-## PortRaiseOp ::= RaiseKeyword "(" Signature "," InLineTemplate ")" [ ToClause ]
-#PortRaiseOp = RaiseKeyword + "(" + Signature + "," + InLineTemplate + ")" + Optional( ToClause );
-#
-## RaiseStatement ::= ArrayIdentifierRef Dot PortRaiseOp
-#RaiseStatement = ArrayIdentifierRef + Dot + PortRaiseOp;
-#
+# ReceiveStatement ::= PortOrAny Dot PortReceiveOp
+ReceiveStatement = PortOrAny + Dot + PortReceiveOp;
+
+# RaiseKeyword ::= "raise"
+RaiseKeyword = Keyword("raise");
+
+# PortRaiseOp ::= RaiseKeyword "(" Signature "," InLineTemplate ")" [ ToClause ]
+ToClause = Forward();
+PortRaiseOp = RaiseKeyword + "(" + Signature + "," + InLineTemplate + ")" + Optional( ToClause );
+
+# RaiseStatement ::= ArrayIdentifierRef Dot PortRaiseOp
+RaiseStatement = ArrayIdentifierRef + Dot + PortRaiseOp;
+
 ## ReplyValue ::= ValueKeyword Expression
 #ReplyValue = ValueKeyword + Expression;
 #
@@ -892,15 +893,15 @@ PortOrAny << ( ArrayIdentifierRef | AnyKeyword + PortKeyword );
 ## CallStatement ::= ArrayIdentifierRef Dot PortCallOp [ PortCallBody ]
 #CallStatement = ArrayIdentifierRef + Dot + PortCallOp + Optional( PortCallBody );
 #
-## ToKeyword ::= "to"
-#ToKeyword = Keyword("to");
-#
+# ToKeyword ::= "to"
+ToKeyword = Keyword("to");
+
 # AddressRefList ::= "(" InLineTemplate { "," InLineTemplate } ")"
 AddressRefList << ( "(" + delimitedList( InLineTemplate ) + ")" );
 
-## ToClause ::= ToKeyword ( InLineTemplate | AddressRefList | AllKeyword ComponentKeyword )
-#ToClause = ToKeyword + ( InLineTemplate | AddressRefList | AllKeyword + ComponentKeyword );
-#
+# ToClause ::= ToKeyword ( InLineTemplate | AddressRefList | AllKeyword ComponentKeyword )
+ToClause << ToKeyword + ( InLineTemplate | AddressRefList | AllKeyword + ComponentKeyword );
+
 ## SendOpKeyword ::= "send"
 #SendOpKeyword = Keyword("send");
 #
