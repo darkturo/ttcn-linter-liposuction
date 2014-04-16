@@ -1033,9 +1033,9 @@ SelfOp << Keyword("self");
 ComponentType = Forward();
 CreateOp = ComponentType + Dot + CreateKeyword + Optional( "(" + ( SingleExpression | Minus ) + Optional("," + SingleExpression ) + ")" ) + Optional( AliveKeyword );
 
-## ConfigurationOps ::= CreateOp | SelfOp | SystemKeyword | MTCKeyword | RunningOp | AliveOp
-#ConfigurationOps = CreateOp | SelfOp | SystemKeyword | MTCKeyword | RunningOp | AliveOp;
-#
+# ConfigurationOps ::= CreateOp | SelfOp | SystemKeyword | MTCKeyword | RunningOp | AliveOp
+ConfigurationOps << ( CreateOp | SelfOp | SystemKeyword | MTCKeyword | RunningOp | AliveOp );
+
 ## ConfigurationStatements ::= ConnectStatement | MapStatement | DisconnectStatement | UnmapStatement | DoneStatement | KilledStatement | StartTCStatement | StopTCStatement | KillTCStatement
 #ConfigurationStatements = ConnectStatement | MapStatement | DisconnectStatement | UnmapStatement | DoneStatement | KilledStatement | StartTCStatement | StopTCStatement | KillTCStatement;
 #
@@ -1289,7 +1289,6 @@ SignatureKeyword << Keyword("signature");
 InLineTemplate << ( Literal("42") | Identifier ); # TEMP
 StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
 VarInstance << "var integer v_i := 0";
-ConfigurationOps << Identifier; 
 TestcaseInstance << Identifier;
 FunctionInstance << Identifier; 
 ExtendedFieldReference << Identifier;
