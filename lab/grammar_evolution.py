@@ -920,12 +920,15 @@ KillKeyword = Keyword("kill");
 # ComponentOrDefaultReference ::= VariableRef | FunctionInstance
 ComponentOrDefaultReference << ( VariableRef | FunctionInstance );
 
-## KillTCStatement ::= KillKeyword | ( ( ComponentReferenceOrLiteral | AllKeyword ComponentKeyword ) Dot KillKeyword )
-#KillTCStatement = KillKeyword | ( ( ComponentReferenceOrLiteral | AllKeyword + ComponentKeyword ) + Dot + KillKeyword );
-#
-## ComponentReferenceOrLiteral ::= ComponentOrDefaultReference | MTCKeyword | SelfOp
-#ComponentReferenceOrLiteral = ComponentOrDefaultReference | MTCKeyword | SelfOp;
-#
+# KillTCStatement ::= KillKeyword | ( ( ComponentReferenceOrLiteral | AllKeyword ComponentKeyword ) Dot KillKeyword )
+ComponentReferenceOrLiteral = Forward();
+KillTCStatement = KillKeyword | ( ( ComponentReferenceOrLiteral | AllKeyword + ComponentKeyword ) + Dot + KillKeyword );
+
+# ComponentReferenceOrLiteral ::= ComponentOrDefaultReference | MTCKeyword | SelfOp
+MTCKeyword = Forward();
+SelfOp = Forward();
+ComponentReferenceOrLiteral << ( ComponentOrDefaultReference | MTCKeyword | SelfOp );
+
 ## StopTCStatement ::= StopKeyword | ( ComponentReferenceOrLiteral | AllKeyword ComponentKeyword ) Dot StopKeyword
 #StopTCStatement = StopKeyword | ( ComponentReferenceOrLiteral | AllKeyword + ComponentKeyword ) + Dot + StopKeyword;
 #
@@ -1013,9 +1016,9 @@ ComponentId = ComponentOrDefaultReference | ( AnyKeyword | AllKeyword ) + Compon
 # DoneStatement ::= ComponentId Dot DoneKeyword
 DoneStatement << ( ComponentId + Dot + DoneKeyword );
 
-## SelfOp ::= "self"
-#SelfOp = Keyword("self");
-#
+# SelfOp ::= "self"
+SelfOp << Keyword("self");
+
 ## CreateOp ::= ComponentType Dot CreateKeyword [ "(" ( SingleExpression | Minus ) [ "," SingleExpression ] ")" ] [ AliveKeyword ]
 #CreateOp = ComponentType + Dot + CreateKeyword + Optional( "(" + ( SingleExpression | Minus ) + [ + "," + SingleExpression ) + ")" + ] + Optional( AliveKeyword );
 #
@@ -1330,9 +1333,9 @@ FieldReference << Identifier;
 ## StatementBlock ::= "{" [ FunctionDefList ] [ FunctionStatementList ] "}"
 #StatementBlock = "ZeroOrMore(" + Optional( FunctionDefList ) + Optional( FunctionStatementList ) + ")";
 #
-## MTCKeyword ::= "mtc"
-#MTCKeyword = Keyword("mtc");
-#
+# MTCKeyword ::= "mtc"
+MTCKeyword << Keyword("mtc");
+
 ## OnKeyword ::= "on"
 #OnKeyword = Keyword("on");
 #
