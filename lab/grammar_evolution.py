@@ -565,9 +565,9 @@ Value << ( PredefinedValue | ReferencedValue );
 # ArrayDef ::= { "[" SingleExpression [ ".." SingleExpression ] "]" }+
 ArrayDef = OneOrMore( "[" + SingleExpression + Optional( ".." + SingleExpression ) + "]" );
 
-## TypeReference ::= Identifier
-#TypeReference = Identifier;
-#
+# TypeReference ::= Identifier
+TypeReference = Identifier;
+
 # ReferencedType ::= ExtendedIdentifier [ ExtendedFieldReference ]
 ReferencedType = ExtendedIdentifier + Optional( ExtendedFieldReference );
 
@@ -1070,12 +1070,14 @@ VarList << delimitedList( SingleVarInstance );
 # VarInstance ::= VarKeyword ( ( Type VarList ) | ( ( TemplateKeyword | RestrictedTemplate ) Type TempVarList ) )
 VarInstance << ( VarKeyword + ( ( Type + VarList ) | ( ( TemplateKeyword | RestrictedTemplate ) + Type + TempVarList ) ) );
 
-## ControlStatement ::= TimerStatements | BasicStatements | BehaviourStatements | SUTStatements | StopKeyword
-#ControlStatement = TimerStatements | BasicStatements | BehaviourStatements | SUTStatements | StopKeyword;
-#
-## ControlStatementOrDef ::= ( FunctionLocalDef | FunctionLocalInst ) [ WithStatement ] | ControlStatement
-#ControlStatementOrDef = ( FunctionLocalDef | FunctionLocalInst ) + Optional( WithStatement ) | ControlStatement;
-#
+# ControlStatement ::= TimerStatements | BasicStatements | BehaviourStatements | SUTStatements | StopKeyword
+ControlStatement = TimerStatements | BasicStatements | BehaviourStatements | SUTStatements | StopKeyword;
+
+# ControlStatementOrDef ::= ( FunctionLocalDef | FunctionLocalInst ) [ WithStatement ] | ControlStatement
+FunctionLocalDef = Forward();
+FunctionLocalInst = Forward();
+ControlStatementOrDef = ( FunctionLocalDef | FunctionLocalInst ) + Optional( WithStatement ) | ControlStatement;
+
 ## ControlStatementOrDefList ::= { ControlStatementOrDef [ SemiColon ] }+
 #ControlStatementOrDefList = OneOrMore( ControlStatementOrDef + Optional( SemiColon ) );
 #
@@ -1326,12 +1328,14 @@ FunctionActualParList << ( ( FunctionActualPar + ZeroOrMore( "," + FunctionActua
 ## FunctionStatement ::= ConfigurationStatements | TimerStatements | CommunicationStatements | BasicStatements | BehaviourStatements | SetLocalVerdict | SUTStatements | TestcaseOperation
 #FunctionStatement = ConfigurationStatements | TimerStatements | CommunicationStatements | BasicStatements | BehaviourStatements | SetLocalVerdict | SUTStatements | TestcaseOperation;
 #
-## FunctionLocalDef ::= ConstDef | TemplateDef
-#FunctionLocalDef = ConstDef | TemplateDef;
-#
-## FunctionLocalInst ::= VarInstance | TimerInstance
-#FunctionLocalInst = VarInstance | TimerInstance;
-#
+# FunctionLocalDef ::= ConstDef | TemplateDef
+ConstDef = Forward();
+TemplateDef = Forward();
+FunctionLocalDef << ( ConstDef | TemplateDef );
+
+# FunctionLocalInst ::= VarInstance | TimerInstance
+FunctionLocalInst << ( VarInstance | TimerInstance );
+
 ## FunctionStatementList ::= { FunctionStatement [ SemiColon ] }+
 #FunctionStatementList = OneOrMore( FunctionStatement + Optional( SemiColon ) );
 #
@@ -1386,39 +1390,39 @@ FunctionKeyword << Keyword("function");
 ## TemplateOps ::= MatchOp | ValueofOp
 #TemplateOps = MatchOp | ValueofOp;
 #
-## TemplateInstanceActualPar ::= InLineTemplate | Minus
-#TemplateInstanceActualPar = InLineTemplate | Minus;
-#
-## TemplateActualParList ::= "(" [ ( TemplateInstanceActualPar { "," TemplateInstanceActualPar } ) | ( TemplateInstanceAssignment { "," TemplateInstanceAssignment } ) ] ")"
-#TemplateActualParList = "(" + Optional( ( TemplateInstanceActualPar + ZeroOrMore( "," + TemplateInstanceActualPar ) ) | ( TemplateInstanceAssignment + ZeroOrMore( "," + TemplateInstanceAssignment ) ) ) + ")";
-#
+# TemplateInstanceActualPar ::= InLineTemplate | Minus
+TemplateInstanceActualPar = InLineTemplate | Minus;
+
+# TemplateActualParList ::= "(" [ ( TemplateInstanceActualPar { "," TemplateInstanceActualPar } ) | ( TemplateInstanceAssignment { "," TemplateInstanceAssignment } ) ] ")"
+TemplateActualParList = "(" + Optional( ( TemplateInstanceActualPar + ZeroOrMore( "," + TemplateInstanceActualPar ) ) | ( TemplateInstanceAssignment + ZeroOrMore( "," + TemplateInstanceAssignment ) ) ) + ")";
+
 ## DerivedRefWithParList ::= ModifiesKeyword TemplateRefWithParList
 #DerivedRefWithParList = ModifiesKeyword + TemplateRefWithParList;
 #
 ## InLineTemplate ::= [ ( Type | Signature ) Colon ] [ DerivedRefWithParList AssignmentChar ] TemplateBody
 #InLineTemplate << Optional( ( Type | Signature ) + Colon ) + Optional( DerivedRefWithParList + AssignmentChar ) + TemplateBody;
 #
-## TemplateRefWithParList ::= ExtendedIdentifier [ TemplateActualParList ]
-#TemplateRefWithParList = ExtendedIdentifier + Optional( TemplateActualParList );
-#
+# TemplateRefWithParList ::= ExtendedIdentifier [ TemplateActualParList ]
+TemplateRefWithParList = ExtendedIdentifier + Optional( TemplateActualParList );
+
 ## TemplateInstanceAssignment ::= Identifier ":=" InLineTemplate
 #TemplateInstanceAssignment = Identifier + ":=" + InLineTemplate;
 #
-## InfinityKeyword ::= "infinity"
-#InfinityKeyword = Keyword("infinity");
-#
-## Bound ::= ( [ "!" ] SingleExpression ) | ( [ Minus ] InfinityKeyword )
-#Bound = ( Optional( "!" ) + SingleExpression ) | ( Optional( Minus ) + InfinityKeyword );
-#
+# InfinityKeyword ::= "infinity"
+InfinityKeyword = Keyword("infinity");
+
+# Bound ::= ( [ "!" ] SingleExpression ) | ( [ Minus ] InfinityKeyword )
+Bound = ( Optional( "!" ) + SingleExpression ) | ( Optional( Minus ) + InfinityKeyword );
+
 ## Range ::= "(" Bound ".." Bound ")"
 #Range = "(" + Bound + ".." + Bound + ")";
 #
 # PresentKeyword ::= "present"
 PresentKeyword << Keyword("present");
 
-## IfPresentKeyword ::= "ifpresent"
-#IfPresentKeyword = Keyword("ifpresent");
-#
+# IfPresentKeyword ::= "ifpresent"
+IfPresentKeyword = Keyword("ifpresent");
+
 ## WildcardLengthMatch ::= LengthKeyword "(" SingleExpression ")"
 #WildcardLengthMatch = LengthKeyword + "(" + SingleExpression + ")";
 #
@@ -1431,12 +1435,13 @@ PresentKeyword << Keyword("present");
 ## AnyValue ::= "?"
 #AnyValue = "?";
 #
-## PermutationKeyword ::= "permutation"
-#PermutationKeyword = Keyword("permutation");
-#
-## PermutationMatch ::= PermutationKeyword ListOfTemplates
-#PermutationMatch = PermutationKeyword + ListOfTemplates;
-#
+# PermutationKeyword ::= "permutation"
+PermutationKeyword = Keyword("permutation");
+
+# PermutationMatch ::= PermutationKeyword ListOfTemplates
+ListOfTemplates = Forward();
+PermutationMatch = PermutationKeyword + ListOfTemplates;
+
 ## SupersetKeyword ::= "superset"
 #SupersetKeyword = Keyword("superset");
 #
@@ -1449,15 +1454,15 @@ PresentKeyword << Keyword("present");
 ## SubsetMatch ::= SubsetKeyword ListOfTemplates
 #SubsetMatch = SubsetKeyword + ListOfTemplates;
 #
-## AllElementsFrom ::= AllKeyword FromKeyword TemplateBody
-#AllElementsFrom = AllKeyword + FromKeyword + TemplateBody;
-#
-## TemplateListItem ::= TemplateBody | AllElementsFrom
-#TemplateListItem = TemplateBody | AllElementsFrom;
-#
-## ListOfTemplates ::= "(" TemplateListItem { "," TemplateListItem } ")"
-#ListOfTemplates = "(" + TemplateListItem + ZeroOrMore( "," + TemplateListItem ) + ")";
-#
+# AllElementsFrom ::= AllKeyword FromKeyword TemplateBody
+AllElementsFrom = AllKeyword + FromKeyword + TemplateBody;
+
+# TemplateListItem ::= TemplateBody | AllElementsFrom
+TemplateListItem = TemplateBody | AllElementsFrom;
+
+# ListOfTemplates ::= "(" TemplateListItem { "," TemplateListItem } ")"
+ListOfTemplates << ( "(" + delimitedList( TemplateListItem ) + ")" );
+
 ## ComplementKeyword ::= "complement"
 #ComplementKeyword = "complement";
 #
@@ -1516,87 +1521,90 @@ PresentKeyword << Keyword("present");
 ## BitStringMatch ::= "'" { BinOrMatch } "'" "B"
 #BitStringMatch = "'" + ZeroOrMore( BinOrMatch ) + "'" + "B";
 #
-## ExtraMatchingAttributes ::= StringLength | IfPresentKeyword | ( StringLength IfPresentKeyword )
-#ExtraMatchingAttributes = StringLength | IfPresentKeyword | ( StringLength + IfPresentKeyword );
-#
+# ExtraMatchingAttributes ::= StringLength | IfPresentKeyword | ( StringLength IfPresentKeyword )
+StringLength = Forward();
+ExtraMatchingAttributes = StringLength | IfPresentKeyword | ( StringLength + IfPresentKeyword );
+
 ## MatchingSymbol ::= Complement | ( AnyValue [ WildcardLengthMatch ] ) | ( AnyOrOmit [ WildcardLengthMatch ] ) | ListOfTemplates | Range | BitStringMatch | HexStringMatch | OctetStringMatch | CharStringMatch | SubsetMatch | SupersetMatch
 #MatchingSymbol = Complement | ( AnyValue + Optional( WildcardLengthMatch ) ) | ( AnyOrOmit + Optional( WildcardLengthMatch ) ) | ListOfTemplates | Range | BitStringMatch | HexStringMatch | OctetStringMatch | CharStringMatch | SubsetMatch | SupersetMatch;
+MatchingSymbol = "match";
 #
-## ArrayElementSpec ::= Minus | PermutationMatch | TemplateBody
-#ArrayElementSpec = Minus | PermutationMatch | TemplateBody;
-#
-## ArrayElementSpecList ::= ArrayElementSpec { "," ArrayElementSpec }
-#ArrayElementSpecList = ArrayElementSpec + ZeroOrMore( "," + ArrayElementSpec );
-#
-## ArrayValueOrAttrib ::= "{" [ ArrayElementSpecList ] "}"
-#ArrayValueOrAttrib = "{" + Optional( ArrayElementSpecList ) +"}"
-#
+# ArrayElementSpec ::= Minus | PermutationMatch | TemplateBody
+ArrayElementSpec = Minus | PermutationMatch | TemplateBody;
+
+# ArrayElementSpecList ::= ArrayElementSpec { "," ArrayElementSpec }
+ArrayElementSpecList = ArrayElementSpec + ZeroOrMore( "," + ArrayElementSpec );
+
+# ArrayValueOrAttrib ::= "{" [ ArrayElementSpecList ] "}"
+ArrayValueOrAttrib = "{" + Optional( ArrayElementSpecList ) +"}"
+
 ## FieldOrBitNumber ::= SingleExpression
 #FieldOrBitNumber = SingleExpression;
 #
 ## ArrayOrBitRef ::= "[" FieldOrBitNumber "]"
 #ArrayOrBitRef = "[" + FieldOrBitNumber + "]";
 #
-## ParRef ::= Identifier
-#ParRef = Identifier;
-#
-## StructFieldRef ::= Identifier | PredefinedType | TypeReference
-#StructFieldRef = Identifier | PredefinedType | TypeReference;
-#
-## FieldReference ::= StructFieldRef | ArrayOrBitRef | ParRef
-#FieldReference = StructFieldRef | ArrayOrBitRef | ParRef;
-#
-## FieldSpec ::= FieldReference AssignmentChar ( TemplateBody | Minus )
-#FieldSpec = FieldReference + AssignmentChar + ( TemplateBody | Minus );
-#
-## FieldSpecList ::= "{" FieldSpec { "," FieldSpec } "}"
-#FieldSpecList = "{" + FieldSpec + ZeroOrMore( "," + FieldSpec ) + "}"
-#
-## SingleTemplateExpression ::= MatchingSymbol | ( TemplateRefWithParList [ ExtendedFieldReference ] )
-#SingleTemplateExpression = MatchingSymbol | ( TemplateRefWithParList + Optional( ExtendedFieldReference ) );
-#
-## SimpleTemplateSpec ::= SingleTemplateExpression [ "&" SimpleSpec ]
-#SimpleTemplateSpec = SingleTemplateExpression + Optional( "&" + SimpleSpec );
-#
-## SimpleSpec ::= ( SingleExpression [ "&" SimpleTemplateSpec ] ) | SimpleTemplateSpec
-#SimpleSpec = ( SingleExpression + Optional( "&" + SimpleTemplateSpec ) ) | SimpleTemplateSpec;
-#
-## TemplateBody ::= ( SimpleSpec | FieldSpecList | ArrayValueOrAttrib ) [ ExtraMatchingAttributes ]
-#TemplateBody = ( SimpleSpec | FieldSpecList | ArrayValueOrAttrib ) + Optional( ExtraMatchingAttributes );
-#
-## TemplateOrValueFormalPar ::= FormalValuePar | FormalTemplatePar
-#TemplateOrValueFormalPar = FormalValuePar | FormalTemplatePar;
-#
-## TemplateOrValueFormalParList ::= TemplateOrValueFormalPar { "," TemplateOrValueFormalPar }
-#TemplateOrValueFormalParList = TemplateOrValueFormalPar + ZeroOrMore( "," + TemplateOrValueFormalPar );
-#
-## ModifiesKeyword ::= "modifies"
-#ModifiesKeyword = Keyword("modifies");
-#
-## DerivedDef ::= ModifiesKeyword ExtendedIdentifier
-#DerivedDef = ModifiesKeyword + ExtendedIdentifier;
-#
+# ParRef ::= Identifier
+ParRef = Identifier;
+
+# StructFieldRef ::= Identifier | PredefinedType | TypeReference
+StructFieldRef = Identifier | PredefinedType | TypeReference;
+
+# FieldReference ::= StructFieldRef | ArrayOrBitRef | ParRef
+FieldReference = StructFieldRef | ArrayOrBitRef | ParRef;
+
+# FieldSpec ::= FieldReference AssignmentChar ( TemplateBody | Minus )
+FieldSpec = FieldReference + AssignmentChar + ( TemplateBody | Minus );
+
+# FieldSpecList ::= "{" FieldSpec { "," FieldSpec } "}"
+FieldSpecList = "{" + FieldSpec + ZeroOrMore( "," + FieldSpec ) + "}"
+
+# SingleTemplateExpression ::= MatchingSymbol | ( TemplateRefWithParList [ ExtendedFieldReference ] )
+SingleTemplateExpression = MatchingSymbol | ( TemplateRefWithParList + Optional( ExtendedFieldReference ) );
+
+# SimpleTemplateSpec ::= SingleTemplateExpression [ "&" SimpleSpec ]
+SimpleSpec = Forward();
+SimpleTemplateSpec = SingleTemplateExpression + Optional( "&" + SimpleSpec );
+
+# SimpleSpec ::= ( SingleExpression [ "&" SimpleTemplateSpec ] ) | SimpleTemplateSpec
+SimpleSpec << ( ( SingleExpression + Optional( "&" + SimpleTemplateSpec ) ) | SimpleTemplateSpec );
+
+# TemplateBody ::= ( SimpleSpec | FieldSpecList | ArrayValueOrAttrib ) [ ExtraMatchingAttributes ]
+TemplateBody = ( SimpleSpec | FieldSpecList | ArrayValueOrAttrib ) + Optional( ExtraMatchingAttributes );
+
+# TemplateOrValueFormalPar ::= FormalValuePar | FormalTemplatePar
+TemplateOrValueFormalPar = FormalValuePar | FormalTemplatePar;
+
+# TemplateOrValueFormalParList ::= TemplateOrValueFormalPar { "," TemplateOrValueFormalPar }
+TemplateOrValueFormalParList = TemplateOrValueFormalPar + ZeroOrMore( "," + TemplateOrValueFormalPar );
+
+# ModifiesKeyword ::= "modifies"
+ModifiesKeyword = Keyword("modifies");
+
+# DerivedDef ::= ModifiesKeyword ExtendedIdentifier
+DerivedDef = ModifiesKeyword + ExtendedIdentifier;
+
 # TemplateKeyword ::= "template"
 TemplateKeyword << Keyword("template");
 
-## BaseTemplate ::= ( Type | Signature ) Identifier [ "(" TemplateOrValueFormalParList ")" ]
-#BaseTemplate = ( Type | Signature ) + Identifier + Optional( "(" + TemplateOrValueFormalParList + ")" );
-#
-## TemplateDef ::= TemplateKeyword [ TemplateRestriction ] BaseTemplate [ DerivedDef ] AssignmentChar TemplateBody
-#TemplateDef = TemplateKeyword + Optional( TemplateRestriction ) + BaseTemplate + Optional( DerivedDef ) + AssignmentChar + TemplateBody;
-#
+# BaseTemplate ::= ( Type | Signature ) Identifier [ "(" TemplateOrValueFormalParList ")" ]
+BaseTemplate = ( Type | Signature ) + Identifier + Optional( "(" + TemplateOrValueFormalParList + ")" );
+
+# TemplateDef ::= TemplateKeyword [ TemplateRestriction ] BaseTemplate [ DerivedDef ] AssignmentChar TemplateBody
+TemplateDef << ( TemplateKeyword + Optional( TemplateRestriction ) + BaseTemplate + Optional( DerivedDef ) + AssignmentChar + TemplateBody );
+
 # ConstKeyword ::= "const"
 ConstKeyword << Keyword("const");
 
-## SingleConstDef ::= Identifier [ ArrayDef ] AssignmentChar ConstantExpression
-#SingleConstDef = Identifier + Optional( ArrayDef ) + AssignmentChar + ConstantExpression;
-#
-## ConstList ::= SingleConstDef { "," SingleConstDef }
-#ConstList = SingleConstDef + ZeroOrMore( "," + SingleConstDef );
-#
-## ConstDef ::= ConstKeyword Type ConstList
-#ConstDef = ConstKeyword + Type + ConstList;
-#
+# SingleConstDef ::= Identifier [ ArrayDef ] AssignmentChar ConstantExpression
+SingleConstDef = Identifier + Optional( ArrayDef ) + AssignmentChar + ConstantExpression;
+
+# ConstList ::= SingleConstDef { "," SingleConstDef }
+ConstList = delimitedList( SingleConstDef );
+
+# ConstDef ::= ConstKeyword Type ConstList
+ConstDef << ( ConstKeyword + Type + ConstList );
+
 ## PortElement ::= Identifier [ ArrayDef ]
 #PortElement = Identifier + Optional( ArrayDef );
 #
@@ -1696,15 +1704,16 @@ PortKeyword << Keyword("port");
 ## PortDef ::= PortKeyword PortDefBody
 #PortDef = PortKeyword + PortDefBody;
 #
-## LengthKeyword ::= "length"
-#LengthKeyword = Keyword("length");
-#
-## StringLength ::= LengthKeyword "(" SingleExpression [ ".." Bound ] ")"
-#StringLength = LengthKeyword + "(" + SingleExpression + Optional( ".." + Bound ) + ")";
-#
-## RangeDef ::= Bound ".." Bound
-#RangeDef = Bound + ".." + Bound;
-#
+# LengthKeyword ::= "length"
+LengthKeyword = Keyword("length");
+
+# StringLength ::= LengthKeyword "(" SingleExpression [ ".." Bound ] ")"
+Bound = Forward();
+StringLength << ( LengthKeyword + "(" + SingleExpression + Optional( ".." + Bound ) + ")" );
+
+# RangeDef ::= Bound ".." Bound
+RangeDef = Bound + ".." + Bound;
+
 ## TemplateOrRange ::= RangeDef | TemplateBody | Type
 #TemplateOrRange = RangeDef | TemplateBody | Type;
 #
