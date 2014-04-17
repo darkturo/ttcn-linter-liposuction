@@ -1085,177 +1085,191 @@ FunctionLocalDef = Forward();
 FunctionLocalInst = Forward();
 ControlStatementOrDef = ( FunctionLocalDef | FunctionLocalInst ) + Optional( WithStatement ) | ControlStatement;
 
-## ControlStatementOrDefList ::= { ControlStatementOrDef [ SemiColon ] }+
-#ControlStatementOrDefList = OneOrMore( ControlStatementOrDef + Optional( SemiColon ) );
-#
-## ModuleControlBody ::= [ ControlStatementOrDefList ]
-#ModuleControlBody = Optional( ControlStatementOrDefList );
-#
-## ControlKeyword ::= "control"
-#ControlKeyword = Keyword("control");
-#
-## ModuleControlPart ::= ControlKeyword "{" ModuleControlBody "}" [ WithStatement ] [ SemiColon ]
-#ModuleControlPart = ControlKeyword + "ZeroOrMore(" + ModuleControlBody + ")" + Optional( WithStatement ) + Optional( SemiColon );
-#
-## FriendModuleDef ::= "friend" "module" IdentifierList [ SemiColon ]
-#FriendModuleDef = Keyword("friend") + Keyword("module") + IdentifierList + Optional( SemiColon );
-#
-## ModuleParList ::= Identifier [ AssignmentChar ConstantExpression ] { "," Identifier [ AssignmentChar ConstantExpression ] }
-#ModuleParList = Identifier + Optional( AssignmentChar + ConstantExpression ) + ZeroOrMore( "," + Identifier + Optional( AssignmentChar + ConstantExpression ) );
-#
-## ModulePar ::= Type ModuleParList
-#ModulePar = Type + ModuleParList;
-#
-## MultitypedModuleParList ::= { ModulePar [ SemiColon ] }
-#MultitypedModuleParList = ZeroOrMore( ModulePar + Optional( SemiColon ) );
-#
+# ControlStatementOrDefList ::= { ControlStatementOrDef [ SemiColon ] }+
+ControlStatementOrDefList = OneOrMore( ControlStatementOrDef + Optional( SemiColon ) );
+
+# ModuleControlBody ::= [ ControlStatementOrDefList ]
+ModuleControlBody = Optional( ControlStatementOrDefList );
+
+# ControlKeyword ::= "control"
+ControlKeyword = Keyword("control");
+
+# ModuleControlPart ::= ControlKeyword "{" ModuleControlBody "}" [ WithStatement ] [ SemiColon ]
+ModuleControlPart = ControlKeyword + "ZeroOrMore(" + ModuleControlBody + ")" + Optional( WithStatement ) + Optional( SemiColon );
+
+# FriendModuleDef ::= "friend" "module" IdentifierList [ SemiColon ]
+FriendModuleDef = Keyword("friend") + Keyword("module") + IdentifierList + Optional( SemiColon );
+
+# ModuleParList ::= Identifier [ AssignmentChar ConstantExpression ] { "," Identifier [ AssignmentChar ConstantExpression ] }
+ModuleParList = Identifier + Optional( AssignmentChar + ConstantExpression ) + ZeroOrMore( "," + Identifier + Optional( AssignmentChar + ConstantExpression ) );
+
+# ModulePar ::= Type ModuleParList
+ModulePar = Type + ModuleParList;
+
+# MultitypedModuleParList ::= { ModulePar [ SemiColon ] }
+MultitypedModuleParList = ZeroOrMore( ModulePar + Optional( SemiColon ) );
+
 # ModuleParKeyword ::= "modulepar"
 ModuleParKeyword << Keyword("modulepar");
 
-## ModuleParDef ::= ModuleParKeyword ( ModulePar | ( "{" MultitypedModuleParList "}" ) )
-#ModuleParDef = ModuleParKeyword + ( ModulePar | ( "{" + MultitypedModuleParList + "}" ) );
-#
-## ExtConstDef ::= ExtKeyword ConstKeyword Type IdentifierList
-#ExtConstDef = ExtKeyword + ConstKeyword + Type + IdentifierList;
-#
-## ExtKeyword ::= "external"
-#ExtKeyword = Keyword("external");
-#
-## ExtFunctionDef ::= ExtKeyword FunctionKeyword Identifier "(" [ FunctionFormalParList ] ")" [ ReturnType ]
-#ExtFunctionDef = ExtKeyword + FunctionKeyword + Identifier + "(" + Optional( FunctionFormalParList ) + ")" + Optional( ReturnType );
-#
+# ModuleParDef ::= ModuleParKeyword ( ModulePar | ( "{" MultitypedModuleParList "}" ) )
+ModuleParDef = ModuleParKeyword + ( ModulePar | ( "{" + MultitypedModuleParList + "}" ) );
+
+# ExtConstDef ::= ExtKeyword ConstKeyword Type IdentifierList
+ExtKeyword = Forward();
+ExtConstDef = ExtKeyword + ConstKeyword + Type + IdentifierList;
+
+# ExtKeyword ::= "external"
+ExtKeyword << Keyword("external");
+
+# ExtFunctionDef ::= ExtKeyword FunctionKeyword Identifier "(" [ FunctionFormalParList ] ")" [ ReturnType ]
+FunctionFormalParList = Forward();
+ReturnType = Forward();
+ExtFunctionDef = ExtKeyword + FunctionKeyword + Identifier + "(" + Optional( FunctionFormalParList ) + ")" + Optional( ReturnType );
+
 # GroupKeyword ::= "group"
 GroupKeyword << Keyword("group");
 
-## GroupDef ::= GroupKeyword Identifier "{" [ ModuleDefinitionsList ] "}"
-#GroupDef = GroupKeyword + Identifier + "{" + Optional( ModuleDefinitionsList ) + "}";
-#
-## ImportImportSpec ::= ImportKeyword AllKeyword
-#ImportImportSpec = ImportKeyword + AllKeyword;
-#
-## ImportModuleParSpec ::= ModuleParKeyword IdentifierListOrAllWithExcept
-#ImportModuleParSpec = ModuleParKeyword + IdentifierListOrAllWithExcept;
-#
-## ImportSignatureSpec ::= SignatureKeyword IdentifierListOrAllWithExcept
-#ImportSignatureSpec = SignatureKeyword + IdentifierListOrAllWithExcept;
-#
-## ImportFunctionSpec ::= FunctionKeyword IdentifierListOrAllWithExcept
-#ImportFunctionSpec = FunctionKeyword + IdentifierListOrAllWithExcept;
-#
-## ImportTestcaseSpec ::= TestcaseKeyword IdentifierListOrAllWithExcept
-#ImportTestcaseSpec = TestcaseKeyword + IdentifierListOrAllWithExcept;
-#
-## ImportAltstepSpec ::= AltstepKeyword IdentifierListOrAllWithExcept
-#ImportAltstepSpec = AltstepKeyword + IdentifierListOrAllWithExcept;
-#
-## ImportConstSpec ::= ConstKeyword IdentifierListOrAllWithExcept
-#ImportConstSpec = ConstKeyword + IdentifierListOrAllWithExcept;
-#
-## ImportTemplateSpec ::= TemplateKeyword IdentifierListOrAllWithExcept
-#ImportTemplateSpec = TemplateKeyword + IdentifierListOrAllWithExcept;
-#
-## AllWithExcept ::= AllKeyword [ ExceptKeyword IdentifierList ]
-#AllWithExcept = AllKeyword + Optional( ExceptKeyword + IdentifierList );
-#
-## ImportTypeDefSpec ::= TypeDefKeyword IdentifierListOrAllWithExcept
-#ImportTypeDefSpec = TypeDefKeyword + IdentifierListOrAllWithExcept;
-#
-## IdentifierListOrAllWithExcept ::= IdentifierList | AllWithExcept
-#IdentifierListOrAllWithExcept = IdentifierList | AllWithExcept;
-#
-## QualifiedIdentifierWithExcept ::= QualifiedIdentifier [ ExceptsDef ]
-#QualifiedIdentifierWithExcept = QualifiedIdentifier + Optional( ExceptsDef );
-#
-## AllGroupsWithExcept ::= AllKeyword [ ExceptKeyword QualifiedIdentifierList ]
-#AllGroupsWithExcept = AllKeyword + Optional( ExceptKeyword + QualifiedIdentifierList );
-#
-## GroupRefListWithExcept ::= QualifiedIdentifierWithExcept { "," QualifiedIdentifierWithExcept }
-#GroupRefListWithExcept = delimitedList( QualifiedIdentifierWithExcept );
-#
-## ImportGroupSpec ::= GroupKeyword ( GroupRefListWithExcept | AllGroupsWithExcept )
-#ImportGroupSpec = GroupKeyword + ( GroupRefListWithExcept | AllGroupsWithExcept );
-#
-## RecursiveKeyword ::= "recursive"
-#RecursiveKeyword = Keyword("recursive");
-#
-## ImportFromSpec ::= FromKeyword ModuleId [ RecursiveKeyword ]
-#ImportFromSpec = FromKeyword + ModuleId + Optional( RecursiveKeyword );
-#
-## ImportElement ::= ImportGroupSpec | ImportTypeDefSpec | ImportTemplateSpec | ImportConstSpec | ImportTestcaseSpec | ImportAltstepSpec | ImportFunctionSpec | ImportSignatureSpec | ImportModuleParSpec | ImportImportSpec
-#ImportElement = ImportGroupSpec | ImportTypeDefSpec | ImportTemplateSpec | ImportConstSpec | ImportTestcaseSpec | ImportAltstepSpec | ImportFunctionSpec | ImportSignatureSpec | ImportModuleParSpec | ImportImportSpec;
-#
-## ImportSpec ::= { ImportElement [ SemiColon ] }
-#ImportSpec = ZeroOrMore( ImportElement + Optional( SemiColon ) );
-#
-## ExceptModuleParSpec ::= ModuleParKeyword IdentifierListOrAll
-#ExceptModuleParSpec = ModuleParKeyword + IdentifierListOrAll;
-#
-## ExceptSignatureSpec ::= SignatureKeyword IdentifierListOrAll
-#ExceptSignatureSpec = SignatureKeyword + IdentifierListOrAll;
-#
-## ExceptFunctionSpec ::= FunctionKeyword IdentifierListOrAll
-#ExceptFunctionSpec = FunctionKeyword + IdentifierListOrAll;
-#
-## ExceptAltstepSpec ::= AltstepKeyword IdentifierListOrAll
-#ExceptAltstepSpec = AltstepKeyword + IdentifierListOrAll;
-#
-## ExceptTestcaseSpec ::= TestcaseKeyword IdentifierListOrAll
-#ExceptTestcaseSpec = TestcaseKeyword + IdentifierListOrAll;
-#
-## ExceptConstSpec ::= ConstKeyword IdentifierListOrAll
-#ExceptConstSpec = ConstKeyword + IdentifierListOrAll;
-#
-## ExceptTemplateSpec ::= TemplateKeyword IdentifierListOrAll
-#ExceptTemplateSpec = TemplateKeyword + IdentifierListOrAll;
-#
-## ExceptTypeDefSpec ::= TypeDefKeyword IdentifierListOrAll
-#ExceptTypeDefSpec = TypeDefKeyword + IdentifierListOrAll;
-#
-## IdentifierListOrAll ::= IdentifierList | AllKeyword
-#IdentifierListOrAll = IdentifierList | AllKeyword;
-#
-## ExceptGroupSpec ::= GroupKeyword ( QualifiedIdentifierList | AllKeyword )
-#ExceptGroupSpec = GroupKeyword + ( QualifiedIdentifierList | AllKeyword );
-#
-## ExceptElement ::= ExceptGroupSpec | ExceptTypeDefSpec | ExceptTemplateSpec | ExceptConstSpec | ExceptTestcaseSpec | ExceptAltstepSpec | ExceptFunctionSpec | ExceptSignatureSpec | ExceptModuleParSpec
-#ExceptElement = ExceptGroupSpec | ExceptTypeDefSpec | ExceptTemplateSpec | ExceptConstSpec | ExceptTestcaseSpec | ExceptAltstepSpec | ExceptFunctionSpec | ExceptSignatureSpec | ExceptModuleParSpec;
-#
-## ExceptSpec ::= { ExceptElement [ SemiColon ] }
-#ExceptSpec = ZeroOrMore( ExceptElement + Optional( SemiColon ) );
-#
+# GroupDef ::= GroupKeyword Identifier "{" [ ModuleDefinitionsList ] "}"
+ModuleDefinitionsList = Forward();
+GroupDef = GroupKeyword + Identifier + "{" + Optional( ModuleDefinitionsList ) + "}";
+
+# ImportImportSpec ::= ImportKeyword AllKeyword
+ImportKeyword = Forward();
+ImportImportSpec = ImportKeyword + AllKeyword;
+
+# ImportModuleParSpec ::= ModuleParKeyword IdentifierListOrAllWithExcept
+IdentifierListOrAllWithExcept = Forward();
+ImportModuleParSpec = ModuleParKeyword + IdentifierListOrAllWithExcept;
+
+# ImportSignatureSpec ::= SignatureKeyword IdentifierListOrAllWithExcept
+ImportSignatureSpec = SignatureKeyword + IdentifierListOrAllWithExcept;
+
+# ImportFunctionSpec ::= FunctionKeyword IdentifierListOrAllWithExcept
+ImportFunctionSpec = FunctionKeyword + IdentifierListOrAllWithExcept;
+
+# ImportTestcaseSpec ::= TestcaseKeyword IdentifierListOrAllWithExcept
+ImportTestcaseSpec = TestcaseKeyword + IdentifierListOrAllWithExcept;
+
+# ImportAltstepSpec ::= AltstepKeyword IdentifierListOrAllWithExcept
+ImportAltstepSpec = AltstepKeyword + IdentifierListOrAllWithExcept;
+
+# ImportConstSpec ::= ConstKeyword IdentifierListOrAllWithExcept
+ImportConstSpec = ConstKeyword + IdentifierListOrAllWithExcept;
+
+# ImportTemplateSpec ::= TemplateKeyword IdentifierListOrAllWithExcept
+ImportTemplateSpec = TemplateKeyword + IdentifierListOrAllWithExcept;
+
+# AllWithExcept ::= AllKeyword [ ExceptKeyword IdentifierList ]
+AllWithExcept = AllKeyword + Optional( ExceptKeyword + IdentifierList );
+
+# ImportTypeDefSpec ::= TypeDefKeyword IdentifierListOrAllWithExcept
+ImportTypeDefSpec = TypeDefKeyword + IdentifierListOrAllWithExcept;
+
+# IdentifierListOrAllWithExcept ::= IdentifierList | AllWithExcept
+IdentifierListOrAllWithExcept = IdentifierList | AllWithExcept;
+
+# QualifiedIdentifierWithExcept ::= QualifiedIdentifier [ ExceptsDef ]
+ExceptsDef = Forward();
+QualifiedIdentifierWithExcept = QualifiedIdentifier + Optional( ExceptsDef );
+
+# AllGroupsWithExcept ::= AllKeyword [ ExceptKeyword QualifiedIdentifierList ]
+AllGroupsWithExcept = AllKeyword + Optional( ExceptKeyword + QualifiedIdentifierList );
+
+# GroupRefListWithExcept ::= QualifiedIdentifierWithExcept { "," QualifiedIdentifierWithExcept }
+GroupRefListWithExcept = delimitedList( QualifiedIdentifierWithExcept );
+
+# ImportGroupSpec ::= GroupKeyword ( GroupRefListWithExcept | AllGroupsWithExcept )
+ImportGroupSpec = GroupKeyword + ( GroupRefListWithExcept | AllGroupsWithExcept );
+
+# RecursiveKeyword ::= "recursive"
+RecursiveKeyword = Keyword("recursive");
+
+# ImportFromSpec ::= FromKeyword ModuleId [ RecursiveKeyword ]
+ModuleId = Forward();
+ImportFromSpec = FromKeyword + ModuleId + Optional( RecursiveKeyword );
+
+# ImportElement ::= ImportGroupSpec | ImportTypeDefSpec | ImportTemplateSpec | ImportConstSpec | ImportTestcaseSpec | ImportAltstepSpec | ImportFunctionSpec | ImportSignatureSpec | ImportModuleParSpec | ImportImportSpec
+ImportElement = ImportGroupSpec | ImportTypeDefSpec | ImportTemplateSpec | ImportConstSpec | ImportTestcaseSpec | ImportAltstepSpec | ImportFunctionSpec | ImportSignatureSpec | ImportModuleParSpec | ImportImportSpec;
+
+# ImportSpec ::= { ImportElement [ SemiColon ] }
+ImportSpec = ZeroOrMore( ImportElement + Optional( SemiColon ) );
+
+# ExceptModuleParSpec ::= ModuleParKeyword IdentifierListOrAll
+IdentifierListOrAll = Forward();
+ExceptModuleParSpec = ModuleParKeyword + IdentifierListOrAll;
+
+# ExceptSignatureSpec ::= SignatureKeyword IdentifierListOrAll
+ExceptSignatureSpec = SignatureKeyword + IdentifierListOrAll;
+
+# ExceptFunctionSpec ::= FunctionKeyword IdentifierListOrAll
+ExceptFunctionSpec = FunctionKeyword + IdentifierListOrAll;
+
+# ExceptAltstepSpec ::= AltstepKeyword IdentifierListOrAll
+ExceptAltstepSpec = AltstepKeyword + IdentifierListOrAll;
+
+# ExceptTestcaseSpec ::= TestcaseKeyword IdentifierListOrAll
+ExceptTestcaseSpec = TestcaseKeyword + IdentifierListOrAll;
+
+# ExceptConstSpec ::= ConstKeyword IdentifierListOrAll
+ExceptConstSpec = ConstKeyword + IdentifierListOrAll;
+
+# ExceptTemplateSpec ::= TemplateKeyword IdentifierListOrAll
+ExceptTemplateSpec = TemplateKeyword + IdentifierListOrAll;
+
+# ExceptTypeDefSpec ::= TypeDefKeyword IdentifierListOrAll
+ExceptTypeDefSpec = TypeDefKeyword + IdentifierListOrAll;
+
+# IdentifierListOrAll ::= IdentifierList | AllKeyword
+IdentifierListOrAll << ( IdentifierList | AllKeyword );
+
+# ExceptGroupSpec ::= GroupKeyword ( QualifiedIdentifierList | AllKeyword )
+ExceptGroupSpec = GroupKeyword + ( QualifiedIdentifierList | AllKeyword );
+
+# ExceptElement ::= ExceptGroupSpec | ExceptTypeDefSpec | ExceptTemplateSpec | ExceptConstSpec | ExceptTestcaseSpec | ExceptAltstepSpec | ExceptFunctionSpec | ExceptSignatureSpec | ExceptModuleParSpec
+ExceptElement = ExceptGroupSpec | ExceptTypeDefSpec | ExceptTemplateSpec | ExceptConstSpec | ExceptTestcaseSpec | ExceptAltstepSpec | ExceptFunctionSpec | ExceptSignatureSpec | ExceptModuleParSpec;
+
+# ExceptSpec ::= { ExceptElement [ SemiColon ] }
+ExceptSpec = ZeroOrMore( ExceptElement + Optional( SemiColon ) );
+
 # ExceptKeyword ::= "except"
 ExceptKeyword << Keyword("except");
 
-## ExceptsDef ::= ExceptKeyword "{" ExceptSpec "}"
-#ExceptsDef = ExceptKeyword + "ZeroOrMore(" + ExceptSpec + ")";
-#
-## AllWithExcepts ::= AllKeyword [ ExceptsDef ]
-#AllWithExcepts = AllKeyword + Optional( ExceptsDef );
-#
-## ImportKeyword ::= "import"
-#ImportKeyword = Keyword("import");
-#
-## ImportDef ::= ImportKeyword ImportFromSpec ( AllWithExcepts | ( "{" ImportSpec "}" ) )
-#ImportDef = ImportKeyword + ImportFromSpec + ( AllWithExcepts | ( "ZeroOrMore(" + ImportSpec + ")" ) );
-#
+# ExceptsDef ::= ExceptKeyword "{" ExceptSpec "}"
+ExceptsDef << ( ExceptKeyword + "{" + ZeroOrMore( ExceptSpec ) + "}" );
+
+# AllWithExcepts ::= AllKeyword [ ExceptsDef ]
+AllWithExcepts = AllKeyword + Optional( ExceptsDef );
+
+# ImportKeyword ::= "import"
+ImportKeyword << Keyword("import");
+
+# ImportDef ::= ImportKeyword ImportFromSpec ( AllWithExcepts | ( "{" ImportSpec "}" ) )
+ImportDef = ImportKeyword + ImportFromSpec + ( AllWithExcepts | ( "ZeroOrMore(" + ImportSpec + ")" ) );
+
 # AltstepInstance ::= ExtendedIdentifier "(" [ FunctionActualParList ] ")"
 AltstepInstance << ( ExtendedIdentifier + "(" + Optional( FunctionActualParList ) + ")" );
 
-## AltstepLocalDef ::= VarInstance | TimerInstance | ConstDef | TemplateDef
-#AltstepLocalDef = VarInstance | TimerInstance | ConstDef | TemplateDef;
-#
-## AltstepLocalDefList ::= { AltstepLocalDef [ WithStatement ] [ SemiColon ] }
-#AltstepLocalDefList = ZeroOrMore( AltstepLocalDef + Optional( WithStatement ) + Optional( SemiColon ) );
-#
+# AltstepLocalDef ::= VarInstance | TimerInstance | ConstDef | TemplateDef
+ConstDef = Forward();
+TemplateDef = Forward();
+AltstepLocalDef = VarInstance | TimerInstance | ConstDef | TemplateDef;
+
+# AltstepLocalDefList ::= { AltstepLocalDef [ WithStatement ] [ SemiColon ] }
+AltstepLocalDefList = ZeroOrMore( AltstepLocalDef + Optional( WithStatement ) + Optional( SemiColon ) );
+
 # AltstepKeyword ::= "altstep"
 AltstepKeyword << Keyword("altstep");
 
-## AltstepDef ::= AltstepKeyword Identifier "(" [ FunctionFormalParList ] ")" [ RunsOnSpec ] "{" AltstepLocalDefList AltGuardList "}"
-#AltstepDef = AltstepKeyword + Identifier + "(" + Optional( FunctionFormalParList ) + ")" + Optional( RunsOnSpec ) + "ZeroOrMore(" + AltstepLocalDefList + AltGuardList + ")";
-#
-## TestcaseActualParList ::= ( TemplateInstanceActualPar { "," TemplateInstanceActualPar } ) | ( TemplateInstanceAssignment { "," TemplateInstanceAssignment } )
-#TestcaseActualParList = ( delimitedList( TemplateInstanceActualPar ) ) | ( delimitedList( TemplateInstanceAssignment ) );
-#
+# AltstepDef ::= AltstepKeyword Identifier "(" [ FunctionFormalParList ] ")" [ RunsOnSpec ] "{" AltstepLocalDefList AltGuardList "}"
+RunsOnSpec = Forward();
+AltstepDef = AltstepKeyword + Identifier + "(" + Optional( FunctionFormalParList ) + ")" + Optional( RunsOnSpec ) + "{" + AltstepLocalDefList + AltGuardList + "}";
+
+# TestcaseActualParList ::= ( TemplateInstanceActualPar { "," TemplateInstanceActualPar } ) | ( TemplateInstanceAssignment { "," TemplateInstanceAssignment } )
+TemplateInstanceActualPar = Forward();
+TemplateInstanceAssignment = Forward();
+TestcaseActualParList = ( delimitedList( TemplateInstanceActualPar ) ) | ( delimitedList( TemplateInstanceAssignment ) );
+
 ## ExecuteKeyword ::= "execute"
 #ExecuteKeyword = Keyword("execute");
 #
@@ -1314,7 +1328,6 @@ FieldReference << Identifier;
 ArrayIdentifierRefAssignment = Identifier + ":=" + ArrayIdentifierRef;
 
 # FunctionActualParAssignment ::= TemplateInstanceAssignment | ComponentRefAssignment | ArrayIdentifierRefAssignment
-TemplateInstanceAssignment = Forward();
 FunctionActualParAssignment = TemplateInstanceAssignment | ComponentRefAssignment | ArrayIdentifierRefAssignment;
 
 # FunctionActualPar ::= ArrayIdentifierRef | InLineTemplate | ComponentRef | Minus
@@ -1336,8 +1349,6 @@ FunctionActualParList << ( ( FunctionActualPar + ZeroOrMore( "," + FunctionActua
 #FunctionStatement = ConfigurationStatements | TimerStatements | CommunicationStatements | BasicStatements | BehaviourStatements | SetLocalVerdict | SUTStatements | TestcaseOperation;
 #
 # FunctionLocalDef ::= ConstDef | TemplateDef
-ConstDef = Forward();
-TemplateDef = Forward();
 FunctionLocalDef << ( ConstDef | TemplateDef );
 
 # FunctionLocalInst ::= VarInstance | TimerInstance
@@ -1355,27 +1366,27 @@ FunctionLocalInst << ( VarInstance | TimerInstance );
 # MTCKeyword ::= "mtc"
 MTCKeyword << Keyword("mtc");
 
-## OnKeyword ::= "on"
-#OnKeyword = Keyword("on");
-#
-## RunsKeyword ::= "runs"
-#RunsKeyword = Keyword("runs");
-#
-## RunsOnSpec ::= RunsKeyword OnKeyword ComponentType
-#RunsOnSpec = RunsKeyword + OnKeyword + ComponentType;
-#
+# OnKeyword ::= "on"
+OnKeyword = Keyword("on");
+
+# RunsKeyword ::= "runs"
+RunsKeyword = Keyword("runs");
+
+# RunsOnSpec ::= RunsKeyword OnKeyword ComponentType
+RunsOnSpec << ( RunsKeyword + OnKeyword + ComponentType );
+
 # ReturnKeyword ::= "return"
 ReturnKeyword << Keyword("return");
 
-## ReturnType ::= ReturnKeyword [ TemplateKeyword | RestrictedTemplate ] Type
-#ReturnType = ReturnKeyword + Optional( TemplateKeyword | RestrictedTemplate ) + Type;
-#
-## FunctionFormalPar ::= FormalValuePar | FormalTimerPar | FormalTemplatePar | FormalPortPar
-#FunctionFormalPar = FormalValuePar | FormalTimerPar | FormalTemplatePar | FormalPortPar;
-#
-## FunctionFormalParList ::= FunctionFormalPar { "," FunctionFormalPar }
-#FunctionFormalParList = FunctionFormalPar + ZeroOrMore( "," + FunctionFormalPar );
-#
+# ReturnType ::= ReturnKeyword [ TemplateKeyword | RestrictedTemplate ] Type
+ReturnType << ( ReturnKeyword + Optional( TemplateKeyword | RestrictedTemplate ) + Type );
+
+# FunctionFormalPar ::= FormalValuePar | FormalTimerPar | FormalTemplatePar | FormalPortPar
+FunctionFormalPar = FormalValuePar | FormalTimerPar | FormalTemplatePar | FormalPortPar;
+
+# FunctionFormalParList ::= FunctionFormalPar { "," FunctionFormalPar }
+FunctionFormalParList << ( delimitedList( FunctionFormalPar ) );
+
 # FunctionKeyword ::= "function"
 FunctionKeyword << Keyword("function");
 
@@ -1398,7 +1409,7 @@ FunctionKeyword << Keyword("function");
 #TemplateOps = MatchOp | ValueofOp;
 #
 # TemplateInstanceActualPar ::= InLineTemplate | Minus
-TemplateInstanceActualPar = InLineTemplate | Minus;
+TemplateInstanceActualPar << ( InLineTemplate | Minus );
 
 # TemplateActualParList ::= "(" [ ( TemplateInstanceActualPar { "," TemplateInstanceActualPar } ) | ( TemplateInstanceAssignment { "," TemplateInstanceAssignment } ) ] ")"
 TemplateActualParList = "(" + Optional( ( TemplateInstanceActualPar + ZeroOrMore( "," + TemplateInstanceActualPar ) ) | ( TemplateInstanceAssignment + ZeroOrMore( "," + TemplateInstanceAssignment ) ) ) + ")";
@@ -1830,17 +1841,18 @@ TypeDefKeyword << Keyword("type");
 #ModuleDefinition = ( ( Optional( Visibility ) + ( TypeDef | ConstDef | TemplateDef | ModuleParDef | FunctionDef | SignatureDef | TestcaseDef | AltstepDef | ImportDef | ExtFunctionDef | ExtConstDef ) ) | ( Optional( "public" ) + GroupDef ) | ( Optional( "private" ) + FriendModuleDef ) ) + Optional( WithStatement );
 #
 ## ModuleDefinitionsList ::= { ModuleDefinition [ SemiColon ] }+
-#ModuleDefinitionsList = OneOrMore( ModuleDefinition + Optional( SemiColon ) );
-#
-## LanguageKeyword ::= "language"
-#LanguageKeyword = Keyword("language");
-#
-## LanguageSpec ::= LanguageKeyword FreeText { "," FreeText }
-#LanguageSpec = LanguageKeyword + FreeText + ZeroOrMore( "," + FreeText );
-#
-## ModuleId ::= Identifier [ LanguageSpec ]
-#ModuleId = Identifier + Optional( LanguageSpec );
-#
+#ModuleDefinitionsList << OneOrMore( ModuleDefinition + Optional( SemiColon ) );
+ModuleDefinitionsList << "temporal def";
+
+# LanguageKeyword ::= "language"
+LanguageKeyword = Keyword("language");
+
+# LanguageSpec ::= LanguageKeyword FreeText { "," FreeText }
+LanguageSpec = LanguageKeyword + delimitedList( FreeText );
+
+# ModuleId ::= Identifier [ LanguageSpec ]
+ModuleId << ( Identifier + Optional( LanguageSpec ) );
+
 ## TTCN3ModuleKeyword ::= "module"
 #TTCN3ModuleKeyword = Keyword("module");
 #
