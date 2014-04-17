@@ -198,10 +198,10 @@ select (expression)
 
    def test_example_for_loop(self):
       result = ForStatement.parseString('''
-      for (var integer v_i := 0; isExpression; v_i := some_value) 
+      for (var integer v_i := 0; v_i ; v_i := v_i + 1) 
       {
-      }''');
-      self.assertEqual(result.asList(), ['for', '(', [['var integer v_i := 0'], ['isExpression'], ['v_i', ':=', 'some_value']], ')', '{', '}']);
+      }''', parseAll=True);
+      self.assertEqual(result.asList(), ['for', '(', [['var', 'integer', 'v_i', ':=', '0'], ['v_i'], ['v_i', ':=', 'v_i', '+', '1']], ')', '{', '}']);
 
    def test_log_message(self):
       result = LogStatement.parseString('log("hello world!")');

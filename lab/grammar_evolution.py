@@ -1052,24 +1052,24 @@ TimerInstance = TimerKeyword + VarList;
 # VariableRef ::= Identifier [ ExtendedFieldReference ]
 VariableRef << Identifier + Optional( ExtendedFieldReference );
 
-## SingleTempVarInstance ::= Identifier [ ArrayDef ] [ AssignmentChar TemplateBody ]
-#SingleTempVarInstance = Identifier + Optional( ArrayDef ) + Optional( AssignmentChar + TemplateBody );
-#
-## TempVarList ::= SingleTempVarInstance { "," SingleTempVarInstance }
-#TempVarList = delimitedList( SingleTempVarInstance );
-#
-## VarKeyword ::= "var"
-#VarKeyword = Keyword("var");
-#
+# SingleTempVarInstance ::= Identifier [ ArrayDef ] [ AssignmentChar TemplateBody ]
+SingleTempVarInstance = Identifier + Optional( ArrayDef ) + Optional( AssignmentChar + TemplateBody );
+
+# TempVarList ::= SingleTempVarInstance { "," SingleTempVarInstance }
+TempVarList = delimitedList( SingleTempVarInstance );
+
+# VarKeyword ::= "var"
+VarKeyword = Keyword("var");
+
 # SingleVarInstance ::= Identifier [ ArrayDef ] [ AssignmentChar Expression ]
 SingleVarInstance = Identifier + Optional( ArrayDef ) + Optional( AssignmentChar + Expression );
 
 # VarList ::= SingleVarInstance { "," SingleVarInstance }
 VarList << delimitedList( SingleVarInstance );
 
-## VarInstance ::= VarKeyword ( ( Type VarList ) | ( ( TemplateKeyword | RestrictedTemplate ) Type TempVarList ) )
-#VarInstance = VarKeyword + ( ( Type + VarList ) | ( ( TemplateKeyword | RestrictedTemplate ) + Type + TempVarList ) );
-#
+# VarInstance ::= VarKeyword ( ( Type VarList ) | ( ( TemplateKeyword | RestrictedTemplate ) Type TempVarList ) )
+VarInstance << ( VarKeyword + ( ( Type + VarList ) | ( ( TemplateKeyword | RestrictedTemplate ) + Type + TempVarList ) ) );
+
 ## ControlStatement ::= TimerStatements | BasicStatements | BehaviourStatements | SUTStatements | StopKeyword
 #ControlStatement = TimerStatements | BasicStatements | BehaviourStatements | SUTStatements | StopKeyword;
 #
@@ -1289,7 +1289,6 @@ SignatureKeyword << Keyword("signature");
 #TMP
 InLineTemplate << ( Literal("42") | Identifier ); # TEMP
 StatementBlock << ( Literal("{") + Literal("}") ); # TEMP
-VarInstance << "var integer v_i := 0";
 TestcaseInstance << Identifier;
 FunctionInstance << Identifier; 
 ExtendedFieldReference << Identifier;
