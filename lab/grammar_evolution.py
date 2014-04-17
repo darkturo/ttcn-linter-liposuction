@@ -719,24 +719,25 @@ PortGetReplyOp = Forward();
 CheckPortOpsPresent = PortReceiveOp | PortGetCallOp | PortGetReplyOp | PortCatchOp;
 
 ## RedirectPresent ::= PortRedirectSymbol SenderSpec
+PortRedirectSymbol = Forward();
 SenderSpec = Forward();
-#RedirectPresent = PortRedirectSymbol + SenderSpec;
-#
-## FromClausePresent ::= FromClause [ PortRedirectSymbol SenderSpec ]
-#FromClausePresent = FromClause + Optional( PortRedirectSymbol + SenderSpec );
-#
-## CheckParameter ::= CheckPortOpsPresent | FromClausePresent | RedirectPresent
-#CheckParameter = CheckPortOpsPresent | FromClausePresent | RedirectPresent;
-#
-## CheckOpKeyword ::= "check"
-#CheckOpKeyword = Keyword("check");
-#
-## PortCheckOp ::= CheckOpKeyword [ "(" CheckParameter ")" ]
-#PortCheckOp = CheckOpKeyword + Optional( "(" + CheckParameter + ")" );
-#
-## CheckStatement ::= PortOrAny Dot PortCheckOp
-#CheckStatement = PortOrAny + Dot + PortCheckOp;
-#
+RedirectPresent = PortRedirectSymbol + SenderSpec;
+
+# FromClausePresent ::= FromClause [ PortRedirectSymbol SenderSpec ]
+FromClausePresent = FromClause + Optional( PortRedirectSymbol + SenderSpec );
+
+# CheckParameter ::= CheckPortOpsPresent | FromClausePresent | RedirectPresent
+CheckParameter = CheckPortOpsPresent | FromClausePresent | RedirectPresent;
+
+# CheckOpKeyword ::= "check"
+CheckOpKeyword = Keyword("check");
+
+# PortCheckOp ::= CheckOpKeyword [ "(" CheckParameter ")" ]
+PortCheckOp = CheckOpKeyword + Optional( "(" + CheckParameter + ")" );
+
+# CheckStatement ::= PortOrAny Dot PortCheckOp
+CheckStatement = PortOrAny + Dot + PortCheckOp;
+
 # ValueMatchSpec ::= ValueKeyword InLineTemplate
 ValueMatchSpec = ValueKeyword + InLineTemplate;
 
@@ -750,15 +751,14 @@ RedirectWithParamSpec = Forward();
 RedirectWithValueAndParamSpec = ValueSpec + Optional( ParamSpec ) + Optional( SenderSpec ) | RedirectWithParamSpec;
 
 # PortRedirectWithValueAndParam ::= PortRedirectSymbol RedirectWithValueAndParamSpec
-PortRedirectSymbol = Forward();
 PortRedirectWithValueAndParam = PortRedirectSymbol + RedirectWithValueAndParamSpec;
 
 # PortGetReplyOp ::= GetReplyOpKeyword [ "(" InLineTemplate [ ValueMatchSpec ] ")" ] [ FromClause ] [ PortRedirectWithValueAndParam ]
 PortGetReplyOp << ( GetReplyOpKeyword + Optional( "(" + InLineTemplate + Optional( ValueMatchSpec ) + ")" ) + Optional( FromClause ) + Optional( PortRedirectWithValueAndParam ) );
 
-## GetReplyStatement ::= PortOrAny Dot PortGetReplyOp
-#GetReplyStatement = PortOrAny + Dot + PortGetReplyOp;
-#
+# GetReplyStatement ::= PortOrAny Dot PortGetReplyOp
+GetReplyStatement = PortOrAny + Dot + PortGetReplyOp;
+
 # VariableEntry ::= VariableRef | Minus
 VariableEntry = VariableRef | Minus;
 
@@ -792,18 +792,18 @@ GetCallOpKeyword = Keyword("getcall");
 # PortGetCallOp ::= GetCallOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirectWithParam ]
 PortGetCallOp << ( GetCallOpKeyword + Optional( "(" + InLineTemplate + ")" ) + Optional( FromClause ) + Optional( PortRedirectWithParam ) );
 
-## GetCallStatement ::= PortOrAny Dot PortGetCallOp
-#GetCallStatement = PortOrAny + Dot + PortGetCallOp;
-#
-## TriggerOpKeyword ::= "trigger"
-#TriggerOpKeyword = Keyword("trigger");
-#
-## PortTriggerOp ::= TriggerOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirect ]
-#PortTriggerOp = TriggerOpKeyword + Optional( "(" + InLineTemplate + ")" ) + Optional( FromClause ) + Optional( PortRedirect );
-#
-## TriggerStatement ::= PortOrAny Dot PortTriggerOp
-#TriggerStatement = PortOrAny + Dot + PortTriggerOp;
-#
+# GetCallStatement ::= PortOrAny Dot PortGetCallOp
+GetCallStatement = PortOrAny + Dot + PortGetCallOp;
+
+# TriggerOpKeyword ::= "trigger"
+TriggerOpKeyword = Keyword("trigger");
+
+# PortTriggerOp ::= TriggerOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirect ]
+PortTriggerOp = TriggerOpKeyword + Optional( "(" + InLineTemplate + ")" ) + Optional( FromClause ) + Optional( PortRedirect );
+
+# TriggerStatement ::= PortOrAny Dot PortTriggerOp
+TriggerStatement = PortOrAny + Dot + PortTriggerOp;
+
 # SenderKeyword ::= "sender"
 SenderKeyword = Keyword("sender");
 
