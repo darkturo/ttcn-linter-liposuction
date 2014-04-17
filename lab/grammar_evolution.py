@@ -712,9 +712,12 @@ PortCatchOp = CatchOpKeyword + Optional( "(" + CatchOpParameter + ")" ) + Option
 PortOrAny = Forward();
 CatchStatement = PortOrAny + Dot + PortCatchOp;
 
-## CheckPortOpsPresent ::= PortReceiveOp | PortGetCallOp | PortGetReplyOp | PortCatchOp
-#CheckPortOpsPresent = PortReceiveOp | PortGetCallOp | PortGetReplyOp | PortCatchOp;
-#
+# CheckPortOpsPresent ::= PortReceiveOp | PortGetCallOp | PortGetReplyOp | PortCatchOp
+PortReceiveOp = Forward();
+PortGetCallOp = Forward();
+PortGetReplyOp = Forward();
+CheckPortOpsPresent = PortReceiveOp | PortGetCallOp | PortGetReplyOp | PortCatchOp;
+
 ## RedirectPresent ::= PortRedirectSymbol SenderSpec
 SenderSpec = Forward();
 #RedirectPresent = PortRedirectSymbol + SenderSpec;
@@ -734,57 +737,61 @@ SenderSpec = Forward();
 ## CheckStatement ::= PortOrAny Dot PortCheckOp
 #CheckStatement = PortOrAny + Dot + PortCheckOp;
 #
-## ValueMatchSpec ::= ValueKeyword InLineTemplate
-#ValueMatchSpec = ValueKeyword + InLineTemplate;
-#
-## GetReplyOpKeyword ::= "getreply"
-#GetReplyOpKeyword = Keyword("getreply");
-#
-## RedirectWithValueAndParamSpec ::= ValueSpec [ ParamSpec ] [ SenderSpec ] | RedirectWithParamSpec
-#RedirectWithValueAndParamSpec = ValueSpec + Optional( ParamSpec ) + Optional( SenderSpec ) | RedirectWithParamSpec;
-#
-## PortRedirectWithValueAndParam ::= PortRedirectSymbol RedirectWithValueAndParamSpec
-#PortRedirectWithValueAndParam = PortRedirectSymbol + RedirectWithValueAndParamSpec;
-#
-## PortGetReplyOp ::= GetReplyOpKeyword [ "(" InLineTemplate [ ValueMatchSpec ] ")" ] [ FromClause ] [ PortRedirectWithValueAndParam ]
-#PortGetReplyOp = GetReplyOpKeyword + Optional( "(" + InLineTemplate + [ + ValueMatchSpec ) + ")" + ] + Optional( FromClause ) + Optional( PortRedirectWithValueAndParam );
-#
+# ValueMatchSpec ::= ValueKeyword InLineTemplate
+ValueMatchSpec = ValueKeyword + InLineTemplate;
+
+# GetReplyOpKeyword ::= "getreply"
+GetReplyOpKeyword = Keyword("getreply");
+
+# RedirectWithValueAndParamSpec ::= ValueSpec [ ParamSpec ] [ SenderSpec ] | RedirectWithParamSpec
+ValueSpec = Forward();
+ParamSpec = Forward();
+RedirectWithParamSpec = Forward();
+RedirectWithValueAndParamSpec = ValueSpec + Optional( ParamSpec ) + Optional( SenderSpec ) | RedirectWithParamSpec;
+
+# PortRedirectWithValueAndParam ::= PortRedirectSymbol RedirectWithValueAndParamSpec
+PortRedirectSymbol = Forward();
+PortRedirectWithValueAndParam = PortRedirectSymbol + RedirectWithValueAndParamSpec;
+
+# PortGetReplyOp ::= GetReplyOpKeyword [ "(" InLineTemplate [ ValueMatchSpec ] ")" ] [ FromClause ] [ PortRedirectWithValueAndParam ]
+PortGetReplyOp << ( GetReplyOpKeyword + Optional( "(" + InLineTemplate + Optional( ValueMatchSpec ) + ")" ) + Optional( FromClause ) + Optional( PortRedirectWithValueAndParam ) );
+
 ## GetReplyStatement ::= PortOrAny Dot PortGetReplyOp
 #GetReplyStatement = PortOrAny + Dot + PortGetReplyOp;
 #
-## VariableEntry ::= VariableRef | Minus
-#VariableEntry = VariableRef | Minus;
-#
-## VariableList ::= VariableEntry { "," VariableEntry }
-#VariableList = delimitedList( VariableEntry );
-#
-## VariableAssignment ::= VariableRef AssignmentChar Identifier
-#VariableAssignment = VariableRef + AssignmentChar + Identifier;
-#
-## AssignmentList ::= VariableAssignment { "," VariableAssignment }
-#AssignmentList = delimitedList( VariableAssignment );
-#
-## ParamAssignmentList ::= "(" ( AssignmentList | VariableList ) ")"
-#ParamAssignmentList = "(" + ( AssignmentList | VariableList ) + ")";
-#
+# VariableEntry ::= VariableRef | Minus
+VariableEntry = VariableRef | Minus;
+
+# VariableList ::= VariableEntry { "," VariableEntry }
+VariableList = delimitedList( VariableEntry );
+
+# VariableAssignment ::= VariableRef AssignmentChar Identifier
+VariableAssignment = VariableRef + AssignmentChar + Identifier;
+
+# AssignmentList ::= VariableAssignment { "," VariableAssignment }
+AssignmentList = delimitedList( VariableAssignment );
+
+# ParamAssignmentList ::= "(" ( AssignmentList | VariableList ) ")"
+ParamAssignmentList = "(" + ( AssignmentList | VariableList ) + ")";
+
 # ParamKeyword ::= "param"
 ParamKeyword = Keyword("param");
 
-## ParamSpec ::= ParamKeyword ParamAssignmentList
-#ParamSpec = ParamKeyword + ParamAssignmentList;
-#
-## RedirectWithParamSpec ::= ParamSpec [ SenderSpec ] | SenderSpec
-#RedirectWithParamSpec = ParamSpec + Optional( SenderSpec ) | SenderSpec;
-#
-## PortRedirectWithParam ::= PortRedirectSymbol RedirectWithParamSpec
-#PortRedirectWithParam = PortRedirectSymbol + RedirectWithParamSpec;
-#
-## GetCallOpKeyword ::= "getcall"
-#GetCallOpKeyword = Keyword("getcall");
-#
-## PortGetCallOp ::= GetCallOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirectWithParam ]
-#PortGetCallOp = GetCallOpKeyword + Optional( "(" + InLineTemplate + ")" ) + Optional( FromClause ) + Optional( PortRedirectWithParam );
-#
+# ParamSpec ::= ParamKeyword ParamAssignmentList
+ParamSpec << ( ParamKeyword + ParamAssignmentList );
+
+# RedirectWithParamSpec ::= ParamSpec [ SenderSpec ] | SenderSpec
+RedirectWithParamSpec << ( ParamSpec + Optional( SenderSpec ) | SenderSpec );
+
+# PortRedirectWithParam ::= PortRedirectSymbol RedirectWithParamSpec
+PortRedirectWithParam = PortRedirectSymbol + RedirectWithParamSpec;
+
+# GetCallOpKeyword ::= "getcall"
+GetCallOpKeyword = Keyword("getcall");
+
+# PortGetCallOp ::= GetCallOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirectWithParam ]
+PortGetCallOp << ( GetCallOpKeyword + Optional( "(" + InLineTemplate + ")" ) + Optional( FromClause ) + Optional( PortRedirectWithParam ) );
+
 ## GetCallStatement ::= PortOrAny Dot PortGetCallOp
 #GetCallStatement = PortOrAny + Dot + PortGetCallOp;
 #
@@ -810,10 +817,10 @@ ValueKeyword << Keyword("value");
 SingleValueSpec = VariableRef + Optional( AssignmentChar + FieldReference + ExtendedFieldReference );
 
 # ValueSpec ::= ValueKeyword ( VariableRef | ( "(" SingleValueSpec { "," SingleValueSpec } ")" ) )
-ValueSpec = ValueKeyword + ( VariableRef | ( "(" + delimitedList( SingleValueSpec ) + ")" ) );
+ValueSpec << ( ValueKeyword + ( VariableRef | ( "(" + delimitedList( SingleValueSpec ) + ")" ) ) );
 
 # PortRedirectSymbol ::= "->"
-PortRedirectSymbol = "->";
+PortRedirectSymbol << ( "->" );
 
 # PortRedirect ::= PortRedirectSymbol ( ValueSpec [ SenderSpec ] | SenderSpec )
 PortRedirect << ( PortRedirectSymbol + ( ValueSpec + Optional( SenderSpec ) | SenderSpec ) );
@@ -830,7 +837,7 @@ FromClause << ( FromKeyword + ( InLineTemplate | AddressRefList | AnyKeyword + C
 ReceiveOpKeyword = Keyword("receive");
 
 # PortReceiveOp ::= ReceiveOpKeyword [ "(" InLineTemplate ")" ] [ FromClause ] [ PortRedirect ]
-PortReceiveOp = ReceiveOpKeyword + Optional( "(" + InLineTemplate + ")" ) + Optional( FromClause ) + Optional( PortRedirect );
+PortReceiveOp << ( ReceiveOpKeyword + Optional( "(" + InLineTemplate + ")" ) + Optional( FromClause ) + Optional( PortRedirect ) );
 
 # PortOrAny ::= ArrayIdentifierRef | AnyKeyword PortKeyword
 PortOrAny << ( ArrayIdentifierRef | AnyKeyword + PortKeyword );
