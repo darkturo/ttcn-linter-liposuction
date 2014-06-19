@@ -144,7 +144,7 @@ ForStatement = ForKeyword + "(" + \
                   Group( Assignment ).setName("Assignment") ) + \
                ")" + StatementBlock;
 
-## LoopConstruct ::= ForStatement | WhileStatement | DoWhileStatement
+# LoopConstruct ::= ForStatement | WhileStatement | DoWhileStatement
 LoopConstruct = ForStatement | WhileStatement | DoWhileStatement;
 
 # LogItem ::= FreeText | InLineTemplate
@@ -718,7 +718,7 @@ PortGetCallOp = Forward();
 PortGetReplyOp = Forward();
 CheckPortOpsPresent = PortReceiveOp | PortGetCallOp | PortGetReplyOp | PortCatchOp;
 
-## RedirectPresent ::= PortRedirectSymbol SenderSpec
+# RedirectPresent ::= PortRedirectSymbol SenderSpec
 PortRedirectSymbol = Forward();
 SenderSpec = Forward();
 RedirectPresent = PortRedirectSymbol + SenderSpec;
@@ -1480,31 +1480,31 @@ ComplementKeyword = "complement";
 # Complement ::= ComplementKeyword ListOfTemplates
 Complement = ComplementKeyword + ListOfTemplates;
 
-## PatternQuadruple ::= "\" "q" "(" Number "," Number "," Number "," Number ")"
-#PatternQuadruple = "\" + "q" + "(" + Number + "," + Number + "," + Number + "," + Number + ")";
-#
-## EscapedPatternClassChar ::= "[" | "-" | "^" | "]"
-#EscapedPatternClassChar = Literal("[") | Literal("-") | Literal("^") | Literal("]")
-#
-## NonSpecialPatternClassChar ::= Char
-#NonSpecialPatternClassChar = Char;
-#
-## PatternClassChar ::= NonSpecialPatternClassChar | PatternQuadruple | "\" EscapedPatternClassChar
-#PatternClassChar = NonSpecialPatternClassChar | PatternQuadruple | "\" + EscapedPatternClassChar;
-#
-## NonSpecialPatternChar ::= Char
-#NonSpecialPatternChar = Char;
-#
-## PatternChar ::= NonSpecialPatternChar | PatternQuadruple
-#PatternChar = NonSpecialPatternChar | PatternQuadruple;
-#
+# PatternQuadruple ::= "\" "q" "(" Number "," Number "," Number "," Number ")"
+PatternQuadruple = "\\" + "q" + "(" + Number + "," + Number + "," + Number + "," + Number + ")";
+
+# EscapedPatternClassChar ::= "[" | "-" | "^" | "]"
+EscapedPatternClassChar = Literal("[") | Literal("-") | Literal("^") | Literal("]")
+
+# NonSpecialPatternClassChar ::= Char
+NonSpecialPatternClassChar = Char;
+
+# PatternClassChar ::= NonSpecialPatternClassChar | PatternQuadruple | "\" EscapedPatternClassChar
+PatternClassChar = NonSpecialPatternClassChar | PatternQuadruple | "\\" + EscapedPatternClassChar;
+
+# NonSpecialPatternChar ::= Char
+NonSpecialPatternChar = Char;
+
+# PatternChar ::= NonSpecialPatternChar | PatternQuadruple
+PatternChar = NonSpecialPatternChar | PatternQuadruple;
+
 # PatternElement ::= ( ( "\" ( "?" | "*" | "\" | "[" | "]" | "{" | "}" | """ | "|" | "(" | ")" | "#" | "+" | "d" | "w" | "t" | "n" | "r" | "s" | "b" ) ) | ( "?" | "*" | "\" | "|" | "+" ) | ( "[" [ "^" ] [ { PatternClassChar [ "-" PatternClassChar ] } ] "]" ) | ( "{" [ "\" ] ReferencedValue "}" ) | ( "\" "N" "{" ( ReferencedValue | Type ) "}" ) | ( """ """ ) | ( "(" PatternElement ")" ) | ( "#" ( Num | ( "(" Num "," [ Num ] ")" ) | ( "(" "," Num ")" ) ) ) | PatternChar )
-#PatternElement = Forward();
-#PatternElement << ( ( r'\' ( "?" | "*" | r'\' | "[" | "]" | "{" | "}" | '"' | r'|' | "(" | ")" | "#" | "+" | "d" | "w" | "t" | "n" | "r" | "s" | "b" ) ) | ( "?" | "*" | r"\" | r'|' | "+" ) | ( "[" + Optional( "^" ) + Optional( ZeroOrMore( PatternClassChar + [ + "-" + PatternClassChar ) ) + ] + "]" ) | ( "{" + Optional( "\" ) + ReferencedValue + "}" ) | ( "\" + "N" + "{" + ( ReferencedValue | Type ) + "}" ) | ( '"' + '"' ) | ( "(" + PatternElement + ")" ) | ( "#" + ( Num | ( "(" + Num + "," + Optional( Num ) + ")" ) | ( "(" + "," + Num + ")" ) ) ) | PatternChar );
-#
-### Pattern ::= """ { PatternElement } """
-#Pattern = """ + ZeroOrMore( PatternElement ) + """;
-#
+PatternElement = Forward();
+PatternElement << ( ( Literal('\\') + ( Literal("?") | "*" | '\\' | "[" | "]" | "{" | "}" | '"' | '|' | "(" | ")" | "#" | "+" | "d" | "w" | "t" | "n" | "r" | "s" | "b" ) ) | ( Literal("?") | "*" | '\\' | '|' | "+" ) | ( Literal("[") + Optional( "^" ) + Optional( ZeroOrMore( PatternClassChar + ZeroOrMore( "-" + PatternClassChar ) ) ) + "]" ) | ( Literal("{") + Optional( '\\' ) + ReferencedValue + "}" ) | ( Literal('\\') + "N" + "{" + ( ReferencedValue | Type ) + "}" ) | ( Literal('"') + '"' ) | ( Literal("(") + PatternElement + ")" ) | ( Literal("#") + ( Num | ( Literal("(") + Num + "," + Optional( Num ) + ")" ) | ( Literal("(") + "," + Num + ")" ) ) ) | PatternChar );
+
+# Pattern ::= """ { PatternElement } """
+#Pattern = '"' + ZeroOrMore( PatternElement ) + '"';
+
 ## PatternKeyword ::= "pattern"
 #PatternKeyword = Keyword("pattern");
 #
