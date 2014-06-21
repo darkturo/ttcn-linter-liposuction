@@ -1503,35 +1503,35 @@ PatternElement = Forward();
 PatternElement << ( ( Literal('\\') + ( Literal("?") | "*" | '\\' | "[" | "]" | "{" | "}" | '"' | '|' | "(" | ")" | "#" | "+" | "d" | "w" | "t" | "n" | "r" | "s" | "b" ) ) | ( Literal("?") | "*" | '\\' | '|' | "+" ) | ( Literal("[") + Optional( "^" ) + Optional( ZeroOrMore( PatternClassChar + ZeroOrMore( "-" + PatternClassChar ) ) ) + "]" ) | ( Literal("{") + Optional( '\\' ) + ReferencedValue + "}" ) | ( Literal('\\') + "N" + "{" + ( ReferencedValue | Type ) + "}" ) | ( Literal('"') + '"' ) | ( Literal("(") + PatternElement + ")" ) | ( Literal("#") + ( Num | ( Literal("(") + Num + "," + Optional( Num ) + ")" ) | ( Literal("(") + "," + Num + ")" ) ) ) | PatternChar );
 
 # Pattern ::= """ { PatternElement } """
-#Pattern = '"' + ZeroOrMore( PatternElement ) + '"';
+Pattern = '"' + ZeroOrMore( PatternElement ) + '"';
 
-## PatternKeyword ::= "pattern"
-#PatternKeyword = Keyword("pattern");
-#
-## PatternParticle ::= Pattern | ReferencedValue
-#PatternParticle = Pattern | ReferencedValue;
-#
-## CharStringMatch ::= PatternKeyword PatternParticle { "&" PatternParticle }
-#CharStringMatch = PatternKeyword + PatternParticle + ZeroOrMore( "&" + PatternParticle );
-#
-## OctOrMatch ::= Oct | AnyValue | AnyOrOmit
-#OctOrMatch = Oct | AnyValue | AnyOrOmit;
-#
-## OctetStringMatch ::= "'" { OctOrMatch } "'" "O"
-#OctetStringMatch = "'" + ZeroOrMore( OctOrMatch ) + "'" + "O";
-#
-## HexOrMatch ::= Hex | AnyValue | AnyOrOmit
-#HexOrMatch = Hex | AnyValue | AnyOrOmit;
-#
-## HexStringMatch ::= "'" { HexOrMatch } "'" "H"
-#HexStringMatch = "'" + ZeroOrMore( HexOrMatch ) + "'" + "H";
-#
-## BinOrMatch ::= Bin | AnyValue | AnyOrOmit
-#BinOrMatch = Bin | AnyValue | AnyOrOmit;
-#
-## BitStringMatch ::= "'" { BinOrMatch } "'" "B"
-#BitStringMatch = "'" + ZeroOrMore( BinOrMatch ) + "'" + "B";
-#
+# PatternKeyword ::= "pattern"
+PatternKeyword = Keyword("pattern");
+
+# PatternParticle ::= Pattern | ReferencedValue
+PatternParticle = Pattern | ReferencedValue;
+
+# CharStringMatch ::= PatternKeyword PatternParticle { "&" PatternParticle }
+CharStringMatch = PatternKeyword + PatternParticle + ZeroOrMore( "&" + PatternParticle );
+
+# OctOrMatch ::= Oct | AnyValue | AnyOrOmit
+OctOrMatch = Oct | AnyValue | AnyOrOmit;
+
+# OctetStringMatch ::= "'" { OctOrMatch } "'" "O"
+OctetStringMatch = "'" + ZeroOrMore( OctOrMatch ) + "'" + "O";
+
+# HexOrMatch ::= Hex | AnyValue | AnyOrOmit
+HexOrMatch = Hex | AnyValue | AnyOrOmit;
+
+# HexStringMatch ::= "'" { HexOrMatch } "'" "H"
+HexStringMatch = "'" + ZeroOrMore( HexOrMatch ) + "'" + "H";
+
+# BinOrMatch ::= Bin | AnyValue | AnyOrOmit
+BinOrMatch = Bin | AnyValue | AnyOrOmit;
+
+# BitStringMatch ::= "'" { BinOrMatch } "'" "B"
+BitStringMatch = "'" + ZeroOrMore( BinOrMatch ) + "'" + "B";
+
 # ExtraMatchingAttributes ::= StringLength | IfPresentKeyword | ( StringLength IfPresentKeyword )
 StringLength = Forward();
 ExtraMatchingAttributes = StringLength | IfPresentKeyword | ( StringLength + IfPresentKeyword );
@@ -1549,9 +1549,9 @@ ArrayElementSpecList = ArrayElementSpec + ZeroOrMore( "," + ArrayElementSpec );
 # ArrayValueOrAttrib ::= "{" [ ArrayElementSpecList ] "}"
 ArrayValueOrAttrib = "{" + Optional( ArrayElementSpecList ) +"}"
 
-## FieldOrBitNumber ::= SingleExpression
-#FieldOrBitNumber = SingleExpression;
-#
+# FieldOrBitNumber ::= SingleExpression
+FieldOrBitNumber = SingleExpression;
+
 ## ArrayOrBitRef ::= "[" FieldOrBitNumber "]"
 #ArrayOrBitRef = "[" + FieldOrBitNumber + "]";
 #
