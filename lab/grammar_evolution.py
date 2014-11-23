@@ -1536,10 +1536,9 @@ BitStringMatch = "'" + ZeroOrMore( BinOrMatch ) + "'" + "B";
 StringLength = Forward();
 ExtraMatchingAttributes = StringLength | IfPresentKeyword | ( StringLength + IfPresentKeyword );
 
-## MatchingSymbol ::= Complement | ( AnyValue [ WildcardLengthMatch ] ) | ( AnyOrOmit [ WildcardLengthMatch ] ) | ListOfTemplates | Range | BitStringMatch | HexStringMatch | OctetStringMatch | CharStringMatch | SubsetMatch | SupersetMatch
-#MatchingSymbol = Complement | ( AnyValue + Optional( WildcardLengthMatch ) ) | ( AnyOrOmit + Optional( WildcardLengthMatch ) ) | ListOfTemplates | Range | BitStringMatch | HexStringMatch | OctetStringMatch | CharStringMatch | SubsetMatch | SupersetMatch;
-MatchingSymbol = "match";
-#
+# MatchingSymbol ::= Complement | ( AnyValue [ WildcardLengthMatch ] ) | ( AnyOrOmit [ WildcardLengthMatch ] ) | ListOfTemplates | Range | BitStringMatch | HexStringMatch | OctetStringMatch | CharStringMatch | SubsetMatch | SupersetMatch
+MatchingSymbol = Complement | ( AnyValue + Optional( WildcardLengthMatch ) ) | ( AnyOrOmit + Optional( WildcardLengthMatch ) ) | ListOfTemplates | Range | BitStringMatch | HexStringMatch | OctetStringMatch | CharStringMatch | SubsetMatch | SupersetMatch;
+
 # ArrayElementSpec ::= Minus | PermutationMatch | TemplateBody
 ArrayElementSpec = Minus | PermutationMatch | TemplateBody;
 
@@ -1553,8 +1552,8 @@ ArrayValueOrAttrib = "{" + Optional( ArrayElementSpecList ) +"}"
 FieldOrBitNumber = SingleExpression;
 
 ## ArrayOrBitRef ::= "[" FieldOrBitNumber "]"
-#ArrayOrBitRef = "[" + FieldOrBitNumber + "]";
-#
+ArrayOrBitRef << Literal("[") + FieldOrBitNumber + Literal("]");
+
 # ParRef ::= Identifier
 ParRef = Identifier;
 
@@ -1616,104 +1615,107 @@ ConstList = delimitedList( SingleConstDef );
 # ConstDef ::= ConstKeyword Type ConstList
 ConstDef << ( ConstKeyword + Type + ConstList );
 
-## PortElement ::= Identifier [ ArrayDef ]
-#PortElement = Identifier + Optional( ArrayDef );
-#
-## PortInstance ::= PortKeyword ExtendedIdentifier PortElement { "," PortElement }
-#PortInstance = PortKeyword + ExtendedIdentifier + PortElement + ZeroOrMore( "," + PortElement );
-#
-## ComponentElementDef ::= PortInstance | VarInstance | TimerInstance | ConstDef
-#ComponentElementDef = PortInstance | VarInstance | TimerInstance | ConstDef;
-#
-## ComponentDefList ::= { ComponentElementDef [ WithStatement ] [ SemiColon ] }
-#ComponentDefList = ZeroOrMore( ComponentElementDef + Optional( WithStatement ) + Optional( SemiColon ) );
-#
+# PortElement ::= Identifier [ ArrayDef ]
+PortElement = Identifier + Optional( ArrayDef );
+
+# PortInstance ::= PortKeyword ExtendedIdentifier PortElement { "," PortElement }
+PortInstance = PortKeyword + ExtendedIdentifier + PortElement + ZeroOrMore( "," + PortElement );
+
+# ComponentElementDef ::= PortInstance | VarInstance | TimerInstance | ConstDef
+ComponentElementDef = PortInstance | VarInstance | TimerInstance | ConstDef;
+
+# ComponentDefList ::= { ComponentElementDef [ WithStatement ] [ SemiColon ] }
+ComponentDefList = ZeroOrMore( ComponentElementDef + Optional( WithStatement ) + Optional( SemiColon ) );
+
 # ComponentType ::= ExtendedIdentifier
 ComponentType << ExtendedIdentifier;
 
-## ExtendsKeyword ::= "extends"
-#ExtendsKeyword = Keyword("extends");
-#
+# ExtendsKeyword ::= "extends"
+ExtendsKeyword = Keyword("extends");
+
 # ComponentKeyword ::= "component"
 ComponentKeyword << Keyword("component");
 
-## ComponentDef ::= ComponentKeyword Identifier [ ExtendsKeyword ComponentType { "," ComponentType } ] "{" [ ComponentDefList ] "}"
-#ComponentDef = ComponentKeyword + Identifier + Optional( ExtendsKeyword + ComponentType + ZeroOrMore( "," + ComponentType ) ) + "ZeroOrMore(" + Optional( ComponentDefList ) + ")";
-#
-## ProcOrType ::= Signature | Type
-#ProcOrType = Signature | Type;
-#
-## ProcOrTypeList ::= AllKeyword | ( ProcOrType { "," ProcOrType } )
-#ProcOrTypeList = AllKeyword | ( ProcOrType + ZeroOrMore( "," + ProcOrType ) );
-#
-## MixedList ::= Direction ProcOrTypeList
-#MixedList = Direction + ProcOrTypeList;
-#
-## MixedKeyword ::= "mixed"
-#MixedKeyword = Keyword("mixed");
-#
-## MixedAttribs ::= MixedKeyword "{" { ( AddressDecl | MixedList | ConfigParamDef ) [ SemiColon ] }+ "}"
-#MixedAttribs = MixedKeyword + "OneOrMore(" + ZeroOrMore( ( AddressDecl | MixedList | ConfigParamDef ) + Optional( SemiColon ) ) + ")";
-#
-## SignatureList ::= Signature { "," Signature }
-#SignatureList = Signature + ZeroOrMore( "," + Signature );
-#
-## AllOrSignatureList ::= AllKeyword | SignatureList
-#AllOrSignatureList = AllKeyword | SignatureList;
-#
-## ProcedureList ::= Direction AllOrSignatureList
-#ProcedureList = Direction + AllOrSignatureList;
-#
-## ProcedureKeyword ::= "procedure"
-#ProcedureKeyword = Keyword("procedure");
-#
-## ProcedureAttribs ::= ProcedureKeyword "{" { ( AddressDecl | ProcedureList | ConfigParamDef ) [ SemiColon ] }+ "}"
-#ProcedureAttribs = ProcedureKeyword + "{" + OneOrMore( ( AddressDecl | ProcedureList | ConfigParamDef ) + Optional( SemiColon ) ) + "}"
-#
+# ComponentDef ::= ComponentKeyword Identifier [ ExtendsKeyword ComponentType { "," ComponentType } ] "{" [ ComponentDefList ] "}"
+ComponentDef = ComponentKeyword + Identifier + Optional( ExtendsKeyword + ComponentType + ZeroOrMore( "," + ComponentType ) ) + "{" + Optional( ComponentDefList ) + "}";
+
+# ProcOrType ::= Signature | Type
+ProcOrType = Signature | Type;
+
+# ProcOrTypeList ::= AllKeyword | ( ProcOrType { "," ProcOrType } )
+ProcOrTypeList = AllKeyword | ( ProcOrType + ZeroOrMore( "," + ProcOrType ) );
+
+# MixedList ::= Direction ProcOrTypeList
+Direction = Forward();
+MixedList = Direction + ProcOrTypeList;
+
+# MixedKeyword ::= "mixed"
+MixedKeyword = Keyword("mixed");
+
+# MixedAttribs ::= MixedKeyword "{" { ( AddressDecl | MixedList | ConfigParamDef ) [ SemiColon ] }+ "}"
+AddressDecl = Forward();
+ConfigParamDef = Forward();
+MixedAttribs = MixedKeyword + "{" + ZeroOrMore( ( AddressDecl | MixedList | ConfigParamDef ) + Optional( SemiColon ) ) + "}";
+
+# SignatureList ::= Signature { "," Signature }
+SignatureList = Signature + ZeroOrMore( "," + Signature );
+
+# AllOrSignatureList ::= AllKeyword | SignatureList
+AllOrSignatureList = AllKeyword | SignatureList;
+
+# ProcedureList ::= Direction AllOrSignatureList
+ProcedureList = Direction + AllOrSignatureList;
+
+# ProcedureKeyword ::= "procedure"
+ProcedureKeyword = Keyword("procedure");
+
+# ProcedureAttribs ::= ProcedureKeyword "{" { ( AddressDecl | ProcedureList | ConfigParamDef ) [ SemiColon ] }+ "}"
+ProcedureAttribs = ProcedureKeyword + "{" + OneOrMore( ( AddressDecl | ProcedureList | ConfigParamDef ) + Optional( SemiColon ) ) + "}"
+
 # TypeList ::= Type { "," Type }
 TypeList = delimitedList( Type );
 
 # AllKeyword ::= "all"
 AllKeyword << Keyword("all");
 
-## AllOrTypeList ::= AllKeyword | TypeList
-#AllOrTypeList = AllKeyword | TypeList;
-#
-## MessageKeyword ::= "message"
-#MessageKeyword = Keyword("message");
-#
-## Direction ::= InParKeyword | OutParKeyword | InOutParKeyword
-#Direction = InParKeyword | OutParKeyword | InOutParKeyword;
-#
-## MessageList ::= Direction AllOrTypeList
-#MessageList = Direction + AllOrTypeList;
-#
-## AddressDecl ::= AddressKeyword Type
-#AddressDecl = AddressKeyword + Type;
-#
-## UnmapParamDef ::= UnmapKeyword ParamKeyword "(" FormalValuePar { "," FormalValuePar } ")"
-#UnmapParamDef = UnmapKeyword + ParamKeyword + "(" + FormalValuePar + ZeroOrMore( "," + FormalValuePar ) + ")";
-#
-## MapParamDef ::= MapKeyword ParamKeyword "(" FormalValuePar { "," FormalValuePar } ")"
-#MapParamDef = MapKeyword + ParamKeyword + "(" + FormalValuePar + ZeroOrMore( "," + FormalValuePar ) + ")";
-#
-## ConfigParamDef ::= MapParamDef | UnmapParamDef
-#ConfigParamDef = MapParamDef | UnmapParamDef;
-#
-## MessageAttribs ::= MessageKeyword "{" { ( AddressDecl | MessageList | ConfigParamDef ) [ SemiColon ] }+ "}"
-#MessageAttribs = MessageKeyword + "OneOrMore(" + ZeroOrMore( ( AddressDecl | MessageList | ConfigParamDef ) + Optional( SemiColon ) ) + ")";
-#
-## PortDefAttribs ::= MessageAttribs | ProcedureAttribs | MixedAttribs
-#PortDefAttribs = MessageAttribs | ProcedureAttribs | MixedAttribs;
-#
+# AllOrTypeList ::= AllKeyword | TypeList
+AllOrTypeList = AllKeyword | TypeList;
+
+# MessageKeyword ::= "message"
+MessageKeyword = Keyword("message");
+
+# Direction ::= InParKeyword | OutParKeyword | InOutParKeyword
+Direction << ( InParKeyword | OutParKeyword | InOutParKeyword );
+
+# MessageList ::= Direction AllOrTypeList
+MessageList = Direction + AllOrTypeList;
+
+# AddressDecl ::= AddressKeyword Type
+AddressDecl << AddressKeyword + Type;
+
+# UnmapParamDef ::= UnmapKeyword ParamKeyword "(" FormalValuePar { "," FormalValuePar } ")"
+UnmapParamDef = UnmapKeyword + ParamKeyword + "(" + FormalValuePar + ZeroOrMore( "," + FormalValuePar ) + ")";
+
+# MapParamDef ::= MapKeyword ParamKeyword "(" FormalValuePar { "," FormalValuePar } ")"
+MapParamDef = MapKeyword + ParamKeyword + "(" + FormalValuePar + ZeroOrMore( "," + FormalValuePar ) + ")";
+
+# ConfigParamDef ::= MapParamDef | UnmapParamDef
+ConfigParamDef = MapParamDef | UnmapParamDef;
+
+# MessageAttribs ::= MessageKeyword "{" { ( AddressDecl | MessageList | ConfigParamDef ) [ SemiColon ] }+ "}"
+MessageAttribs = MessageKeyword + "{" + ZeroOrMore( ( AddressDecl | MessageList | ConfigParamDef ) + Optional( SemiColon ) ) + "}";
+
+# PortDefAttribs ::= MessageAttribs | ProcedureAttribs | MixedAttribs
+PortDefAttribs = MessageAttribs | ProcedureAttribs | MixedAttribs;
+
 # PortKeyword ::= "port"
 PortKeyword << Keyword("port");
 
-## PortDefBody ::= Identifier PortDefAttribs
-#PortDefBody = Identifier + PortDefAttribs;
-#
+# PortDefBody ::= Identifier PortDefAttribs
+PortDefBody = Identifier + PortDefAttribs;
+
 ## PortDef ::= PortKeyword PortDefBody
-#PortDef = PortKeyword + PortDefBody;
+PortDef = PortKeyword + PortDefBody;
 #
 # LengthKeyword ::= "length"
 LengthKeyword << Keyword("length");
@@ -1725,45 +1727,47 @@ StringLength << ( LengthKeyword + "(" + SingleExpression + Optional( ".." + Boun
 # RangeDef ::= Bound ".." Bound
 RangeDef = Bound + ".." + Bound;
 
-## TemplateOrRange ::= RangeDef | TemplateBody | Type
-#TemplateOrRange = RangeDef | TemplateBody | Type;
-#
-## AllowedValuesSpec ::= "(" ( ( TemplateOrRange { "," TemplateOrRange } ) | CharStringMatch ) ")"
-#AllowedValuesSpec = "(" + ( ( TemplateOrRange + ZeroOrMore( "," + TemplateOrRange ) ) | CharStringMatch ) + ")";
-#
-## SubTypeSpec ::= AllowedValuesSpec [ StringLength ] | StringLength
-#SubTypeSpec = AllowedValuesSpec + Optional( StringLength ) | StringLength;
-#
-## SubTypeDef ::= Type ( Identifier | AddressKeyword ) [ ArrayDef ] [ SubTypeSpec ]
-#SubTypeDef = Type + ( Identifier | AddressKeyword ) + Optional( ArrayDef ) + Optional( SubTypeSpec );
-#
-## Enumeration ::= Identifier [ "(" [ Minus ] Number ")" ]
-#Enumeration = Identifier + Optional( "(" + [ + Minus ) + Number + ")" + ];
-#
-## EnumerationList ::= Enumeration { "," Enumeration }
-#EnumerationList = Enumeration + ZeroOrMore( "," + Enumeration );
-#
-## EnumKeyword ::= "enumerated"
-#EnumKeyword = Keyword("enumerated");
-#
-## EnumDef ::= EnumKeyword ( Identifier | AddressKeyword ) "{" EnumerationList "}"
-#EnumDef = EnumKeyword + ( Identifier + | + AddressKeyword ) + "{" + EnumerationList + "}"
-#
-## SetOfDef ::= SetKeyword [ StringLength ] OfKeyword StructOfDefBody
-#SetOfDef = SetKeyword + Optional( StringLength ) + OfKeyword + StructOfDefBody;
-#
-## StructOfDefBody ::= ( Type | NestedTypeDef ) ( Identifier | AddressKeyword ) [ SubTypeSpec ]
-#StructOfDefBody = ( Type | NestedTypeDef ) + ( Identifier | AddressKeyword ) + Optional( SubTypeSpec );
-#
-## OfKeyword ::= "of"
-#OfKeyword = Keyword("of");
-#
-## RecordOfDef ::= RecordKeyword [ StringLength ] OfKeyword StructOfDefBody
-#RecordOfDef = RecordKeyword + Optional( StringLength ) + OfKeyword + StructOfDefBody;
-#
-## SetKeyword ::= "set"
-#SetKeyword = Keyword("set");
-#
+# TemplateOrRange ::= RangeDef | TemplateBody | Type
+TemplateOrRange = RangeDef | TemplateBody | Type;
+
+# AllowedValuesSpec ::= "(" ( ( TemplateOrRange { "," TemplateOrRange } ) | CharStringMatch ) ")"
+AllowedValuesSpec = "(" + ( ( TemplateOrRange + ZeroOrMore( "," + TemplateOrRange ) ) | CharStringMatch ) + ")";
+
+# SubTypeSpec ::= AllowedValuesSpec [ StringLength ] | StringLength
+SubTypeSpec = AllowedValuesSpec + Optional( StringLength ) | StringLength;
+
+# SubTypeDef ::= Type ( Identifier | AddressKeyword ) [ ArrayDef ] [ SubTypeSpec ]
+SubTypeDef = Type + ( Identifier | AddressKeyword ) + Optional( ArrayDef ) + Optional( SubTypeSpec );
+
+# Enumeration ::= Identifier [ "(" [ Minus ] Number ")" ]
+Enumeration = Identifier + Optional( "(" + Optional( Minus ) + Number + ")" );
+
+# EnumerationList ::= Enumeration { "," Enumeration }
+EnumerationList = Enumeration + ZeroOrMore( "," + Enumeration );
+
+# EnumKeyword ::= "enumerated"
+EnumKeyword = Keyword("enumerated");
+
+# EnumDef ::= EnumKeyword ( Identifier | AddressKeyword ) "{" EnumerationList "}"
+EnumDef = EnumKeyword + ( Identifier | AddressKeyword ) + "{" + EnumerationList + "}"
+
+# SetOfDef ::= SetKeyword [ StringLength ] OfKeyword StructOfDefBody
+SetKeyword = Forward();
+OfKeyword = Forward();
+SetOfDef = SetKeyword + Optional( StringLength ) + OfKeyword + StructOfDefBody;
+
+# StructOfDefBody ::= ( Type | NestedTypeDef ) ( Identifier | AddressKeyword ) [ SubTypeSpec ]
+StructOfDefBody = ( Type | NestedTypeDef ) + ( Identifier | AddressKeyword ) + Optional( SubTypeSpec );
+
+# OfKeyword ::= "of"
+OfKeyword << Keyword("of");
+
+# RecordOfDef ::= RecordKeyword [ StringLength ] OfKeyword StructOfDefBody
+RecordOfDef = RecordKeyword + Optional( StringLength ) + OfKeyword + StructOfDefBody;
+
+# SetKeyword ::= "set"
+SetKeyword << Keyword("set");
+
 ## SetDef ::= SetKeyword StructDefBody
 #SetDef = SetKeyword + StructDefBody;
 #
